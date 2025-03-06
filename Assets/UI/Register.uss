@@ -1,0 +1,32 @@
+.boton:active {
+}
+
+.boton {
+}
+
+.input {
+    width: 175px;
+    -unity-font-style: italic;
+    color: rgb(99, 99, 99);
+    border-top-width: 1px;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-bottom-left-radius: 3px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    font-size: 10px;
+    height: 35px;
+    border-left-color: rgba(166, 166, 166, 0);
+    border-right-color: rgba(166, 166, 166, 0);
+    border-top-color: rgba(166, 166, 166, 0);
+    border-bottom-color: rgba(166, 166, 166, 0);
+}
+
+.desc {
+    font-size: 8px;
+}
+
+.boton {
+}

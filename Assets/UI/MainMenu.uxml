@@ -1,0 +1,9 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/MainMenu.uss?fileID=7433441132597879392&amp;guid=8f53622dd934e0d4baf88116c68ee991&amp;type=3#MainMenu" />
+    <engine:VisualElement name="Contenedor" style="flex-grow: 1; width: 100%; height: 100%; justify-content: flex-start; align-items: center; -unity-background-image-tint-color: rgba(255, 255, 255, 0); background-color: rgba(144, 144, 144, 0);">
+        <engine:Label text="Welcome to" name="Intro" class="titulo" style="font-size: 15px; color: rgb(78, 77, 77); border-bottom-width: 0; margin-bottom: 0; padding-bottom: 0; margin-top: 40px;" />
+        <engine:Label text="BlockCity" name="Titulo" class="titulo" style="font-size: 40px; margin-bottom: 20px;" />
+        <engine:Button name="Play" class="boton" style="background-image: url(&quot;project://database/Assets/Layer%20Lab/GUI-SimpleRound/ResourcesData/Sprites/Demo/Demo_Button/btn_start.png?fileID=2800000&amp;guid=b2cf67deef59141888e91479e54e2e0b&amp;type=3#btn_start&quot;); -unity-background-image-tint-color: rgb(255, 255, 255); background-color: rgba(188, 188, 188, 0); background-size: 85px 85px; height: 100px; width: 100px; border-bottom-width: 0; border-left-width: 0; border-right-width: 0; border-top-width: 0;" />
+        <engine:Button text="Sign In" name="InicioSesion" class="boton" style="background-color: rgb(88, 173, 221); margin-top: 15px; background-position-x: center 0; -unity-slice-left: 0; -unity-slice-top: 0; -unity-slice-right: 0; -unity-slice-bottom: 0; border-top-right-radius: 5px; border-top-left-radius: 5px; border-bottom-left-radius: 5px; border-bottom-right-radius: 5px;" />
+    </engine:VisualElement>
+</engine:UXML>

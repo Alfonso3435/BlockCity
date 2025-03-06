@@ -1,0 +1,18 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/Register.uss?fileID=7433441132597879392&amp;guid=f5375c1bfe2830f4990bb72a1b34ffee&amp;type=3#Register" />
+    <engine:VisualElement name="Contenedor" style="flex-grow: 1; justify-content: flex-start; align-items: flex-start; left: 70px;">
+        <engine:Label text="Register" name="Titulo" style="font-size: 25px; margin-top: 20px; left: 20px; color: rgb(255, 255, 255);" />
+        <engine:TextField placeholder-text="Email" name="Email" class="input" />
+        <engine:TextField placeholder-text="User name" name="Usuario" class="input" />
+        <engine:DropdownField name="Nacionalidad" class="input" style="background-color: rgba(255, 255, 255, 0); color: rgb(175, 175, 175); left: auto; right: auto;" />
+        <engine:Label text="Birth Date" name="DescFecha" class="desc" style="margin-top: 0; padding-top: 0; padding-bottom: 0; margin-bottom: 0; left: 5px;" />
+        <engine:VisualElement name="Fecha" style="flex-grow: 1; height: 54px; width: auto; justify-content: flex-start; align-self: auto; align-items: stretch; flex-direction: row; flex-wrap: nowrap; background-size: 100% 100%; bottom: auto; position: relative; top: auto; align-content: auto; max-height: 40px;">
+            <engine:TextField placeholder-text="dd" name="Dia" class="input" style="width: 50px;" />
+            <engine:TextField placeholder-text="mm" name="Mes" class="input" style="width: 50px;" />
+            <engine:TextField placeholder-text="yy" name="Ano" class="input" style="width: 50px;" />
+        </engine:VisualElement>
+        <engine:TextField placeholder-text="Password" name="Contrasena" class="input" />
+        <engine:TextField placeholder-text="Confirm Password" name="Confirmar" class="input" />
+        <engine:Button text="Let&apos;s Begin" name="Crear" class="boton" style="width: 175px; border-top-left-radius: 3px; border-top-right-radius: 3px; border-bottom-right-radius: 3px; border-bottom-left-radius: 3px; background-color: rgb(255, 255, 255);" />
+    </engine:VisualElement>
+</engine:UXML>

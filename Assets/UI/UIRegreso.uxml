@@ -1,0 +1,6 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UIRegreso.uss?fileID=7433441132597879392&amp;guid=c2343cd1a0fbaea47a664a72367aceee&amp;type=3#UIRegreso" />
+    <engine:VisualElement name="Contenedor" style="flex-grow: 1; justify-content: flex-start; align-self: flex-start; width: 100%; height: 100%; align-items: flex-end;">
+        <engine:Button name="BotonRegreso" class="boton" style="background-size: 35px 35px; background-image: url(&quot;project://database/Assets/Layer%20Lab/GUI-SimpleRound/ResourcesData/Sprites/Demo/Demo_Button/btn_black_back.png?fileID=2800000&amp;guid=8c4caea7f575d46f9889c3da22e984da&amp;type=3#btn_black_back&quot;); width: 35px; height: 35px; background-color: rgba(188, 188, 188, 0); -unity-background-image-tint-color: rgb(255, 255, 255); border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0;" />
+    </engine:VisualElement>
+</engine:UXML>

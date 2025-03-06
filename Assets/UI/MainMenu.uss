@@ -1,0 +1,14 @@
+.titulo {
+    -unity-font-definition: url("project://database/Assets/TextMesh%20Pro/Fonts/LiberationSans.ttf?fileID=12800000&guid=e3265ab4bf004d28a9537516768c1c75&type=3#LiberationSans");
+}
+
+.boton:hover {
+    scale: 1.15 1.15;
+}
+
+.boton:active {
+    -unity-background-image-tint-color: rgb(118, 118, 118);
+}
+
+.boton {
+}
