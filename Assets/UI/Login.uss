@@ -38,3 +38,13 @@
 .boton:active {
     -unity-background-image-tint-color: rgb(135, 135, 135);
 }
+
+.botonregreso {
+}
+
+.botonregreso:hover {
+    scale: 1.15 1.15;
+}
+
+.botonregreso:active {
+}

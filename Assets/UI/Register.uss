@@ -30,3 +30,13 @@
 
 .boton {
 }
+
+.botonregreso:hover {
+    scale: 1.15 1.15;
+}
+
+.botonregreso:active {
+}
+
+.botonregreso {
+}

@@ -1,0 +1,13 @@
+.labeldesc {
+}
+
+.boton:active {
+}
+
+.labeldesc {
+}
+
+.boton {
+    width: 100px;
+    height: 50px;
+}

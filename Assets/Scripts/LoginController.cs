@@ -5,20 +5,23 @@ using UnityEngine.UIElements;
 
 public class LoginController : MonoBehaviour
 {
-    private UIDocument menu;
+    private UIDocument login;
     private Button botonOlvido;
     private Button botonInicioSesion;
     private Button botonRegistro;
+    private Button botonRegreso;
 
     void OnEnable(){
-        menu = GetComponent<UIDocument>();
-        var root = menu.rootVisualElement;
+        login = GetComponent<UIDocument>();
+        var root = login.rootVisualElement;
         botonOlvido = root.Q<Button>("Olvido");
         botonInicioSesion = root.Q<Button>("IniciarSesion");
         botonRegistro = root.Q<Button>("CrearCuenta");
+        botonRegreso = root.Q<Button>("Regreso");
 
         
         botonRegistro.RegisterCallback<ClickEvent, String>(IniciarJuego, "Register");
+        botonRegreso.RegisterCallback<ClickEvent, String>(IniciarJuego, "Menu");
     }
 
     private void IniciarJuego(ClickEvent evt, String escena)
