@@ -4,8 +4,8 @@
         <engine:Label text="Welcome Back Username!" name="Bienvenida" style="font-size: 30px; -unity-font-style: bold;" />
         <engine:Label text="Select the part of the city where you want to go" name="Descripcion" style="-unity-text-align: upper-center;" />
         <engine:VisualElement name="Modulos" style="flex-grow: 1; flex-direction: row; align-items: center; justify-content: space-around; align-self: center;">
-            <engine:Button name="ModuloA" class="modulos" style="margin-right: 100px; width: 175px; height: 175px; background-image: url(&quot;project://database/Assets/Images/City1.png?fileID=2800000&amp;guid=4c208954b12217b41adb5e930236108f&amp;type=3#City1&quot;);" />
-            <engine:Button name="ModuloB" class="modulos" style="width: 175px; height: 175px; background-image: url(&quot;project://database/Assets/Images/City2.png?fileID=2800000&amp;guid=25b6a1b86764ed64a8efd6091e36b898&amp;type=3#City2&quot;);" />
+            <engine:Button name="ModuloA" class="modulos boton" style="margin-right: 100px; width: 175px; height: 175px; background-image: url(&quot;project://database/Assets/Images/City1.png?fileID=2800000&amp;guid=4c208954b12217b41adb5e930236108f&amp;type=3#City1&quot;);" />
+            <engine:Button name="ModuloB" class="modulos boton" style="width: 175px; height: 175px; background-image: url(&quot;project://database/Assets/Images/City2.png?fileID=2800000&amp;guid=25b6a1b86764ed64a8efd6091e36b898&amp;type=3#City2&quot;);" />
         </engine:VisualElement>
     </engine:VisualElement>
 </engine:UXML>

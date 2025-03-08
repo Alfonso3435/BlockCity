@@ -1,0 +1,6 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/MainCity.uss?fileID=7433441132597879392&amp;guid=3ab9716ab7d341a42a1ed3907ccb060f&amp;type=3#MainCity" />
+    <engine:VisualElement name="Contenedor" style="flex-grow: 1; min-width: auto; min-height: auto; max-width: 30%; max-height: 10%; align-self: flex-end; justify-content: space-between; align-items: flex-start;">
+        <engine:Button text="Enter to Level" name="Siguiente" class="boton" style="border-top-left-radius: 3px; border-top-right-radius: 3px; border-bottom-right-radius: 3px; border-bottom-left-radius: 3px; height: 10px;" />
+    </engine:VisualElement>
+</engine:UXML>

@@ -7,8 +7,9 @@
 }
 
 .boton {
+    background-color: rgba(0, 0, 0, 0);
 }
 
 .boton:active {
-    -unity-background-image-tint-color: rgb(118, 118, 118);
+    -unity-background-image-tint-color: rgb(144, 144, 144);
 }

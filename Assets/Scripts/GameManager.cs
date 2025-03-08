@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement; // Importa el namespace para manejar escenas
 
 public class GameManager : MonoBehaviour
 {
@@ -149,7 +150,8 @@ public class GameManager : MonoBehaviour
             else
             {
                 Debug.Log("Category completed!");
-                // Aquí podrías agregar lógica para manejar la finalización de la categoría
+                // Cargar la escena "StageClear"
+                SceneManager.LoadScene("StageClear");
             }
         }
         else

@@ -1,0 +1,6 @@
+.boton {
+}
+
+.boton:hover {
+    scale: 1.15 1.15;
+}

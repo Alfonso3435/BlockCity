@@ -23,6 +23,18 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Modules.unity
     guid: 482a4674a80c7264aba211caf883b77e
+  - enabled: 1
+    path: Assets/Scenes/City.unity
+    guid: 22db81cb617523f4da922f758b8bc2ba
+  - enabled: 1
+    path: Assets/Scenes/Lecture.unity
+    guid: 83d1847f3f30f0246a0536f4bec5b0a1
+  - enabled: 1
+    path: Assets/Scenes/Quiz.unity
+    guid: 762d23834533ba54ebb05f730b3f5254
+  - enabled: 1
+    path: Assets/Scenes/StageClear.unity
+    guid: ddf29d84d62736046ba4d5acb0228494
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

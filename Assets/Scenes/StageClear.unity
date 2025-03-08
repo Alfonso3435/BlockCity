@@ -466,6 +466,7 @@ GameObject:
   m_Component:
   - component: {fileID: 520767132}
   - component: {fileID: 520767131}
+  - component: {fileID: 520767133}
   m_Layer: 5
   m_Name: StageClear
   m_TagString: Untagged
@@ -507,6 +508,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &520767133
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 520767130}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68f0117e9e4ef2841b9cb6c19654f3de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &921376674
 GameObject:
   m_ObjectHideFlags: 0

@@ -20,7 +20,7 @@ MonoBehaviour:
     - Etherium
     - Bitcoin
     - Dogecoin
-    correctReplyIndex: 3
+    correctReplyIndex: 2
   - questionText: "\xBFQu\xE9 tecnolog\xEDa subyacente permite la descentralizaci\xF3n
       en blockchain?"
     replies:
@@ -28,7 +28,7 @@ MonoBehaviour:
     - Registro distribuido
     - Base de datos SQL
     - Red privada
-    correctReplyIndex: 2
+    correctReplyIndex: 1
   - questionText: "\xBFQu\xE9 plataforma popular permite la creaci\xF3n de contratos
       inteligentes?"
     replies:
@@ -36,4 +36,4 @@ MonoBehaviour:
     - Cardano
     - Etherium
     - Ripple
-    correctReplyIndex: 3
+    correctReplyIndex: 2
