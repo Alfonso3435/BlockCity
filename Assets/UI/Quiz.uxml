@@ -6,5 +6,6 @@
         <engine:Label text="3" name="Pocion" style="margin-top: 8px; left: 80px;" />
         <engine:Label text="5" name="Vida" style="margin-top: 8px; left: 430px;" />
         <engine:Label text="0:00" name="Tiempo" style="margin-top: 8px; left: 480px;" />
+        <engine:Button text="Fallar Quiz" name="Fallar" style="position: absolute; left: 20%; border-top-left-radius: 3px; border-top-right-radius: 3px; border-bottom-right-radius: 3px; border-bottom-left-radius: 3px;" />
     </engine:VisualElement>
 </engine:UXML>

@@ -1,0 +1,9 @@
+.boton {
+    background-image: url("project://database/Assets/Layer%20Lab/GUI-SimpleRound/ResourcesData/Sprites/Demo/Demo_Icon/Icon_Home.png?fileID=2800000&guid=dab7d12e97c344c03bee78fe395000d5&type=3#Icon_Home");
+    background-color: rgba(0, 0, 0, 0);
+    background-size: 40px 40px;
+}
+
+.boton:active {
+    -unity-background-image-tint-color: rgb(121, 121, 121);
+}

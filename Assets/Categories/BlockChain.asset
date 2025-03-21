@@ -21,16 +21,14 @@ MonoBehaviour:
     - Bitcoin
     - Dogecoin
     correctReplyIndex: 2
-  - questionText: "\xBFQu\xE9 tecnolog\xEDa subyacente permite la descentralizaci\xF3n
-      en blockchain?"
+  - questionText: What underlying technology enables decentralization in blockchain?
     replies:
-    - Servidores centralizados
-    - Registro distribuido
-    - Base de datos SQL
-    - Red privada
+    - Centralized servers
+    - Distributed register
+    - SQL Database
+    - Private network
     correctReplyIndex: 1
-  - questionText: "\xBFQu\xE9 plataforma popular permite la creaci\xF3n de contratos
-      inteligentes?"
+  - questionText: What popular platform allows the creation of smart contracts?
     replies:
     - Solana
     - Cardano
