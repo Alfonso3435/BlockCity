@@ -9,7 +9,7 @@
                 <engine:TextField placeholder-text="User Name" name="NombreUsuario" class="textfield" />
                 <engine:DropdownField label="Nationality" name="Nacionalidad" choices="Mexico,United States" class="nacionalidad" />
             </engine:VisualElement>
-            <engine:Label text="Birth Date" name="DescripcionFecha" class="descFecha" style="right: 14%;" />
+            <engine:Label text="Birth Date" name="DescripcionFecha" class="descFecha" style="right: 15.5%;" />
             <engine:VisualElement name="FechaNacimiento" class="contenedorFecha" style="flex-grow: 1;">
                 <engine:TextField placeholder-text="dd" name="Dia" class="texfieldFecha" />
                 <engine:TextField placeholder-text="mm" name="Mes" class="texfieldFecha" />
@@ -17,7 +17,7 @@
             </engine:VisualElement>
             <engine:VisualElement name="Genero" class="contenedorGenero" style="flex-grow: 1; flex-direction: row; flex-wrap: nowrap;">
                 <engine:Toggle name="Masculino" focusable="true" enabled="true" toggle-on-label-click="true" value="false" tabindex="0" text=" Masculine&#10;&#10;" class="toggle" style="flex-wrap: wrap-reverse; flex-direction: row-reverse; margin-right: 4px;" />
-                <engine:Toggle name="Femenino" text=" Femenin" class="toggle" style="flex-direction: row-reverse;" />
+                <engine:Toggle name="Femenino" text=" Femenine" class="toggle" style="flex-direction: row-reverse;" />
             </engine:VisualElement>
             <engine:VisualElement name="Contrasena" class="conenedorContrasena" style="flex-grow: 1; min-width: 100%; align-self: auto; align-items: center;">
                 <engine:TextField placeholder-text="Password" name="InputContrasena" password="true" class="textfield" />
