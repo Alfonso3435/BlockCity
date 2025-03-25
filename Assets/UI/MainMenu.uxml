@@ -1,10 +1,10 @@
 <engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/UI/MainMenu.uss?fileID=7433441132597879392&amp;guid=8f53622dd934e0d4baf88116c68ee991&amp;type=3#MainMenu" />
     <engine:VisualElement name="Contenedor" class="contenedor" style="flex-grow: 1;">
-        <engine:Button name="Cerrar" class="cerrar" style="border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0;" />
+        <engine:Button name="Cerrar" class="cerrar" style="border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; width: 60px; height: 60px; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; background-size: 50px 50px;" />
         <engine:Label text="Welcome to" name="Intro" class="intro" />
         <engine:Label text="BlockCity" name="Titulo" class="titulo" />
-        <engine:Button name="Play" class="play" style="border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0;" />
-        <engine:Button text="Sign In" name="InicioSesion" class="loginButton" />
+        <engine:Button name="Play" class="play" style="border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; top: 0; position: relative;" />
+        <engine:Button text="Sign In" name="InicioSesion" class="loginButton" style="height: 40px; position: relative; top: 5%;" />
     </engine:VisualElement>
 </engine:UXML>

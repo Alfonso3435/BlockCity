@@ -1,14 +1,15 @@
 .intro {
     top: auto;
-    font-size: 15px;
+    font-size: 60px;
 }
 
 .play {
     background-image: url("project://database/Assets/Layer%20Lab/GUI-SimpleRound/ResourcesData/Sprites/Components/ButtonIcons/ButtonIcon_Blue/btn_blue_left.png?fileID=2800000&guid=0ab6720361e1c472b894ea75d932e96f&type=3#btn_blue_left");
-    width: 120px;
-    height: 120px;
-    background-size: 120px 120px;
+    width: 200px;
+    height: 200px;
+    background-size: 190px 190px;
     background-color: rgba(0, 0, 0, 0);
+    position: relative;
 }
 
 .contenedor {
@@ -19,12 +20,16 @@
 }
 
 .loginButton {
-    top: 3%;
+    top: 6%;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
     border-bottom-left-radius: 5px;
     background-color: rgb(113, 203, 255);
+    width: 150px;
+    height: 40px;
+    font-size: 20px;
+    position: absolute;
 }
 
 .cerrar {
@@ -38,6 +43,6 @@
 }
 
 .titulo {
-    font-size: 30px;
+    font-size: 80px;
     -unity-font-style: bold;
 }
