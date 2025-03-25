@@ -15,9 +15,8 @@ public class LoginController : MonoBehaviour
         login = GetComponent<UIDocument>();
         var root = login.rootVisualElement;
         botonOlvido = root.Q<Button>("Olvido");
-        botonInicioSesion = root.Q<Button>("IniciarSesion");
-        botonRegistro = root.Q<Button>("CrearCuenta");
-        botonRegreso = root.Q<Button>("Regreso");
+        botonInicioSesion = root.Q<Button>("Login");
+        botonRegreso = root.Q<Button>("Registro");
 
         
         botonRegistro.RegisterCallback<ClickEvent, String>(IniciarJuego, "Register");

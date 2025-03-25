@@ -1,12 +1,12 @@
 <engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/UI/Login.uss?fileID=7433441132597879392&amp;guid=40ca44bc3c0eab94db87d698d6b1fbb9&amp;type=3#Login" />
-    <engine:VisualElement name="Contenedor" style="flex-grow: 1; width: 100%; height: 100%; justify-content: flex-start; align-items: center;">
-        <engine:Button name="Regreso" class="botonregreso" style="position: absolute; right: auto; justify-content: space-around; align-items: auto; align-self: flex-end; width: 35px; height: 35px; background-image: url(&quot;project://database/Assets/Layer%20Lab/GUI-SimpleRound/ResourcesData/Sprites/Demo/Demo_Button/btn_black_back.png?fileID=2800000&amp;guid=8c4caea7f575d46f9889c3da22e984da&amp;type=3#btn_black_back&quot;); border-left-width: 0; border-top-width: 0; border-right-width: 0; border-bottom-width: 0; -unity-background-image-tint-color: rgb(255, 255, 255);" />
-        <engine:Label text="Sign In" name="Titulo" class="titulo" style="font-size: 30px; color: rgb(255, 255, 255); -unity-font-definition: url(&quot;project://database/Assets/TextMesh%20Pro/Fonts/LiberationSans.ttf?fileID=12800000&amp;guid=e3265ab4bf004d28a9537516768c1c75&amp;type=3#LiberationSans&quot;); margin-top: 15px;" />
-        <engine:TextField placeholder-text="Email" name="Email" class="input" style="-unity-font-style: italic; margin-top: 40px;" />
-        <engine:TextField placeholder-text="Password" name="Contrasena" class="input" style="-unity-font-style: italic; margin-bottom: 5px;" />
-        <engine:Button text="Forgot your password?" name="Olvido" class="redireccion" style="height: auto; -unity-text-align: lower-left; width: auto; padding-top: 0; padding-bottom: 0; padding-left: 0; margin-top: 0; margin-bottom: 0; right: 38px;" />
-        <engine:Button text="Log in" name="IniciarSesion" class="boton" style="margin-top: 10px; margin-bottom: 10px; background-color: rgb(255, 255, 255); width: 200px; height: auto; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-left-radius: 5px; border-bottom-right-radius: 5px;" />
-        <engine:Button text="Not a user yet?    Create an account" name="CrearCuenta" class="redireccion" style="padding-bottom: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-left: 0; padding-right: 0; height: auto; right: 10px; -unity-font-style: normal;" />
+    <engine:VisualElement name="Contenedor" class="contenedorFormulario" style="flex-grow: 1;">
+        <engine:Button name="Regreso" class="botonRegreso" style="border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0;" />
+        <engine:Label text="Sign In" name="Titulo" enable-rich-text="true" class="titulo" />
+        <engine:TextField placeholder-text="Email" name="Correo" class="textfield" style="margin-bottom: 3%;" />
+        <engine:TextField placeholder-text="Password" name="Contrasena" password="true" class="textfield" />
+        <engine:Button text="Forgot your password?" name="Olvido" class="botonInvis" style="border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0;" />
+        <engine:Button text="Log in" name="Login" class="botonLogin" />
+        <engine:Button text="Not a user yet? Create an account" name="Registro" class="botonInvis" style="border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0;" />
     </engine:VisualElement>
 </engine:UXML>
