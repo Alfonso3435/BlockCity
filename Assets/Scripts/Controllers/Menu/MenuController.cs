@@ -15,7 +15,7 @@ public class MenuController : MonoBehaviour
         botonPlay = root.Q<Button>("Play");
         botonLogin = root.Q<Button>("InicioSesion");
 
-        botonPlay.RegisterCallback<ClickEvent, String>(IniciarJuego, "Modules");
+        botonPlay.RegisterCallback<ClickEvent, String>(IniciarJuego, "ModuleSelection");
         botonLogin.RegisterCallback<ClickEvent, String>(IniciarJuego, "Login");
     }
 

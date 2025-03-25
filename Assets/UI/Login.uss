@@ -39,3 +39,7 @@
     height: 100%;
     align-items: center;
 }
+
+.botonRegreso:hover {
+    scale: 1.15 1.15;
+}
