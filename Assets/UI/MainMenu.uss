@@ -1,15 +1,43 @@
-.titulo {
-    -unity-font-definition: url("project://database/Assets/TextMesh%20Pro/Fonts/LiberationSans.ttf?fileID=12800000&guid=e3265ab4bf004d28a9537516768c1c75&type=3#LiberationSans");
+.intro {
+    top: auto;
+    font-size: 15px;
 }
 
-.boton:hover {
-    scale: 1.15 1.15;
-}
-
-.boton {
+.play {
+    background-image: url("project://database/Assets/Layer%20Lab/GUI-SimpleRound/ResourcesData/Sprites/Components/ButtonIcons/ButtonIcon_Blue/btn_blue_left.png?fileID=2800000&guid=0ab6720361e1c472b894ea75d932e96f&type=3#btn_blue_left");
+    width: 120px;
+    height: 120px;
+    background-size: 120px 120px;
     background-color: rgba(0, 0, 0, 0);
 }
 
-.boton:active {
-    -unity-background-image-tint-color: rgb(144, 144, 144);
+.contenedor {
+    width: 100%;
+    height: 100%;
+    align-self: auto;
+    align-items: center;
+}
+
+.loginButton {
+    top: 3%;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    background-color: rgb(113, 203, 255);
+}
+
+.cerrar {
+    align-items: flex-end;
+    align-self: flex-end;
+    background-image: url("project://database/Assets/Layer%20Lab/GUI-SimpleRound/ResourcesData/Sprites/Demo/Demo_Button/btn_black_close.png?fileID=2800000&guid=eb40ff4258c664cb1aa1c97c6e7783f4&type=3#btn_black_close");
+    background-size: 40px 40px;
+    width: 40px;
+    height: 40px;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.titulo {
+    font-size: 30px;
+    -unity-font-style: bold;
 }
