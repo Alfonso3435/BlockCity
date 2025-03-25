@@ -1,13 +1,13 @@
 .intro {
     top: auto;
-    font-size: 60px;
+    font-size: 80px;
 }
 
 .play {
     background-image: url("project://database/Assets/Layer%20Lab/GUI-SimpleRound/ResourcesData/Sprites/Components/ButtonIcons/ButtonIcon_Blue/btn_blue_left.png?fileID=2800000&guid=0ab6720361e1c472b894ea75d932e96f&type=3#btn_blue_left");
-    width: 200px;
-    height: 200px;
-    background-size: 190px 190px;
+    width: 350px;
+    height: 350px;
+    background-size: 250px 250px;
     background-color: rgba(0, 0, 0, 0);
     position: relative;
 }
@@ -36,13 +36,21 @@
     align-items: flex-end;
     align-self: flex-end;
     background-image: url("project://database/Assets/Layer%20Lab/GUI-SimpleRound/ResourcesData/Sprites/Demo/Demo_Button/btn_black_close.png?fileID=2800000&guid=eb40ff4258c664cb1aa1c97c6e7783f4&type=3#btn_black_close");
-    background-size: 40px 40px;
-    width: 40px;
-    height: 40px;
+    background-size: 100% 100%;
+    width: 85px;
+    height: 85px;
     background-color: rgba(0, 0, 0, 0);
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    padding-top: 100px;
+    padding-right: 100px;
+    padding-bottom: 100px;
+    padding-left: 100px;
 }
 
 .titulo {
-    font-size: 80px;
+    font-size: 100px;
     -unity-font-style: bold;
 }

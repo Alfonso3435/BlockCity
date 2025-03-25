@@ -9,12 +9,18 @@
 }
 
 .textfield {
-    height: 35px;
-    width: 250px;
+    height: 5%;
+    width: 30%;
+    font-size: 20px;
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
 }
 
 .botonInvis {
     background-color: rgba(0, 0, 0, 0);
+    font-size: 20px;
 }
 
 .botonLogin {
@@ -25,13 +31,15 @@
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
     border-bottom-left-radius: 5px;
+    font-size: 20px;
 }
 
 .titulo {
-    font-size: 35px;
+    font-size: 80px;
     color: rgb(255, 255, 255);
     top: 2%;
     margin-bottom: 5%;
+    -unity-font-style: bold;
 }
 
 .contenedorFormulario {

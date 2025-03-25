@@ -1,11 +1,10 @@
 <engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/UI/Quiz.uss?fileID=7433441132597879392&amp;guid=f3ef6fe42588cc54d8f8eff87081f43d&amp;type=3#Quiz" />
     <engine:VisualElement name="Contenedor" style="flex-grow: 1; flex-direction: row; height: 207px; max-height: 20%;">
-        <engine:Button name="Regreso" class="boton" style="position: absolute; align-self: flex-start; background-size: 35px 35px; width: 35px; height: 35px; background-color: rgba(188, 188, 188, 0); border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; justify-content: space-evenly; left: 600px;" />
-        <engine:Label text="2" name="Escudo" style="margin-top: 8px; left: 40px;" />
-        <engine:Label text="3" name="Pocion" style="margin-top: 8px; left: 80px;" />
-        <engine:Label text="5" name="Vida" style="margin-top: 8px; left: 430px;" />
-        <engine:Label text="0:00" name="Tiempo" style="margin-top: 8px; left: 480px;" />
-        <engine:Button text="Fallar Quiz" name="Fallar" style="position: absolute; left: 20%; border-top-left-radius: 3px; border-top-right-radius: 3px; border-bottom-right-radius: 3px; border-bottom-left-radius: 3px;" />
+        <engine:Button name="Regreso" class="boton" style="position: absolute; align-self: flex-start; background-size: 100% 100%; width: 85px; height: 85px; background-color: rgba(188, 188, 188, 0); border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; justify-content: space-evenly; left: auto; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; right: 0;" />
+        <engine:Label text="2" name="Escudo" class="numbers" style="margin-top: 8px; left: 120px; top: 20px;" />
+        <engine:Label text="3" name="Pocion" class="numbers" style="margin-top: 8px; left: 270px; top: 20px;" />
+        <engine:Label text="5" name="Vida" class="numbers" style="margin-top: 8px; left: 1350px; right: auto; top: 20px;" />
+        <engine:Label text="0:00" name="Tiempo" class="numbers" style="margin-top: 8px; left: 1500px; top: 20px;" />
     </engine:VisualElement>
 </engine:UXML>
