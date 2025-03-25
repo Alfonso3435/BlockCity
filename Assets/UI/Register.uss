@@ -1,42 +1,105 @@
-.boton:active {
-}
-
-.boton {
-}
-
-.input {
-    width: 175px;
-    -unity-font-style: italic;
-    color: rgb(99, 99, 99);
-    border-top-width: 1px;
-    border-left-width: 1px;
-    border-right-width: 1px;
-    border-bottom-width: 1px;
-    border-bottom-left-radius: 3px;
-    border-top-left-radius: 3px;
-    border-top-right-radius: 3px;
-    border-bottom-right-radius: 3px;
-    font-size: 10px;
+.botonregreso {
+    align-items: stretch;
+    align-self: flex-end;
+    background-image: url("project://database/Assets/Layer%20Lab/GUI-SimpleRound/ResourcesData/Sprites/Demo/Demo_Button/btn_black_back.png?fileID=2800000&guid=8c4caea7f575d46f9889c3da22e984da&type=3#btn_black_back");
+    background-size: 35px 35px;
+    -unity-background-image-tint-color: rgb(255, 255, 255);
+    background-color: rgba(0, 0, 0, 0);
+    width: 35px;
     height: 35px;
-    border-left-color: rgba(166, 166, 166, 0);
-    border-right-color: rgba(166, 166, 166, 0);
-    border-top-color: rgba(166, 166, 166, 0);
-    border-bottom-color: rgba(166, 166, 166, 0);
-}
-
-.desc {
-    font-size: 8px;
-}
-
-.boton {
+    position: absolute;
 }
 
 .botonregreso:hover {
     scale: 1.15 1.15;
 }
 
-.botonregreso:active {
+.titulo {
+    color: rgb(255, 255, 255);
+    font-size: 25px;
 }
 
-.botonregreso {
+.contenedorFormulario {
+    width: 100%;
+    height: 100%;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.textfield {
+    max-height: none;
+    font-size: 10px;
+    min-height: auto;
+    height: 30px;
+    -unity-font-style: normal;
+    width: 40%;
+}
+
+.toggle {
+    width: 19.3%;
+}
+
+.dropdown {
+    height: 30px;
+}
+
+.contenedorFecha {
+    min-width: 100%;
+    height: auto;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.contenedorGenero {
+    min-width: 100%;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: row;
+    align-self: auto;
+}
+
+.contenedorUsuario {
+    min-width: 100%;
+    min-height: auto;
+    max-height: none;
+    height: auto;
+    justify-content: flex-start;
+    align-items: center;
+    margin-bottom: 0;
+}
+
+.nacionalidad {
+    width: 40%;
+}
+
+.texfieldFecha {
+    font-size: 10px;
+    height: 33px;
+    margin-left: 2.5%;
+    margin-right: 1.8%;
+    width: 67px;
+}
+
+.conenedorContrasena {
+}
+
+.botonSubmit {
+    width: 40%;
+    background-color: rgb(255, 255, 255);
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+
+.descFecha {
+    align-items: auto;
+    justify-content: flex-start;
+    align-self: center;
+    right: auto;
+}
+
+.botonSubmit:active {
+    background-color: rgba(129, 129, 129, 0);
+    -unity-background-image-tint-color: rgb(114, 114, 114);
 }
