@@ -16,7 +16,7 @@ public class ClearController : MonoBehaviour
         siguiente = root.Q<Button>("Siguiente");
 
         reinicio.RegisterCallback<ClickEvent, String>(IniciarJuego, "Quiz");
-        siguiente.RegisterCallback<ClickEvent, String>(IniciarJuego, "City");
+        siguiente.RegisterCallback<ClickEvent, String>(IniciarJuego, "LevelSelection1");
     }
 
     private void IniciarJuego(ClickEvent evt, String escena)

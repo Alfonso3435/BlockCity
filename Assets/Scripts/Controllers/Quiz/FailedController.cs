@@ -14,7 +14,7 @@ public class FailedController : MonoBehaviour
         regreso = root.Q<Button>("Regreso");
 
 
-        regreso.RegisterCallback<ClickEvent, String>(IniciarJuego, "City");
+        regreso.RegisterCallback<ClickEvent, String>(IniciarJuego, "LevelSelection1");
     }
 
     private void IniciarJuego(ClickEvent evt, String escena)

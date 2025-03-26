@@ -15,7 +15,7 @@ public class LectureController : MonoBehaviour
         regreso = root.Q<Button>("Regreso");
         siguiente = root.Q<Button>("Siguiente");
 
-        regreso.RegisterCallback<ClickEvent, String>(IniciarJuego, "City");
+        regreso.RegisterCallback<ClickEvent, String>(IniciarJuego, "LevelSelection1");
         siguiente.RegisterCallback<ClickEvent, String>(IniciarJuego, "Quiz");
     }
 

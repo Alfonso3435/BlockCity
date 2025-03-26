@@ -18,7 +18,7 @@ public class QuizController : MonoBehaviour
         regreso = root.Q<Button>("Regreso");
         fallar = root.Q<Button>("Fallar");
 
-        regreso.RegisterCallback<ClickEvent, String>(IniciarJuego, "City");
+        regreso.RegisterCallback<ClickEvent, String>(IniciarJuego, "LevelSelection1");
         fallar.RegisterCallback<ClickEvent, String>(IniciarJuego, "FailedQuiz");
     }
 
