@@ -16,8 +16,9 @@
                 <engine:TextField placeholder-text="yyyy" name="Ano" class="texfieldFecha" />
             </engine:VisualElement>
             <engine:VisualElement name="Genero" class="contenedorGenero" style="flex-grow: 1; flex-direction: row; flex-wrap: nowrap;">
-                <engine:Toggle name="Masculino" focusable="true" enabled="true" toggle-on-label-click="true" value="false" tabindex="0" text=" Masculine&#10;&#10;" class="toggle" style="flex-wrap: wrap-reverse; flex-direction: row-reverse; margin-right: 4px;" />
+                <engine:Toggle name="Masculino" focusable="true" enabled="true" toggle-on-label-click="true" value="false" tabindex="0" text=" Masculine&#10;&#10;" class="toggle" style="flex-wrap: wrap-reverse; flex-direction: row-reverse; margin-right: 4px; margin-left: 140px;" />
                 <engine:Toggle name="Femenino" text=" Femenine" class="toggle" style="flex-direction: row-reverse;" />
+                <engine:Toggle name="Otro" text="Other" class="toggle" style="flex-direction: row-reverse;" />
             </engine:VisualElement>
             <engine:VisualElement name="Contrasena" class="conenedorContrasena" style="flex-grow: 1; min-width: 100%; align-self: auto; align-items: center;">
                 <engine:TextField placeholder-text="Password" name="InputContrasena" password="true" class="textfield" />
