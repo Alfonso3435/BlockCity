@@ -9,17 +9,17 @@ public class QuizController : MonoBehaviour
    private UIDocument quiz;
     private Button regreso;
 
-    private Button fallar;
+    //private Button fallar;
 
 
     void OnEnable(){
         quiz = GetComponent<UIDocument>();
         var root = quiz.rootVisualElement;
         regreso = root.Q<Button>("Regreso");
-        fallar = root.Q<Button>("Fallar");
+        //fallar = root.Q<Button>("Fallar");
 
         regreso.RegisterCallback<ClickEvent, String>(IniciarJuego, "LevelSelection1");
-        fallar.RegisterCallback<ClickEvent, String>(IniciarJuego, "FailedQuiz");
+        //fallar.RegisterCallback<ClickEvent, String>(IniciarJuego, "FailedQuiz");
     }
 
     private void IniciarJuego(ClickEvent evt, String escena)

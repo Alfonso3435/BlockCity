@@ -21,6 +21,8 @@ MonoBehaviour:
     - Bitcoin
     - Dogecoin
     correctReplyIndex: 2
+    explanation: Explanation 1
+    tip: This is tip 1
   - questionText: What underlying technology enables decentralization in blockchain?
     replies:
     - Centralized servers
@@ -28,6 +30,8 @@ MonoBehaviour:
     - SQL Database
     - Private network
     correctReplyIndex: 1
+    explanation: Explanation2
+    tip: This is tip 2
   - questionText: What popular platform allows the creation of smart contracts?
     replies:
     - Solana
@@ -35,3 +39,5 @@ MonoBehaviour:
     - Etherium
     - Ripple
     correctReplyIndex: 2
+    explanation: Explanation3
+    tip: This is tip 3
