@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: BlockChain
   m_EditorClassIdentifier: 
   category: Block Chain
+  maxPoints: 3000
   questions:
   - questionText: What was the first cryptocurrency based on blockchain?
     replies:

@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class StageClearManager : MonoBehaviour
 {
@@ -13,58 +14,48 @@ public class StageClearManager : MonoBehaviour
     [SerializeField] private ScoreCoinsManager countersManager;
     [SerializeField] private float delayBeforeCounters = 0.5f;
 
-    private void OnEnable()
-    {
-        // Guardar las estrellas obtenidas
-        int starsEarned = 3;
-        int level = 2; // Valor de ejemplo
-        SaveLevelProgress(starsEarned, level);
-        
-        // Mostrar la pantalla de Stage Clear
-        ShowStageClear(starsEarned, 3500, 1000);
-    }
+    [Header("UI Buttons")]
+    [SerializeField] private Button continueButton;
+    [SerializeField] private Button retryButton;
 
-    private void SaveLevelProgress(int stars, int levelNum)
-    {
-        // Guardar para el nivel actual
-        PlayerPrefs.SetInt("_Lv" + levelNum, stars);
-        
-        // Desbloquear el siguiente nivel si es necesario
-        if(stars > 0) // Asume 10 niveles máximo
-        {
-            PlayerPrefs.SetInt("Lv" + levelNum, stars); // Desbloquea el nivel actual
-        }
-        
-        PlayerPrefs.Save();
-    }
+    private void Start()
+{
+    // Obtener valores guardados
+    int stars = PlayerPrefs.GetInt("TempStars", 0);
+    int points = PlayerPrefs.GetInt("TempPoints", 0);
+    int coins = PlayerPrefs.GetInt("TempCoins", 0);
+    
+    // Configurar botones
+    continueButton.onClick.AddListener(ContinueToNextLevel);
+    retryButton.onClick.AddListener(RetryLevel);
+    
+    // Mostrar resultados
+    ShowStageClear(stars, points, coins);
+}
 
     public void ShowStageClear(int starsEarned, int finalScore, int finalCoins)
     {
+        gameObject.SetActive(true);
         StartCoroutine(StageClearAnimation(starsEarned, finalScore, finalCoins));
+        
+        // Actualizar monedas totales
+        int currentCoins = PlayerPrefs.GetInt("TotalCoins", 0);
+        PlayerPrefs.SetInt("TotalCoins", currentCoins + finalCoins);
+        
     }
 
     private IEnumerator StageClearAnimation(int starsEarned, int finalScore, int finalCoins)
     {
-        // Animar estrellas primero
         yield return StartCoroutine(AnimateStars(starsEarned));
-        
-        // Pequeña pausa antes de los contadores
         yield return new WaitForSeconds(delayBeforeCounters);
-        
-        // Configurar y animar contadores
         countersManager.SetTargetValues(finalScore, finalCoins);
         countersManager.StartCountersAnimation();
     }
 
     private IEnumerator AnimateStars(int starsToShow)
     {
-        // Resetear todas las estrellas
-        foreach (Star star in stars)
-        {
-            star.ResetStar();
-        }
+        foreach (Star star in stars) star.ResetStar();
 
-        // Animar las estrellas ganadas
         for (int i = 0; i < Mathf.Min(starsToShow, stars.Length); i++)
         {
             yield return StartCoroutine(AnimateSingleStar(stars[i]));
@@ -75,19 +66,27 @@ public class StageClearManager : MonoBehaviour
     private IEnumerator AnimateSingleStar(Star star)
     {
         star.ShowStar();
-        
-        // Animación simple de escala
         float timer = 0;
         Vector3 startScale = Vector3.zero;
-        Vector3 endScale = Vector3.one;
         
         while (timer < starAnimationDuration)
         {
+            star.SetScale(Vector3.Lerp(startScale, Vector3.one, timer / starAnimationDuration));
             timer += Time.deltaTime;
-            star.SetScale(Vector3.Lerp(startScale, endScale, timer / starAnimationDuration));
             yield return null;
         }
         
-        star.SetScale(endScale);
+        star.SetScale(Vector3.one);
+    }
+
+    private void ContinueToNextLevel()
+    {
+        SceneManager.LoadScene("LevelSelection1"); // Cambiado a LevelSelection1
+    }
+
+    private void RetryLevel()
+    {
+        // Recargar el quiz actual
+        SceneManager.LoadScene("Quiz");
     }
 }

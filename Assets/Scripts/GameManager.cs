@@ -6,11 +6,11 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     [Header("Question Settings")]
-    public QuestionData[] categories;
     private QuestionData selectedCategory;
     private int currentQuestionIndex;
     private int wrongAnswersCount = 0;
     private const int MAX_WRONG_ANSWERS = 3;
+    private bool hasShownTipForCurrentQuestion = false;
 
     [Header("UI References")]
     public GameObject triviaGameObject;
@@ -27,15 +27,22 @@ public class GameManager : MonoBehaviour
     public GameObject tipPanel;
     public TMP_Text tipText;
 
-    [Header("Scene Names")]
-    public string stageClearScene = "StageClear";
-    public string failedQuizScene = "FailedQuiz";
-
-    private bool isShowingFeedback = false;
-    private bool hasShownTipForCurrentQuestion = false;
+    [Header("Scoring")]
+    public int pointsReductionPerMistake = 200;
+    private int totalPointsEarned = 0;
+    private int currentQuestionMaxPoints = 0;
+    private int totalQuestions = 0;
+    private int currentLevelNumber;
+    private string currentLevelName;
 
     void Start()
     {
+        currentLevelNumber = QuizDataHolder.Instance.GetLevelNumber();
+        currentLevelName = PlayerPrefs.GetString("CurrentLevelName");
+        selectedCategory = QuizDataHolder.Instance.GetQuizData();
+        totalQuestions = selectedCategory.questions.Length;
+        currentQuestionMaxPoints = selectedCategory.maxPoints / totalQuestions;
+        
         InitializeGame();
     }
 
@@ -48,23 +55,10 @@ public class GameManager : MonoBehaviour
         }
 
         continueButton.onClick.AddListener(ContinueAfterCorrectAnswer);
-
-        if (categories.Length > 0)
-        {
-            SelectCategory(0);
-        }
-
         feedbackPanel.SetActive(false);
         tipPanel.SetActive(false);
         triviaGameObject.SetActive(true);
-    }
-
-    public void SelectCategory(int categoryIndex)
-    {
-        selectedCategory = categories[categoryIndex];
-        currentQuestionIndex = 0;
-        wrongAnswersCount = 0;
-        ResetQuestionState();
+        
         DisplayCurrentQuestion();
     }
 
@@ -74,7 +68,7 @@ public class GameManager : MonoBehaviour
 
         if (currentQuestionIndex >= selectedCategory.questions.Length)
         {
-            SceneManager.LoadScene(stageClearScene);
+            CompleteQuiz();
             return;
         }
 
@@ -107,7 +101,9 @@ public class GameManager : MonoBehaviour
 
         if (isCorrect)
         {
-            ShowFeedbackForCorrectAnswer(currentQuestion);
+            int pointsEarned = Mathf.Max(0, currentQuestionMaxPoints - (pointsReductionPerMistake * wrongAnswersCount));
+            totalPointsEarned += pointsEarned;
+            ShowFeedbackForCorrectAnswer(currentQuestion, pointsEarned);
         }
         else
         {
@@ -115,13 +111,13 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void ShowFeedbackForCorrectAnswer(Question question)
+    void ShowFeedbackForCorrectAnswer(Question question, int pointsEarned)
     {
-        isShowingFeedback = true;
         triviaGameObject.SetActive(false);
         feedbackPanel.SetActive(true);
         tipPanel.SetActive(false);
         
+        feedbackTitle.text = $"Correct! +{pointsEarned} points";
         feedbackExplanation.text = question.explanation;
     }
 
@@ -129,8 +125,7 @@ public class GameManager : MonoBehaviour
     {
         wrongAnswersCount++;
         
-        // Mostrar tip solo si es el primer error y no se ha mostrado aún
-        if (wrongAnswersCount == 1 && !hasShownTipForCurrentQuestion)
+        if (wrongAnswersCount == 1 && !hasShownTipForCurrentQuestion && !string.IsNullOrEmpty(currentQuestion.tip))
         {
             ShowTip(currentQuestion.tip);
             hasShownTipForCurrentQuestion = true;
@@ -138,22 +133,18 @@ public class GameManager : MonoBehaviour
         
         if (wrongAnswersCount >= MAX_WRONG_ANSWERS)
         {
-            SceneManager.LoadScene(failedQuizScene);
+            SceneManager.LoadScene("FailedQuiz");
         }
     }
 
     void ShowTip(string tip)
     {
-        if (!string.IsNullOrEmpty(tip))
-        {
-            tipText.text = tip;
-            tipPanel.SetActive(true);
-        }
+        tipText.text = tip;
+        tipPanel.SetActive(true);
     }
 
     void ContinueAfterCorrectAnswer()
     {
-        isShowingFeedback = false;
         feedbackPanel.SetActive(false);
         triviaGameObject.SetActive(true);
         
@@ -161,9 +152,28 @@ public class GameManager : MonoBehaviour
         DisplayCurrentQuestion();
     }
 
+    void CompleteQuiz()
+    {
+        float percentage = (float)totalPointsEarned / selectedCategory.maxPoints * 100f;
+        
+        int starsEarned = 0;
+        if (percentage >= 90f) starsEarned = 3;
+        else if (percentage >= 50f) starsEarned = 2;
+        else if (percentage >= 20f) starsEarned = 1;
+        
+        PlayerPrefs.SetInt("Lv" + currentLevelName, starsEarned);
+        
+        PlayerPrefs.SetInt("TempStars", starsEarned);
+        PlayerPrefs.SetInt("TempPoints", totalPointsEarned);
+        PlayerPrefs.SetInt("TempCoins", starsEarned * 500);
+        SceneManager.LoadScene("StageClear");
+    }
+
     public void RestartQuiz()
     {
         currentQuestionIndex = 0;
+        totalPointsEarned = 0;
+        wrongAnswersCount = 0;
         ResetQuestionState();
         DisplayCurrentQuestion();
     }

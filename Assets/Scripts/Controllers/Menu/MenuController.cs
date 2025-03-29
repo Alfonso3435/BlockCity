@@ -9,6 +9,24 @@ public class MenuController : MonoBehaviour
     private Button botonPlay;
     private Button botonLogin;
 
+    private void Start()
+    {
+        // Reiniciar progreso de niveles
+        for (int i = 1; i <= 10; i++) // Ajusta el número máximo de niveles
+        {
+            PlayerPrefs.DeleteKey("Lv" + i.ToString());
+        }
+
+        // Reiniciar otros datos
+        PlayerPrefs.DeleteKey("MaxLevelUnlocked");
+        PlayerPrefs.DeleteKey("TotalCoins");
+        PlayerPrefs.DeleteKey("CurrentLevel");
+        PlayerPrefs.DeleteKey("CurrentLevelName");
+
+        // Forzar guardado
+        PlayerPrefs.Save();   
+    }
+
     void OnEnable(){
         menu = GetComponent<UIDocument>();
         var root = menu.rootVisualElement;

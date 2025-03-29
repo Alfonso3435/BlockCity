@@ -1,6 +1,4 @@
 using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
 
 [System.Serializable]
 public class Question
@@ -16,13 +14,14 @@ public class Question
     [TextArea(3, 10)]
     public string explanation;
     
-    [TextArea(2, 5)] // TextArea más pequeña para el tip
-    public string tip; // Nuevo campo para el tip
+    [TextArea(2, 5)]
+    public string tip;
 }
 
 [CreateAssetMenu(fileName = "New Category", menuName = "Quiz/Question Data")]
 public class QuestionData : ScriptableObject
 {
     public string category;
+    public int maxPoints = 1000; // Puntos máximos para este conjunto de preguntas
     public Question[] questions;
 }

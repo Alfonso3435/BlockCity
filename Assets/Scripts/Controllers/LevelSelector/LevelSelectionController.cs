@@ -1,23 +1,17 @@
 using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-
-/*
-
-Autor: Juan Alfonso Vega Sol
-Referencia: https://www.youtube.com/watch?v=uVVyBp0yLqQ&t=16s
-*/
-
 
 public class LevelSelectionController : MonoBehaviour
 {
     [SerializeField] private bool unlocked;
     public Image unlockImage;
     public GameObject[] stars;
-
     public Sprite starSprite;
+    
+    public QuestionData quizData;
+    public int levelNum;
+    public string quizSceneName = "Quiz";
 
     private void Update()
     {
@@ -25,7 +19,8 @@ public class LevelSelectionController : MonoBehaviour
         UpdateLevelStatus();
     }
 
-    private void UpdateLevelStatus(){
+    private void UpdateLevelStatus()
+    {
         int previousLevelNum = int.Parse(gameObject.name) - 1;
         if (PlayerPrefs.GetInt("Lv" + previousLevelNum.ToString()) > 0)
         {
@@ -58,21 +53,25 @@ public class LevelSelectionController : MonoBehaviour
         }
     }
 
-    public void PressSelection(string _LevelName)
+    public void PressSelection()
     {
         if (unlocked)
         {
-            SceneManager.LoadScene(_LevelName);
+            PlayerPrefs.SetInt("CurrentLevel", levelNum);
+            PlayerPrefs.SetString("CurrentLevelName", gameObject.name);
+            
+            QuizDataHolder.Instance.SetQuizData(quizData);
+            QuizDataHolder.Instance.SetLevelNumber(levelNum);
+            
+            SceneManager.LoadScene(quizSceneName);
         }
     }
 
-    // Método para contar las estrellas obtenidas en todos los niveles
     public static int GetTotalStars(string sceneName)
     {
         int totalStars = 0;
-        for (int i = 1; i <= 10; i++) // Suponiendo que hay 10 niveles por escena
+        for (int i = 1; i <= 10; i++)
         {
-            // Usamos el nombre de la escena como prefijo para las claves de PlayerPrefs
             totalStars += PlayerPrefs.GetInt(sceneName + "_Lv" + i.ToString(), 0);
         }
         return totalStars;
