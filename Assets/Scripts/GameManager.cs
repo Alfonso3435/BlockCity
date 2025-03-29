@@ -161,11 +161,13 @@ public class GameManager : MonoBehaviour
         else if (percentage >= 50f) starsEarned = 2;
         else if (percentage >= 20f) starsEarned = 1;
         
-        PlayerPrefs.SetInt("Lv" + currentLevelName, starsEarned);
+        string currentModule = PlayerPrefs.GetString("CurrentModule", "LevelSelection1");
+        PlayerPrefs.SetInt(currentModule + "_Lv" + currentLevelName, starsEarned);
         
         PlayerPrefs.SetInt("TempStars", starsEarned);
         PlayerPrefs.SetInt("TempPoints", totalPointsEarned);
         PlayerPrefs.SetInt("TempCoins", starsEarned * 500);
+        
         SceneManager.LoadScene("StageClear");
     }
 
