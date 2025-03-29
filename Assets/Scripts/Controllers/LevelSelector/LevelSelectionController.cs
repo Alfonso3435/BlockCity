@@ -22,6 +22,7 @@ public class LevelSelectionController : MonoBehaviour
     private void Update()
     {
         UpdateLevelImage();
+        UpdateLevelStatus();
     }
 
     private void UpdateLevelStatus(){

@@ -38,7 +38,9 @@
     width: 100%;
     flex-direction: row;
     justify-content: center;
-    top: 45%;
+    top: 72%;
+    height: auto;
+    max-height: none;
 }
 
 .boton {

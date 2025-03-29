@@ -3,18 +3,6 @@
     <engine:VisualElement name="Contenedor" class="contenedor" style="flex-grow: 1;">
         <engine:Label text="Stage Clear!" name="Titulo" class="titulo" />
         <engine:Label text="Great job!" name="Dialogo" class="dialogo" />
-        <engine:VisualElement name="Puntuacion" class="contenedorDesc" style="flex-grow: 1; top: 35%;">
-            <engine:Label text="SCORE" name="TextoP" class="desc" />
-            <engine:Label text="0000" name="ValorP" class="valor" />
-        </engine:VisualElement>
-        <engine:VisualElement name="Tiempo" class="contenedorDesc" style="flex-grow: 1; top: 35%;">
-            <engine:Label text="TIME" name="TextoT" class="desc" />
-            <engine:Label text="0:00" name="ValorT" class="valor" style="margin-left: 290px;" />
-        </engine:VisualElement>
-        <engine:VisualElement name="Monedas" class="contenedorDesc" style="flex-grow: 1; top: 35%;">
-            <engine:Label text="COINS" name="TextoM" class="desc" />
-            <engine:Label text="0000" name="ValorM" class="valor" />
-        </engine:VisualElement>
         <engine:VisualElement name="Botones" class="contenedorBotones" style="flex-grow: 1;">
             <engine:Button name="Reiniciar" class="boton" style="background-image: url(&quot;project://database/Assets/Layer%20Lab/GUI-SimpleRound/ResourcesData/Sprites/Demo/Demo_Icon/Icon_Restart.png?fileID=2800000&amp;guid=20360ece04be94540b1903b8e82f03af&amp;type=3#Icon_Restart&quot;); border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0;" />
             <engine:Button name="Siguiente" class="boton" style="background-image: url(&quot;project://database/Assets/Layer%20Lab/GUI-SimpleRound/ResourcesData/Sprites/Demo/Demo_Icon/Icon_Resume.png?fileID=2800000&amp;guid=34008fde67a0546ac9d68dffbf7a6946&amp;type=3#Icon_Resume&quot;); border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0;" />

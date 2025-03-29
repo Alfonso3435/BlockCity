@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
@@ -8,6 +9,7 @@ public class ClearController : MonoBehaviour
     private UIDocument completado;
     private Button reinicio;
     private Button siguiente;
+
 
     void OnEnable(){
         completado = GetComponent<UIDocument>();

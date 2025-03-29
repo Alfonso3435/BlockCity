@@ -5,6 +5,5 @@
         <engine:Label text="2" name="Escudo" class="numbers" style="margin-top: 8px; left: 120px; top: 20px;" />
         <engine:Label text="3" name="Pocion" class="numbers" style="margin-top: 8px; left: 270px; top: 20px;" />
         <engine:Label text="5" name="Vida" class="numbers" style="margin-top: 8px; left: 1350px; right: auto; top: 20px;" />
-        <engine:Label text="0:00" name="Tiempo" class="numbers" style="margin-top: 8px; left: 1500px; top: 20px;" />
     </engine:VisualElement>
 </engine:UXML>
