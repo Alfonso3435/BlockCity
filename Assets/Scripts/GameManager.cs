@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class GameManager : MonoBehaviour
 {
@@ -34,6 +35,13 @@ public class GameManager : MonoBehaviour
     private int totalQuestions = 0;
     private int currentLevelNumber;
     private string currentLevelName;
+
+    [Header("Feedback Colors")]
+    public Color normalButtonColor = Color.white;
+    public Color wrongAnswerColor = Color.red;
+    public Color wrongAnswerTextColor = Color.white;
+    public Color normalTextColor = Color.black; // Color normal del texto
+    public float flashDuration = 1f;
 
     void Start()
     {
@@ -83,6 +91,9 @@ public class GameManager : MonoBehaviour
             if (shouldActivate)
             {
                 replyButtons[i].GetComponentInChildren<TMP_Text>().text = currentQuestion.replies[i];
+                // Restablecer colores iniciales
+                replyButtons[i].GetComponent<Image>().color = normalButtonColor;
+                replyButtons[i].GetComponentInChildren<TMP_Text>().color = normalTextColor;
             }
         }
     }
@@ -107,8 +118,31 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            StartCoroutine(FlashWrongAnswerButton(answerIndex));
             HandleWrongAnswer(currentQuestion);
         }
+    }
+
+    IEnumerator FlashWrongAnswerButton(int buttonIndex)
+    {
+        Button wrongButton = replyButtons[buttonIndex];
+        Image buttonImage = wrongButton.GetComponent<Image>();
+        TMP_Text buttonText = wrongButton.GetComponentInChildren<TMP_Text>();
+        
+        // Guardar los colores originales
+        Color originalButtonColor = buttonImage.color;
+        Color originalTextColor = buttonText.color;
+        
+        // Cambiar a colores de feedback
+        buttonImage.color = wrongAnswerColor;
+        buttonText.color = wrongAnswerTextColor;
+        
+        // Esperar el tiempo especificado
+        yield return new WaitForSeconds(flashDuration);
+        
+        // Restaurar colores originales
+        buttonImage.color = originalButtonColor;
+        buttonText.color = originalTextColor;
     }
 
     void ShowFeedbackForCorrectAnswer(Question question, int pointsEarned)
@@ -116,6 +150,8 @@ public class GameManager : MonoBehaviour
         triviaGameObject.SetActive(false);
         feedbackPanel.SetActive(true);
         tipPanel.SetActive(false);
+
+        GameObject.Find("CorrectEffect").GetComponent<AudioSource>().Play();
         
         feedbackTitle.text = $"Correct! +{pointsEarned} points";
         feedbackExplanation.text = question.explanation;
@@ -123,6 +159,7 @@ public class GameManager : MonoBehaviour
 
     void HandleWrongAnswer(Question currentQuestion)
     {
+        GameObject.Find("IncorrectEffect").GetComponent<AudioSource>().Play();
         wrongAnswersCount++;
         
         if (wrongAnswersCount == 1 && !hasShownTipForCurrentQuestion && !string.IsNullOrEmpty(currentQuestion.tip))

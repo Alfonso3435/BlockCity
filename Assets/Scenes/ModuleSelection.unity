@@ -2184,7 +2184,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isUnlocked: 0
-  mapIndex: 3
+  mapIndex: 4
   coinsRequired: 2200
   levelSelectionSceneName: 
   lockPanel: {fileID: 744586663}
@@ -3014,7 +3014,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isUnlocked: 0
-  mapIndex: 1
+  mapIndex: 2
   coinsRequired: 1200
   levelSelectionSceneName: 
   lockPanel: {fileID: 1501503539}
@@ -3789,7 +3789,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isUnlocked: 1
-  mapIndex: 0
+  mapIndex: 1
   coinsRequired: 0
   levelSelectionSceneName: LevelSelection1
   lockPanel: {fileID: 1674680094}
@@ -4283,7 +4283,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isUnlocked: 0
-  mapIndex: 2
+  mapIndex: 3
   coinsRequired: 1800
   levelSelectionSceneName: 
   lockPanel: {fileID: 1520537916}
