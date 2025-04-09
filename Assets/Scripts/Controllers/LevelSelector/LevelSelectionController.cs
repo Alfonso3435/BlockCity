@@ -10,10 +10,12 @@ public class LevelSelectionController : MonoBehaviour
     public GameObject[] stars;
     public Sprite starSprite;
     
-    [Header("Quiz Settings")]
+    [Header("Game Settings")]
     public QuestionData quizData;
+    public CardData cardData;
     public int levelNum;
     public string quizSceneName = "Quiz";
+    public string memorySceneName = "Memory";
 
     private void Start()
     {
@@ -30,7 +32,6 @@ public class LevelSelectionController : MonoBehaviour
         string currentModule = PlayerPrefs.GetString("CurrentModule", "LevelSelection1");
         int prevLevelNum = levelNum - 1;
         
-        // Verificar si el nivel está desbloqueado
         unlocked = prevLevelNum == 0 || 
                   PlayerPrefs.GetInt(currentModule + "_Lv" + prevLevelNum, 0) > 0;
 
@@ -65,17 +66,25 @@ public class LevelSelectionController : MonoBehaviour
             PlayerPrefs.SetInt("CurrentLevel", levelNum);
             PlayerPrefs.SetString("CurrentLevelName", gameObject.name);
             
-            QuizDataHolder.Instance.SetQuizData(quizData);
-            QuizDataHolder.Instance.SetLevelNumber(levelNum);
-            
-            SceneManager.LoadScene(quizSceneName);
+            if (quizData != null)
+            {
+                QuizDataHolder.Instance.SetQuizData(quizData);
+                QuizDataHolder.Instance.SetLevelNumber(levelNum);
+                SceneManager.LoadScene(quizSceneName);
+            }
+            else if (cardData != null)
+            {
+                QuizDataHolder.Instance.SetCardData(cardData);
+                QuizDataHolder.Instance.SetLevelNumber(levelNum);
+                SceneManager.LoadScene(memorySceneName);
+            }
         }
     }
 
     public static int GetTotalStars(string moduleName)
     {
         int totalStars = 0;
-        for (int i = 1; i <= 10; i++) // Asume 10 niveles por módulo
+        for (int i = 1; i <= 10; i++)
         {
             totalStars += PlayerPrefs.GetInt(moduleName + "_Lv" + i, 0);
         }

@@ -1,35 +1,46 @@
-/*using UnityEngine;
+using UnityEngine;
 using System.Collections.Generic;
 using TMPro;
 using System.Linq;
 using System.Collections;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
-public class GameManagerCard : MonoBehaviour
+public class MemoryGameManager : MonoBehaviour, ICardGameManager
 {
-    public static GameManagerCard Instance;
+    public static MemoryGameManager Instance;
 
     public Card cardPrefab;
     public Sprite cardBack;
     public Transform cardHolder;
+    public TMP_Text triesText; // Referencia al texto de intentos
 
-    [System.Serializable]
-    public class CardPair
-    {
-        public string concept;
-        public string definition;
-    }
-
-    public List<CardPair> cardPairs = new List<CardPair>();
+    private CardData cardData;
     private List<Card> cards = new List<Card>();
     private List<string> cardContents = new List<string>();
 
     public Card firstCard, secondCard;
     private int pairsMatched;
     private int totalPairs;
+    private int triesLeft = 16; // Inicializamos con 16 intentos
+    private int pointsEarned = 0;
+
+    [Header("UI")]
+    public Button backButton;
 
     private void Awake()
     {
         Instance = this;
+        cardData = QuizDataHolder.Instance.GetCardData();
+        if (backButton != null)
+        {
+            backButton.onClick.AddListener(ReturnToModuleSelection);
+        }
+    }
+
+    public void ReturnToModuleSelection()
+    {        
+        SceneManager.LoadScene("ModuleSelection");
     }
 
     void Start()
@@ -40,13 +51,23 @@ public class GameManagerCard : MonoBehaviour
     void InitializeGame()
     {
         pairsMatched = 0;
-        totalPairs = cardPairs.Count;
+        triesLeft = 16; // Resetear intentos al iniciar
+        pointsEarned = cardData.maxPoints;
+        totalPairs = cardData.cardPairs.Length;
+        UpdateTriesUI(); // Actualizar UI al inicio
         CreateCards();
+    }
+
+    void UpdateTriesUI()
+    {
+        if (triesText != null)
+        {
+            triesText.text = $"{triesLeft}/16";
+        }
     }
 
     void CreateCards()
     {
-        // Limpiar cartas existentes
         foreach (Transform child in cardHolder)
         {
             Destroy(child.gameObject);
@@ -54,24 +75,20 @@ public class GameManagerCard : MonoBehaviour
         cards.Clear();
         cardContents.Clear();
 
-        // Crear lista de contenidos (todos los conceptos y definiciones)
-        foreach (CardPair pair in cardPairs)
+        foreach (CardData.CardPair pair in cardData.cardPairs)
         {
             cardContents.Add(pair.concept);
             cardContents.Add(pair.definition);
         }
 
-        // Verificar que tenemos pares completos
         if (cardContents.Count % 2 != 0)
         {
             Debug.LogError("Número impar de cartas. Verifica tus pares concepto-definición.");
             return;
         }
 
-        // Mezclar las cartas
         ShuffleCards();
 
-        // Crear las cartas físicas
         for (int i = 0; i < cardContents.Count; i++)
         {
             Card newCard = Instantiate(cardPrefab, cardHolder);
@@ -83,7 +100,6 @@ public class GameManagerCard : MonoBehaviour
 
     void ShuffleCards()
     {
-        // Mezcla Fisher-Yates mejorada
         for (int i = cardContents.Count - 1; i > 0; i--)
         {
             int randomIndex = Random.Range(0, i + 1);
@@ -112,8 +128,7 @@ public class GameManagerCard : MonoBehaviour
         string firstContent = firstCard.GetComponentInChildren<TextMeshProUGUI>().text;
         string secondContent = secondCard.GetComponentInChildren<TextMeshProUGUI>().text;
         
-        // Buscar si forman un par válido
-        foreach (CardPair pair in cardPairs)
+        foreach (CardData.CardPair pair in cardData.cardPairs)
         {
             if ((firstContent == pair.concept && secondContent == pair.definition) ||
                 (firstContent == pair.definition && secondContent == pair.concept))
@@ -125,12 +140,12 @@ public class GameManagerCard : MonoBehaviour
 
         if (isMatch)
         {
+            GameObject.Find("CorrectEffect").GetComponent<AudioSource>().Play();
             pairsMatched++;
             if (pairsMatched == totalPairs)
             {
-                LevelFinished();
+                CompleteLevel();
             }
-            // Deshabilitar cartas emparejadas
             firstCard.GetComponent<UnityEngine.UI.Button>().interactable = false;
             secondCard.GetComponent<UnityEngine.UI.Button>().interactable = false;
             firstCard = null;
@@ -138,27 +153,67 @@ public class GameManagerCard : MonoBehaviour
         }
         else
         {
-            StartCoroutine(FlipBackCards());
+            triesLeft--; // Reducir intentos
+            UpdateTriesUI(); // Actualizar UI
+            
+            if (triesLeft <= 0)
+            {
+                SceneManager.LoadScene("FailedQuiz");
+            }
+            else
+            {
+                StartCoroutine(FlipBackCards());
+            }
         }
     }
 
     IEnumerator FlipBackCards()
     {
-        yield return new WaitForSeconds(1f);
+    // Esperar antes de empezar a voltear
+        yield return new WaitForSeconds(0.3f);
+    
+    // Voltear ambas cartas
         firstCard.HideCard();
         secondCard.HideCard();
+    
+    // Esperar a que termine la animación (aproximadamente 0.6s)
+        yield return new WaitForSeconds(0.6f);
+    
         firstCard = null;
         secondCard = null;
     }
 
-    void LevelFinished()
+    void CompleteLevel()
     {
-        Debug.Log("¡Nivel completado!");
+        int starsEarned = CalculateStars();
+        
+        string currentModule = PlayerPrefs.GetString("CurrentModule", "LevelSelection1");
+        string currentLevelName = PlayerPrefs.GetString("CurrentLevelName");
+        PlayerPrefs.SetInt(currentModule + "_Lv" + currentLevelName, starsEarned);
+        
+        PlayerPrefs.SetInt("TempStars", starsEarned);
+        PlayerPrefs.SetInt("TempPoints", pointsEarned);
+        PlayerPrefs.SetInt("TempCoins", starsEarned * 500);
+        
+        SceneManager.LoadScene("StageClear");
+    }
+
+    int CalculateStars()
+    {
+        int remainingTries = triesLeft;
+        
+        if (remainingTries >= 10) // 3 estrellas si quedan 10 o más intentos
+            return 3;
+        else if (remainingTries >= 5) // 2 estrellas si quedan entre 5-9 intentos
+            return 2;
+        else if (remainingTries >= 1) // 1 estrella si quedan entre 1-4 intentos
+            return 1;
+        else
+            return 0; // No debería llegar aquí porque se habría cargado FailedQuiz
     }
 
     public void RestartGame()
     {
-        pairsMatched = 0;
         InitializeGame();
     }
-}*/
+}
