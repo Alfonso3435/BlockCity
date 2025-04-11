@@ -22,6 +22,6 @@ public class Question
 public class QuestionData : ScriptableObject
 {
     public string category;
-    public int maxPoints = 1000; // Puntos máximos para este conjunto de preguntas
+    public int maxPoints = 1000;
     public Question[] questions;
 }

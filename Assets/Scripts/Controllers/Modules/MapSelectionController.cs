@@ -19,7 +19,6 @@ public class MapSelectionController : MonoBehaviour
 
     private void Start()
     {
-        // Verificar si el módulo está desbloqueado
         isUnlocked = PlayerPrefs.GetInt("Module_" + mapIndex + "_Unlocked", mapIndex == 1 ? 1 : 0) == 1;
         UpdateUI();
     }
@@ -31,7 +30,6 @@ public class MapSelectionController : MonoBehaviour
 
         if (isUnlocked)
         {
-            // Mostrar estrellas totales del módulo
             int totalStars = LevelSelectionController.GetTotalStars(levelSelectionSceneName);
             starsText.text = totalStars.ToString() + "/15";
         }

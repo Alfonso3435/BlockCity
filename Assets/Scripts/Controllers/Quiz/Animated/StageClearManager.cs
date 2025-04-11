@@ -83,6 +83,6 @@ public class StageClearManager : MonoBehaviour
     private void RetryLevel()
     {
         string gameType = QuizDataHolder.Instance.GetCurrentGameType();
-        SceneManager.LoadScene(gameType == "quiz" ? "Quiz" : "MemoryGame");
+        SceneManager.LoadScene(gameType == "quiz" ? "Quiz" : "Memory");
     }
 }
