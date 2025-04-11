@@ -1,26 +1,25 @@
 using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UIElements;
+using UnityEngine.UI;
 
 public class LectureController : MonoBehaviour
 {
-    private UIDocument lectura;
-    private Button regreso;
-    private Button siguiente;
+    [SerializeField]
+    private Button homeButton;
 
-    void OnEnable(){
-        lectura = GetComponent<UIDocument>();
-        var root = lectura.rootVisualElement;
-        regreso = root.Q<Button>("Regreso");
-        siguiente = root.Q<Button>("Siguiente");
+    [SerializeField]
+    private Button nextButton;
 
-        regreso.RegisterCallback<ClickEvent, String>(IniciarJuego, "LevelSelection1");
-        siguiente.RegisterCallback<ClickEvent, String>(IniciarJuego, "Quiz");
-    }
-
-    private void IniciarJuego(ClickEvent evt, String escena)
+    void Start()
     {
-        SceneManager.LoadScene(escena);
+        // Click en los botones
+        homeButton.onClick.AddListener(() => LoadScene("LevelSelection1"));
+        nextButton.onClick.AddListener(() => LoadScene("Quiz"));
+    }
+    // Método para cargar la escena
+    private void LoadScene(string sceneName)
+    {
+        SceneManager.LoadScene(sceneName);
     }
 }

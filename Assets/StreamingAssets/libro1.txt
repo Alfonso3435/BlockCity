@@ -1,0 +1,146 @@
+#Capítulo1
+
+<b><size=50>Basics of Cryptography</size></b>
+------------------------------------------------------------
+
+<size=36><i>What is cryptography?<i></size>
+
+<size=20>It is the practice of protecting communication so that only authorized people can read the messages.</size>
+
+---
+
+<size=28><i>Simple example: Word inversion</i></size>
+<size=20>
+The word "crypto" → "otpYrc"
+(Easy to decipher, but illustrates how data is transformed).
+</size>
+
+---
+
+<size=28><i>SHA-256: Real security</i></size></b>
+
+<size=20>
+Hash algorithm that converts any text into a long string of numbers and letters.
+
+Once generated, it cannot be reversed to the original message.
+
+Protecting information with SHA-256 is so secure that decrypting it would take thousands of times the age of the Earth.
+</size>
+
+---
+
+<size=28><i>Conclusion:</i></size>
+
+<size=20>
+Cryptography allows secure communications and protects information from attacks.
+</size>
+
+---
+
+#Capítulo2
+
+<b><size=50>What's Inside a Blockchain and the Crypto-Economy</size></b>
+
+<size=36><i>What’s inside a blockchain?</i></size>
+
+---
+
+<size=28><i>The blockchain itself</i></size>
+
+<size=20> It’s a transaction ledger where all operations are recorded. Each block in the chain contains:
+
+Nonce: A random number that helps validate the block.
+
+Hash of the previous block: What links the blocks together.
+
+List of transactions: Validated data inside the block.
+
+Hash of the current block: Unique identification of the block.
+
+This way, each block is connected to the previous one, forming a secure and immutable chain. </size>
+
+---
+
+<size=28><i>The role of miners</i></size>
+
+<size=20> Miners validate transactions and build new blocks in the blockchain through a process called Proof of Work (PoW).
+
+Their goal is to solve a math puzzle known as the miner's riddle, which involves:
+
+Taking the hash of the previous block.
+
+Combining it with a number (nonce).
+
+Passing it through the SHA-256 algorithm.
+
+Finding a hash that begins with a certain number of zeros.
+
+This process is trial and error, requiring a lot of computing power. </size>
+
+---
+
+<size=28><i>Miners’ reward</i></size>
+
+<size=20> Miners earn 6.25 Bitcoin + transaction fees for each validated block.
+
+As the 21 million Bitcoin limit is reached, fees will become the main incentive to keep mining. </size>
+
+---
+
+<size=28><i>Automatic system regulation</i></size>
+
+<size=20> The system adjusts difficulty depending on the number of miners:
+
+If there are many miners, difficulty increases.
+
+If there are few, it decreases.
+
+The goal is to keep the pace of 1 block every 10 minutes. </size>
+
+---
+
+<size=28><i>Blockchain-based business models</i></size>
+
+<size=20>
+
+Mining: Validating blocks to earn rewards.
+
+Trading: Buying and selling cryptocurrencies to profit from volatility.
+
+Investing: Buying and holding valuable cryptocurrencies.
+
+Exchanges: Platforms to buy, sell, and convert crypto assets.
+
+Crowdfunding: Creating and selling tokens or personal cryptocurrencies.
+
+NFT Games: Unique blockchain objects to trade in games.
+
+</size>
+
+---
+
+<size=28><i>Today’s recap:</i></size>
+
+<size=20> 
+-> What a blockchain is and how it works.
+-> The role of miners and Proof of Work.
+-> How mining difficulty is adjusted.
+-> Key business models in the blockchain world.
+
+Blockchain isn’t just about cryptocurrencies — it’s a tech revolution! 🚀 </size>
+
+---
+
+#Capítulo3
+
+<b><size=50>Capítulo 3</size></b>
+
+Este capítulo puede tener contenido más largo o enlaces, como: https://ejemplo.com
+
+---
+
+#Capítulo4
+
+<b><size=50>Capítulo 4</size></b>
+
+Último capítulo del libro 1. ¡Felicidades por llegar aquí!
