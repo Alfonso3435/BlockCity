@@ -1,0 +1,35 @@
+.container {
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    gap: 10px;
+    top: 340px;
+    left: 222px;
+}
+
+.titulo {
+    font-size: 24px;
+    -unity-font-style: bold;
+    margin-bottom: 10px;
+}
+
+TextField {
+    width: 200px;
+}
+
+Button {
+    width: 20%;
+    margin-top: 5px;
+    top: 14px;
+    background-image: url("project://database/Assets/Layer%20Lab/GUI-SimpleRound/ResourcesData/Sprites/Components/ButtonIcons/ButtonIcon_Blue/btn_blue_check.png?fileID=2800000&guid=4c1595a1e6b15405daf5c04fedd82667&type=3#btn_blue_check");
+    -unity-background-image-tint-color: rgb(255, 255, 255);
+    background-color: rgba(0, 0, 0, 0);
+    height: 20%;
+}
+
+#letrasFalladas {
+    color: red;
+    font-size: 16px;
+    top: 21px;
+}

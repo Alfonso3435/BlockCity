@@ -1,0 +1,11 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/Hangman.uss?fileID=7433441132597879392&amp;guid=108bad13537d94affaf85d9a43250845&amp;type=3#Hangman" />
+    <Style src="project://database/Assets/UI/Lecture.uss?fileID=7433441132597879392&amp;guid=d997ca08a16c7204f9ec5e05de5993c9&amp;type=3#Lecture" />
+    <ui:VisualElement class="container" style="align-items: center; justify-content: flex-start; align-self: center; flex-direction: column;">
+        <ui:Label name="Pista" />
+        <ui:Label name="palabraOculta" text="_ _ _ _" class="titulo" />
+        <ui:TextField name="letraInput" label="Letra:" />
+        <ui:Button name="enviarLetraBtn" />
+        <ui:Label name="letrasFalladas" text="Fallos: " />
+    </ui:VisualElement>
+</ui:UXML>
