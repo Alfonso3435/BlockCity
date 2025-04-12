@@ -5,15 +5,20 @@ using UnityEngine.UI;
 
 public class LectorDeCapitulos : MonoBehaviour
 {
-    public int numeroLibro = 1;
-    public int numeroCapitulo = 1;
+    public int numeroLibro;
+    public int numeroCapitulo;
     public TMP_Text textoLectura;
     public ScrollRect scrollRect;
 
     void Start()
     {
+        // Obtener el libro y capítulo seleccionados
+        numeroLibro = PlayerPrefs.GetInt("CurrentBook", 1); // Valor por defecto: libro 1
+        numeroCapitulo = PlayerPrefs.GetInt("CurrentChapter", 1); // Valor por defecto: capítulo 1
+
         MostrarCapitulo(numeroLibro, numeroCapitulo);
     }
+
 
     public void MostrarCapitulo(int libro, int capitulo)
     {

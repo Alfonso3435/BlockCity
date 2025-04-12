@@ -3,15 +3,15 @@
 <b><size=50>Basics of Cryptography</size></b>
 ------------------------------------------------------------
 
-<size=36><i>What is cryptography?<i></size>
+<size=36>What is cryptography?</size>
 
 <size=20>It is the practice of protecting communication so that only authorized people can read the messages.</size>
 
 ---
 
 <size=28><i>Simple example: Word inversion</i></size>
-<size=20>
-The word "crypto" → "otpYrc"
+
+<size=20> The word "crypto" → "otpYrc"
 (Easy to decipher, but illustrates how data is transformed).
 </size>
 
@@ -19,8 +19,7 @@ The word "crypto" → "otpYrc"
 
 <size=28><i>SHA-256: Real security</i></size></b>
 
-<size=20>
-Hash algorithm that converts any text into a long string of numbers and letters.
+<size=20>Hash algorithm that converts any text into a long string of numbers and letters.
 
 Once generated, it cannot be reversed to the original message.
 

@@ -4,10 +4,6 @@
     height: 85px;
 }
 
-.boton:hover {
-    scale: 1.15 1.15;
-}
-
 .boton:active {
 }
 
@@ -17,4 +13,8 @@
 
 .numbers {
     font-size: 35px;
+}
+
+.boton:hover {
+    scale: 1.15 1.15;
 }

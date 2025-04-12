@@ -41,6 +41,8 @@ public class MapSelectionController : MonoBehaviour
     {
         if (isUnlocked)
         {
+            //Guardar el libro correspondiente al modulo actual
+            PlayerPrefs.SetInt("CurrentBook", mapIndex);
             PlayerPrefs.SetString("CurrentModule", levelSelectionSceneName);
             SceneManager.LoadScene(levelSelectionSceneName);
         }

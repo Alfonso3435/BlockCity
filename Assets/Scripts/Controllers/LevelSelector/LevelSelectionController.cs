@@ -66,18 +66,26 @@ public class LevelSelectionController : MonoBehaviour
             PlayerPrefs.SetInt("CurrentLevel", levelNum);
             PlayerPrefs.SetString("CurrentLevelName", gameObject.name);
             
+            // Guardar el capítulo correspondiente al nivel actual
+            int capitulo = levelNum;
+            PlayerPrefs.SetInt("CurrentChapter", capitulo);
+
+            // Guardar la siguiente escena que se debe cargar después de la lectura
             if (quizData != null)
             {
                 QuizDataHolder.Instance.SetQuizData(quizData);
                 QuizDataHolder.Instance.SetLevelNumber(levelNum);
-                SceneManager.LoadScene(quizSceneName);
+                PlayerPrefs.SetString("NextScene", quizSceneName);
             }
             else if (cardData != null)
             {
                 QuizDataHolder.Instance.SetCardData(cardData);
                 QuizDataHolder.Instance.SetLevelNumber(levelNum);
-                SceneManager.LoadScene(memorySceneName);
+                PlayerPrefs.SetString("NextScene", memorySceneName);
             }
+
+            // cargar la escena Lecture
+            SceneManager.LoadScene("Lecture");
         }
     }
 
