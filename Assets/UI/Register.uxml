@@ -26,5 +26,6 @@
             </engine:VisualElement>
             <engine:Button text="Submit" name="Subir" class="botonSubmit" />
         </engine:VisualElement>
+        <engine:Label name="Mensaje" style="margin-bottom: 31px; font-size: 30px; -unity-font-style: italic; margin-top: 0;" />
     </engine:VisualElement>
 </engine:UXML>
