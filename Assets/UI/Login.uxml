@@ -8,5 +8,6 @@
         <engine:Button text="Forgot your password?" name="Olvido" class="botonInvis" style="border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0;" />
         <engine:Button text="Log in" name="Login" class="botonLogin" />
         <engine:Button text="Not a user yet? Create an account" name="Registro" class="botonInvis" style="border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; margin-top: 2%;" />
+        <engine:Label name="Mensaje" style="margin-bottom: 100px; align-self: center; align-content: center; margin-top: 200px; font-size: 30px; -unity-font-style: italic;" />
     </engine:VisualElement>
 </engine:UXML>
