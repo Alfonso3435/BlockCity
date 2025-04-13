@@ -1,4 +1,6 @@
 .boton {
+    top: -226px;
+    right: 20px;
 }
 
 .boton:hover {

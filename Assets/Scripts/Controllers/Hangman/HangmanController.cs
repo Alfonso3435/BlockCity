@@ -5,7 +5,11 @@ using System.Collections.Generic;
 public class HangmanController : MonoBehaviour
 {
     [SerializeField]
+    private HangmanData hangmanData; // Reference to HangmanData
+    
+    [SerializeField]
     private GameObject[] hangmanStages;
+
     private Label palabraOcultaLabel;
     private TextField letraInput;
     private Button enviarLetraBtn;
@@ -14,7 +18,6 @@ public class HangmanController : MonoBehaviour
     private string palabra;
     private char[] palabraMostrada;
     private List<char> letrasFallidas = new List<char>();
-    private int maxFallos = 6;
 
     void OnEnable()
     {
@@ -32,9 +35,8 @@ public class HangmanController : MonoBehaviour
 
     void IniciarJuego()
     {
-        //Banco de palabras
-        string[] palabras = { "bloque", "criptomoneda", "cadena", "bitcoin", "wallet" };
-        palabra = palabras[Random.Range(0, palabras.Length)].ToUpper();
+        // Usar el banco de palabras de HangmanData
+        palabra = hangmanData.palabras[Random.Range(0, hangmanData.palabras.Length)].ToUpper();
         palabraMostrada = new char[palabra.Length];
 
         for (int i = 0; i < palabraMostrada.Length; i++)
@@ -82,7 +84,7 @@ public class HangmanController : MonoBehaviour
         {
             palabraOcultaLabel.text = "¡Ganaste! Era: " + palabra;
         }
-        else if (letrasFallidas.Count >= maxFallos)
+        else if (letrasFallidas.Count >= hangmanData.maxFallos) // Usar maxFallos de HangmanData
         {
             palabraOcultaLabel.text = "¡Perdiste! Era: " + palabra;
         }

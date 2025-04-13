@@ -41,6 +41,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Memory.unity
     guid: 01f88760fa9251f48a39e3eef30f7f08
+  - enabled: 1
+    path: Assets/Scenes/Hangman.unity
+    guid: f789f738b7c234ebe937c331effe4de7
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

@@ -4,7 +4,7 @@
     justify-content: space-between;
     padding: 20px;
     gap: 10px;
-    top: 340px;
+    top: 548px;
     left: 222px;
 }
 
@@ -32,4 +32,38 @@ Button {
     color: red;
     font-size: 16px;
     top: 21px;
+}
+
+.container2 {
+    justify-content: center;
+    width: 80%;
+    height: 5%;
+    align-self: center;
+    bottom: 130px;
+    align-items: center;
+    border-top-width: 15px;
+    border-right-width: 15px;
+    border-bottom-width: 15px;
+    border-left-width: 15px;
+    border-left-color: rgb(8, 131, 200);
+    border-right-color: rgb(8, 131, 200);
+    border-top-color: rgb(8, 131, 200);
+    border-bottom-color: rgb(8, 131, 200);
+    background-color: rgb(8, 131, 200);
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+.pregunta {
+    font-size: 30px;
+}
+
+.container3 {
+    align-self: flex-end;
+    width: 5%;
+    height: 100%;
+    max-height: 100px;
+    bottom: 240px;
 }

@@ -13,10 +13,10 @@ public class LectureController : MonoBehaviour
 
     void Start()
 {
-    // Click en los botones
+    // Click
     homeButton.onClick.AddListener(() => LoadScene("LevelSelection1"));
 
-    // Usamos la escena guardada en PlayerPrefs para el botón "Siguiente"
+    // Escena guardada en PlayerPrefs para el botón "Siguiente"
     nextButton.onClick.AddListener(() =>
     {
         string nextScene = PlayerPrefs.GetString("NextScene", "Quiz");
@@ -24,7 +24,7 @@ public class LectureController : MonoBehaviour
     });
 }
 
-    // Método para cargar la escena
+    // Carga de la escena 
     private void LoadScene(string sceneName)
     {
         SceneManager.LoadScene(sceneName);

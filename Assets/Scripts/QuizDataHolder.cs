@@ -6,6 +6,7 @@ public class QuizDataHolder : MonoBehaviour
     
     private QuestionData currentQuizData;
     private CardData currentCardData;
+    private HangmanData currentHangmanData; //juego de ahorcado
     private int currentLevelNumber;
     private string currentGameType; // "quiz" o "memory"
 
@@ -36,6 +37,13 @@ public class QuizDataHolder : MonoBehaviour
         currentGameType = "memory";
     }
 
+    public void SetHangmanData(HangmanData data)
+    {
+        currentHangmanData = data;
+        currentQuizData = null;
+        currentGameType = "hangman";
+    }
+
     public QuestionData GetQuizData()
     {
         return currentQuizData;
@@ -45,6 +53,12 @@ public class QuizDataHolder : MonoBehaviour
     {
         return currentCardData;
     }
+
+    public HangmanData GetHangmanData()
+    {
+        return currentHangmanData;
+    }
+
 
     public string GetCurrentGameType()
     {

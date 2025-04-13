@@ -13,6 +13,9 @@ public class LevelSelectionController : MonoBehaviour
     [Header("Game Settings")]
     public QuestionData quizData;
     public CardData cardData;
+    public HangmanData hangmanData; // Added for Hangman
+    public string hangmanSceneName = "Hangman"; // Added for Hangman
+    
     public int levelNum;
     public string quizSceneName = "Quiz";
     public string memorySceneName = "Memory";
@@ -82,6 +85,12 @@ public class LevelSelectionController : MonoBehaviour
                 QuizDataHolder.Instance.SetCardData(cardData);
                 QuizDataHolder.Instance.SetLevelNumber(levelNum);
                 PlayerPrefs.SetString("NextScene", memorySceneName);
+            }
+            else if (hangmanData != null) // Lógica para Hangman
+            {
+                QuizDataHolder.Instance.SetHangmanData(hangmanData);
+                QuizDataHolder.Instance.SetLevelNumber(levelNum);
+                PlayerPrefs.SetString("NextScene", hangmanSceneName);
             }
 
             // cargar la escena Lecture
