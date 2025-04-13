@@ -183,6 +183,35 @@ public class MemoryGameManager : MonoBehaviour, ICardGameManager
         secondCard = null;
     }
 
+        void CompleteLevel()
+    {
+        int starsEarned = CalculateStars();
+        
+        string currentModule = PlayerPrefs.GetString("CurrentModule", "LevelSelection1");
+        int currentLevel = PlayerPrefs.GetInt("CurrentLevel", 1);
+        string currentLevelKey = currentModule + "_Lv" + currentLevel;
+
+        // Guardar progreso del nivel actual
+        PlayerPrefs.SetInt(currentLevelKey, starsEarned);
+        PlayerPrefs.SetInt("TempStars", starsEarned);
+        PlayerPrefs.SetInt("TempPoints", pointsEarned);
+        PlayerPrefs.SetInt("TempCoins", starsEarned * 500);
+
+        // Incrementar el nivel actual para pasar al siguiente nivel
+        int nextLevel = currentLevel + 1;
+        PlayerPrefs.SetInt("CurrentLevel", nextLevel);
+
+        // Cargar la escena del siguiente nivel (nivel 3)
+        if (nextLevel == 3)
+        {
+            SceneManager.LoadScene("Lecture"); // Cargar la escena Lecture antes del nivel 3
+        }
+        else
+        {
+            SceneManager.LoadScene("StageClear"); // Escena de nivel completado
+        }
+    }
+    /*Solo es temporal
     void CompleteLevel()
     {
         int starsEarned = CalculateStars();
@@ -204,7 +233,7 @@ public class MemoryGameManager : MonoBehaviour, ICardGameManager
         // Regresar a la pantalla de selección de niveles
         SceneManager.LoadScene("LevelSelection");
     }
-
+*/
     int CalculateStars()
     {
         int remainingTries = triesLeft;

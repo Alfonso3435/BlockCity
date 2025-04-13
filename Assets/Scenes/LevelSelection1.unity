@@ -1500,9 +1500,17 @@ MonoBehaviour:
     levelName: 
     cardPairs: []
     maxPoints: 1000
+  hangmanData:
+    palabras:
+    - wallet
+    - bitcoin
+    - crypto
+    - w3
+    maxFallos: 6
   levelNum: 5
   quizSceneName: Quiz
   memorySceneName: Memory
+  hangmanSceneName: Hangman
 --- !u!114 &468107542
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4808,9 +4816,17 @@ MonoBehaviour:
     levelName: 
     cardPairs: []
     maxPoints: 1000
+  hangmanData:
+    palabras:
+    - wallet
+    - bitcoin
+    - crypto
+    - w3
+    maxFallos: 6
   levelNum: 4
   quizSceneName: Quiz
   memorySceneName: Memory
+  hangmanSceneName: Hangman
 --- !u!114 &1518639357
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5975,9 +5991,17 @@ MonoBehaviour:
     - concept: c6 test
       definition: d6 test
     maxPoints: 1000
+  hangmanData:
+    palabras:
+    - wallet
+    - bitcoin
+    - crypto
+    - w3
+    maxFallos: 6
   levelNum: 2
   quizSceneName: Quiz
   memorySceneName: Memory
+  hangmanSceneName: Hangman
 --- !u!114 &1794939708
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6139,9 +6163,17 @@ MonoBehaviour:
     levelName: 
     cardPairs: []
     maxPoints: 1000
+  hangmanData:
+    palabras:
+    - wallet
+    - bitcoin
+    - crypto
+    - w3
+    maxFallos: 6
   levelNum: 1
   quizSceneName: Quiz
   memorySceneName: Memory
+  hangmanSceneName: Hangman
 --- !u!114 &1822866444
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6298,14 +6330,22 @@ MonoBehaviour:
   - {fileID: 2144864460}
   - {fileID: 1709683654}
   starSprite: {fileID: 21300000, guid: 431ac49a5842d41fea4c5f19b068c88a, type: 3}
-  quizData: {fileID: 11400000, guid: c2ba90daa47d11b4a85f4013cf9cbec7, type: 2}
+  quizData: {fileID: 0}
   cardData:
     levelName: 
     cardPairs: []
     maxPoints: 1000
+  hangmanData:
+    palabras:
+    - wallet
+    - bitcoin
+    - crypto
+    - w3
+    maxFallos: 6
   levelNum: 3
   quizSceneName: Quiz
   memorySceneName: Memory
+  hangmanSceneName: Hangman
 --- !u!114 &1940482124
 MonoBehaviour:
   m_ObjectHideFlags: 0

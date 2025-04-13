@@ -14,11 +14,12 @@ public class LevelSelectionController : MonoBehaviour
     public QuestionData quizData;
     public CardData cardData;
     public HangmanData hangmanData; // Added for Hangman
-    public string hangmanSceneName = "Hangman"; // Added for Hangman
     
+
     public int levelNum;
     public string quizSceneName = "Quiz";
     public string memorySceneName = "Memory";
+    public string hangmanSceneName = "Hangman"; // Added for Hangman
 
     private void Start()
     {
@@ -74,19 +75,19 @@ public class LevelSelectionController : MonoBehaviour
             PlayerPrefs.SetInt("CurrentChapter", capitulo);
 
             // Guardar la siguiente escena que se debe cargar después de la lectura
-            if (quizData != null)
+            if (quizData != null) //quiz
             {
                 QuizDataHolder.Instance.SetQuizData(quizData);
                 QuizDataHolder.Instance.SetLevelNumber(levelNum);
                 PlayerPrefs.SetString("NextScene", quizSceneName);
             }
-            else if (cardData != null)
+            else if (cardData != null) //memoria
             {
                 QuizDataHolder.Instance.SetCardData(cardData);
                 QuizDataHolder.Instance.SetLevelNumber(levelNum);
                 PlayerPrefs.SetString("NextScene", memorySceneName);
             }
-            else if (levelNum == 3 && hangmanData != null) // Lógica para Hangman, es para que aparezca por ahora
+            else if (hangmanData != null) // Lógica para Hangman
             {
                 QuizDataHolder.Instance.SetHangmanData(hangmanData);
                 QuizDataHolder.Instance.SetLevelNumber(levelNum);

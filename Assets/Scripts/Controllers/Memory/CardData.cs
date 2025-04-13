@@ -1,8 +1,8 @@
 using UnityEngine;
 using System;
 
-[Serializable]
-public class CardData
+[CreateAssetMenu(fileName = "NewCardData", menuName = "Game Data/Card Data")]
+public class CardData : ScriptableObject
 {
     public string levelName;
     public CardPair[] cardPairs;
