@@ -86,7 +86,7 @@ public class LevelSelectionController : MonoBehaviour
                 QuizDataHolder.Instance.SetLevelNumber(levelNum);
                 PlayerPrefs.SetString("NextScene", memorySceneName);
             }
-            else if (hangmanData != null) // Lógica para Hangman
+            else if (levelNum == 3 && hangmanData != null) // Lógica para Hangman, es para que aparezca por ahora
             {
                 QuizDataHolder.Instance.SetHangmanData(hangmanData);
                 QuizDataHolder.Instance.SetLevelNumber(levelNum);

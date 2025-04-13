@@ -188,14 +188,21 @@ public class MemoryGameManager : MonoBehaviour, ICardGameManager
         int starsEarned = CalculateStars();
         
         string currentModule = PlayerPrefs.GetString("CurrentModule", "LevelSelection1");
-        string currentLevelName = PlayerPrefs.GetString("CurrentLevelName");
-        PlayerPrefs.SetInt(currentModule + "_Lv" + currentLevelName, starsEarned);
-        
+        int currentLevel = PlayerPrefs.GetInt("CurrentLevel", 1);
+        string currentLevelKey = currentModule + "_Lv" + currentLevel;
+
+        // Guardar progreso del nivel actual
+        PlayerPrefs.SetInt(currentLevelKey, starsEarned);
         PlayerPrefs.SetInt("TempStars", starsEarned);
         PlayerPrefs.SetInt("TempPoints", pointsEarned);
         PlayerPrefs.SetInt("TempCoins", starsEarned * 500);
-        
-        SceneManager.LoadScene("StageClear");
+
+        // Desbloquear el siguiente nivel
+        int nextLevel = currentLevel + 1;
+        PlayerPrefs.SetInt("UnlockedLevel", nextLevel); // Guardar el nivel desbloqueado
+
+        // Regresar a la pantalla de selección de niveles
+        SceneManager.LoadScene("LevelSelection");
     }
 
     int CalculateStars()

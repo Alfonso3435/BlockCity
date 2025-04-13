@@ -14,7 +14,7 @@ public class HangmanButton : MonoBehaviour
         homeButton = root.Q<Button>("home");
         
         // Cambiar la escena a "LevelSelection"
-        homeButton.RegisterCallback<ClickEvent>((evt) => Regresar(evt, "LevelSelection"));
+        homeButton.RegisterCallback<ClickEvent>((evt) => Regresar(evt, "LevelSelection1"));
     }
 
     private void Regresar(ClickEvent evt, string escena)
