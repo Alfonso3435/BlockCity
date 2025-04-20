@@ -370,6 +370,11 @@ MonoBehaviour:
   tipPanel: {fileID: 2092626119}
   tipText: {fileID: 630662286}
   pointsReductionPerMistake: 200
+  normalButtonColor: {r: 1, g: 1, b: 1, a: 1}
+  wrongAnswerColor: {r: 1, g: 0, b: 0, a: 1}
+  wrongAnswerTextColor: {r: 1, g: 1, b: 1, a: 1}
+  normalTextColor: {r: 0, g: 0, b: 0, a: 1}
+  flashDuration: 1
 --- !u!4 &323567452
 Transform:
   m_ObjectHideFlags: 0
