@@ -49,7 +49,7 @@ public class MenuController : MonoBehaviour
         PlayerPrefs.SetInt("TotalCoins", 1000); // Opcional: Dar monedas iniciales
 
         PlayerPrefs.Save();
-        Debug.Log("Todos los datos del juego han sido reiniciados");
+        //Debug.Log("Todos los datos del juego han sido reiniciados");
     }
 
     void OnEnable()
@@ -65,6 +65,7 @@ public class MenuController : MonoBehaviour
 
     private void IniciarJuego(ClickEvent evt, String escena)
     {
+        Debug.Log("Cargando escena: " + escena);
         SceneManager.LoadScene(escena);
     }
 }

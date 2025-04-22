@@ -44,7 +44,14 @@ public class MapSelectionController : MonoBehaviour
             //Guardar el libro correspondiente al modulo actual
             PlayerPrefs.SetInt("CurrentBook", mapIndex);
             PlayerPrefs.SetString("CurrentModule", levelSelectionSceneName);
+
+            // Modificar el valor de ModuleID en el singleton
+            DBQuizReqHolder.Instance.SetModuleID(mapIndex);
+
             SceneManager.LoadScene(levelSelectionSceneName);
+            
+            //Debug.Log(mapIndex); // Este es el número del módulo que seleccionó el usuario
+            
         }
         else
         {

@@ -3015,7 +3015,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isUnlocked: 0
   mapIndex: 2
-  coinsRequired: 1200
+  coinsRequired: 1000
   levelSelectionSceneName: 
   lockPanel: {fileID: 1501503539}
   unlockPanel: {fileID: 2055694420}

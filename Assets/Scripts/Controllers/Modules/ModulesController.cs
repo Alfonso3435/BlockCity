@@ -6,7 +6,7 @@ using UnityEngine.UIElements;
 public class ModulesController : MonoBehaviour
 {
    private UIDocument modulos;
-    private Button moduloA;
+    private Button moduloA; 
     private Button moduloB;
 
     void OnEnable(){

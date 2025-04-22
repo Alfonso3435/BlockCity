@@ -328,14 +328,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 3419579445345109759, guid: 8e8da3f05a2a93a478c3252b2ce14f67, type: 3}
+  m_Sprite: {fileID: 3960059530316599927, guid: 78a8c4820b67aa5468a7651c09692555, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1496,17 +1496,8 @@ MonoBehaviour:
   - {fileID: 2133505814}
   starSprite: {fileID: 21300000, guid: 431ac49a5842d41fea4c5f19b068c88a, type: 3}
   quizData: {fileID: 11400000, guid: c2ba90daa47d11b4a85f4013cf9cbec7, type: 2}
-  cardData:
-    levelName: 
-    cardPairs: []
-    maxPoints: 1000
-  hangmanData:
-    palabras:
-    - wallet
-    - bitcoin
-    - crypto
-    - w3
-    maxFallos: 6
+  cardData: {fileID: 0}
+  hangmanData: {fileID: 0}
   levelNum: 5
   quizSceneName: Quiz
   memorySceneName: Memory
@@ -4812,17 +4803,8 @@ MonoBehaviour:
   - {fileID: 1598450607}
   starSprite: {fileID: 21300000, guid: 431ac49a5842d41fea4c5f19b068c88a, type: 3}
   quizData: {fileID: 11400000, guid: fc3458e989abe974bb8f18b369ce6f24, type: 2}
-  cardData:
-    levelName: 
-    cardPairs: []
-    maxPoints: 1000
-  hangmanData:
-    palabras:
-    - wallet
-    - bitcoin
-    - crypto
-    - w3
-    maxFallos: 6
+  cardData: {fileID: 0}
+  hangmanData: {fileID: 0}
   levelNum: 4
   quizSceneName: Quiz
   memorySceneName: Memory
@@ -5975,29 +5957,8 @@ MonoBehaviour:
   - {fileID: 1275625624}
   starSprite: {fileID: 21300000, guid: 431ac49a5842d41fea4c5f19b068c88a, type: 3}
   quizData: {fileID: 0}
-  cardData:
-    levelName: TestMemory
-    cardPairs:
-    - concept: c1 test
-      definition: d1 test
-    - concept: c2 test
-      definition: d2 test
-    - concept: c3 test
-      definition: d3 test
-    - concept: c4 test
-      definition: d4 test
-    - concept: c5 test
-      definition: d5 test
-    - concept: c6 test
-      definition: d6 test
-    maxPoints: 1000
-  hangmanData:
-    palabras:
-    - wallet
-    - bitcoin
-    - crypto
-    - w3
-    maxFallos: 6
+  cardData: {fileID: 0}
+  hangmanData: {fileID: 0}
   levelNum: 2
   quizSceneName: Quiz
   memorySceneName: Memory
@@ -6159,17 +6120,8 @@ MonoBehaviour:
   - {fileID: 1336031007}
   starSprite: {fileID: 21300000, guid: 431ac49a5842d41fea4c5f19b068c88a, type: 3}
   quizData: {fileID: 11400000, guid: c2ba90daa47d11b4a85f4013cf9cbec7, type: 2}
-  cardData:
-    levelName: 
-    cardPairs: []
-    maxPoints: 1000
-  hangmanData:
-    palabras:
-    - wallet
-    - bitcoin
-    - crypto
-    - w3
-    maxFallos: 6
+  cardData: {fileID: 0}
+  hangmanData: {fileID: 0}
   levelNum: 1
   quizSceneName: Quiz
   memorySceneName: Memory
@@ -6331,17 +6283,8 @@ MonoBehaviour:
   - {fileID: 1709683654}
   starSprite: {fileID: 21300000, guid: 431ac49a5842d41fea4c5f19b068c88a, type: 3}
   quizData: {fileID: 0}
-  cardData:
-    levelName: 
-    cardPairs: []
-    maxPoints: 1000
-  hangmanData:
-    palabras:
-    - wallet
-    - bitcoin
-    - crypto
-    - w3
-    maxFallos: 6
+  cardData: {fileID: 0}
+  hangmanData: {fileID: 0}
   levelNum: 3
   quizSceneName: Quiz
   memorySceneName: Memory

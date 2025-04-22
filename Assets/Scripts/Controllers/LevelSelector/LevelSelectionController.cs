@@ -67,12 +67,16 @@ public class LevelSelectionController : MonoBehaviour
     {
         if (unlocked)
         {
+            //Debug.Log("Nivel " + levelNum + " seleccionado.");
             PlayerPrefs.SetInt("CurrentLevel", levelNum);
             PlayerPrefs.SetString("CurrentLevelName", gameObject.name);
             
             // Guardar el capítulo correspondiente al nivel actual
             int capitulo = levelNum;
             PlayerPrefs.SetInt("CurrentChapter", capitulo);
+
+            // Asignar el valor de levelNum al LevelNumber del singleton
+            DBQuizReqHolder.Instance.SetLevelNumber(levelNum);
 
             // Guardar la siguiente escena que se debe cargar después de la lectura
             if (quizData != null) //quiz
