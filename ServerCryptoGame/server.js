@@ -195,6 +195,32 @@ app.get("/quiz/:id_quiz", (req, res) => {
     });
 });
 
+app.get("/items/:id_usuario", (req, res) => {
+    const id_usuario = req.params.id_usuario;
+
+    const query = `
+        SELECT 
+            id_item,
+            cantidad 
+        FROM item_usuario
+        WHERE id_usuario = ?;`;
+
+    db.query(query, [id_usuario], (err, results) => {
+        if (err) {
+            console.error("Error al obtener los items:", err);
+            return res.status(500).json({ error: "Error en la base de datos" });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({ error: "No se encontraron items para este usuario." });
+        }
+
+        res.json(results);
+    });
+});
+
+
+
 app.listen(puerto, () => {
     console.log(`Servidor escuchando en http://localhost:${puerto}`);
 });
