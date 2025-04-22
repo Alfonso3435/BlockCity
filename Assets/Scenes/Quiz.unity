@@ -459,6 +459,7 @@ MonoBehaviour:
   continueButton: {fileID: 592688204}
   tipPanel: {fileID: 2092626119}
   tipText: {fileID: 630662286}
+
   normalButtonColor: {r: 1, g: 1, b: 1, a: 1}
   wrongAnswerColor: {r: 1, g: 0, b: 0, a: 1}
   wrongAnswerTextColor: {r: 1, g: 1, b: 1, a: 1}

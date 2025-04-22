@@ -215,6 +215,10 @@ public class GameManager : MonoBehaviour
 
     void CompleteQuiz()
     {
+        string missionID = "2";
+        int currentProgress = PlayerPrefs.GetInt($"Mission_{missionID}_Progress", 0);
+        PlayerPrefs.SetInt($"Mission_{missionID}_Progress", currentProgress + 1);
+
         float percentage = (float)totalPointsEarned / selectedCategory.maxPoints * 100f;
         
         int starsEarned = 0;
