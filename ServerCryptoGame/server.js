@@ -154,7 +154,9 @@ app.get("/quiz/:id_quiz", (req, res) => {
             p.id_pregunta, 
             p.pregunta, 
             p.indice_correcto, 
-            r.indice AS respuesta_indice, 
+            p.explicacion, 
+            p.tip, 
+            r.indice, 
             r.respuesta 
         FROM Preguntas p
         JOIN Respuestas_Quiz r ON p.id_pregunta = r.id_pregunta
@@ -176,12 +178,14 @@ app.get("/quiz/:id_quiz", (req, res) => {
                     id_pregunta: row.id_pregunta,
                     pregunta: row.pregunta,
                     indice_correcto: row.indice_correcto,
+                    explicacion: row.explicacion, // Agregar explicacion
+                    tip: row.tip,                 // Agregar tip
                     respuestas: []
                 };
             }
 
             preguntasMap[row.id_pregunta].respuestas.push({
-                indice: row.respuesta_indice,
+                indice: row.indice,
                 respuesta: row.respuesta
             });
         });
@@ -190,8 +194,6 @@ app.get("/quiz/:id_quiz", (req, res) => {
         res.json(preguntas);
     });
 });
-
-
 
 app.listen(puerto, () => {
     console.log(`Servidor escuchando en http://localhost:${puerto}`);

@@ -16,7 +16,11 @@ public class GameManager : MonoBehaviour
     [Header("UI References")]
     public GameObject triviaGameObject;
     public TMP_Text questionText;
+    public TMP_Text currentQuestionText;
     public Button[] replyButtons;
+    public TMP_Text ShieldText;
+    public TMP_Text PotionText;
+    public TMP_Text HeartText;
 
     [Header("Feedback Panel")]
     public GameObject feedbackPanel;
@@ -29,12 +33,12 @@ public class GameManager : MonoBehaviour
     public TMP_Text tipText;
 
     [Header("Scoring")]
-    public int pointsReductionPerMistake = 200;
     private int totalPointsEarned = 0;
     private int currentQuestionMaxPoints = 0;
-    private int totalQuestions = 0;
     private int currentLevelNumber;
     private string currentLevelName;
+    private int lives = 3;
+    private int quizErrors = 0;
 
     [Header("Feedback Colors")]
     public Color normalButtonColor = Color.white;
@@ -48,8 +52,7 @@ public class GameManager : MonoBehaviour
         currentLevelNumber = QuizDataHolder.Instance.GetLevelNumber();
         currentLevelName = PlayerPrefs.GetString("CurrentLevelName");
         selectedCategory = QuizDataHolder.Instance.GetQuizData();
-        totalQuestions = selectedCategory.questions.Length;
-        currentQuestionMaxPoints = selectedCategory.maxPoints / totalQuestions;
+        currentQuestionMaxPoints = 3000;
         
         InitializeGame();
     }
@@ -74,15 +77,25 @@ public class GameManager : MonoBehaviour
     {
         ResetQuestionState();
 
-        if (currentQuestionIndex >= selectedCategory.questions.Length)
+        if (currentQuestionIndex >= GetNumberOfQuestions()/*selectedCategory.questions.Length*/)
         {
             CompleteQuiz();
             return;
         }
+        // Conectar estos 3 a la base de datos
+        ShieldText.text = PlayerPrefs.GetInt("Shield").ToString();
+        PotionText.text = PlayerPrefs.GetInt("Potion").ToString();
+        HeartText.text = PlayerPrefs.GetInt("Heart").ToString();
 
+        currentQuestionText.text = (currentQuestionIndex + 1) + "/" + GetNumberOfQuestions();
+        HeartText.text = (lives - quizErrors).ToString();
+        
+        Debug.Log(currentQuestionIndex);
         Question currentQuestion = selectedCategory.questions[currentQuestionIndex];
-        questionText.text = currentQuestion.questionText;
+        //questionText.text = currentQuestion.questionText; // INFO: Este es el texto de la pregunta
+        questionText.text = DBQuizReqHolder.Instance.GetPreguntas()[currentQuestionIndex].pregunta;
 
+        
         for (int i = 0; i < replyButtons.Length; i++)
         {
             bool shouldActivate = i < currentQuestion.replies.Length;
@@ -90,7 +103,9 @@ public class GameManager : MonoBehaviour
             
             if (shouldActivate)
             {
-                replyButtons[i].GetComponentInChildren<TMP_Text>().text = currentQuestion.replies[i];
+                //replyButtons[i].GetComponentInChildren<TMP_Text>().text = currentQuestion.replies[i]; // INFO: Este es el texto de la respuesta
+                replyButtons[i].GetComponentInChildren<TMP_Text>().text = DBQuizReqHolder.Instance.GetPreguntas()[currentQuestionIndex].respuestas[i].respuesta;
+                
                 // Restablecer colores iniciales
                 replyButtons[i].GetComponent<Image>().color = normalButtonColor;
                 replyButtons[i].GetComponentInChildren<TMP_Text>().color = normalTextColor;
@@ -108,16 +123,20 @@ public class GameManager : MonoBehaviour
     void CheckAnswer(int answerIndex)
     {
         Question currentQuestion = selectedCategory.questions[currentQuestionIndex];
-        bool isCorrect = answerIndex == currentQuestion.correctReplyIndex;
-
+        //bool isCorrect = answerIndex == currentQuestion.correctReplyIndex; // INFO: Este es el índice de la respuesta correcta
+        bool isCorrect = answerIndex == DBQuizReqHolder.Instance.GetPreguntas()[currentQuestionIndex].indice_correcto;
+        Debug.Log("Correct answer index: " + DBQuizReqHolder.Instance.GetPreguntas()[currentQuestionIndex].indice_correcto);
         if (isCorrect)
         {
-            int pointsEarned = Mathf.Max(0, currentQuestionMaxPoints - (pointsReductionPerMistake * wrongAnswersCount));
+            //int pointsEarned = currentQuestionMaxPoints - (pointsReductionPerMistake * wrongAnswersCount);
+            int pointsEarned = (currentQuestionMaxPoints / GetNumberOfQuestions()) - 
+            ((currentQuestionMaxPoints / GetNumberOfQuestions()) / 3) * wrongAnswersCount; // Elgi 3 pensando que es la cantidad de vidas, pero esto es arbitrario
             totalPointsEarned += pointsEarned;
             ShowFeedbackForCorrectAnswer(currentQuestion, pointsEarned);
         }
         else
         {
+            //totalPointsEarned -= (currentQuestionMaxPoints / GetNumberOfQuestions()) / 3;
             StartCoroutine(FlashWrongAnswerButton(answerIndex));
             HandleWrongAnswer(currentQuestion);
         }
@@ -154,21 +173,26 @@ public class GameManager : MonoBehaviour
         GameObject.Find("CorrectEffect").GetComponent<AudioSource>().Play();
         
         feedbackTitle.text = $"Correct! +{pointsEarned} points";
-        feedbackExplanation.text = question.explanation;
+        //feedbackExplanation.text = question.explanation;
+        feedbackExplanation.text = DBQuizReqHolder.Instance.GetPreguntas()[currentQuestionIndex].explicacion;
     }
 
     void HandleWrongAnswer(Question currentQuestion)
     {
         GameObject.Find("IncorrectEffect").GetComponent<AudioSource>().Play();
         wrongAnswersCount++;
+        quizErrors++;
+
+        HeartText.text = (lives - quizErrors).ToString();
         
         if (wrongAnswersCount == 1 && !hasShownTipForCurrentQuestion && !string.IsNullOrEmpty(currentQuestion.tip))
         {
-            ShowTip(currentQuestion.tip);
+            //ShowTip(currentQuestion.tip);
+            ShowTip(DBQuizReqHolder.Instance.GetPreguntas()[currentQuestionIndex].tip);
             hasShownTipForCurrentQuestion = true;
         }
         
-        if (wrongAnswersCount >= MAX_WRONG_ANSWERS)
+        if (quizErrors >= 3) // I chose 5 as it is the initial amount of lives, but this can be changed
         {
             SceneManager.LoadScene("FailedQuiz");
         }
@@ -219,5 +243,18 @@ public class GameManager : MonoBehaviour
         wrongAnswersCount = 0;
         ResetQuestionState();
         DisplayCurrentQuestion();
+    }
+
+    int GetNumberOfQuestions()
+    {
+        if (DBQuizReqHolder.Instance.GetPreguntas() != null)
+        {
+            return DBQuizReqHolder.Instance.GetPreguntas().Length;
+        }
+        else
+        {
+            Debug.LogError("No questions available in DBQuizReqHolder.");
+            return 0;
+        }
     }
 }

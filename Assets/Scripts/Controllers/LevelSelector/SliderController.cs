@@ -8,7 +8,7 @@ public class SliderController : MonoBehaviour
 {
     public void PressSelection(string _LevelName)
     {
-
+        Debug.Log("Cargando escena: " + _LevelName);
         SceneManager.LoadScene(_LevelName);
     }
 }
