@@ -1,0 +1,34 @@
+.titulo {
+    -unity-text-align: upper-center;
+    font-size: 100px;
+}
+
+.subtitulo {
+    -unity-text-align: upper-center;
+    font-size: 40px;
+    -unity-font-style: bold;
+    margin-top: 40px;
+}
+
+.botonRegreso {
+    position: absolute;
+    align-self: flex-end;
+    width: 70px;
+    height: 70px;
+    background-image: url("project://database/Assets/Layer%20Lab/GUI-SimpleRound/ResourcesData/Sprites/Demo/Demo_Button/btn_black_back.png?fileID=2800000&guid=8c4caea7f575d46f9889c3da22e984da&type=3#btn_black_back");
+    -unity-background-image-tint-color: rgb(255, 255, 255);
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.contenedor {
+}
+
+.contenido {
+    -unity-text-align: upper-center;
+    font-size: 40px;
+    margin-top: 40px;
+}
+
+.botonRegreso:hover {
+    scale: 1.15 1.15;
+}

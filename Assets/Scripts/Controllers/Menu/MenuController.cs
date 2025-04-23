@@ -9,6 +9,12 @@ public class MenuController : MonoBehaviour
     private Button botonPlay;
     private Button botonLogin;
 
+    private Button infoButton;
+    private Label infoText;
+    private Button creditosButton;
+    private Button infoContainer;
+    private Button cerrarJuegoButton;
+
     private void Start()
     {
         ResetAllGameProgress();
@@ -58,14 +64,44 @@ public class MenuController : MonoBehaviour
         var root = menu.rootVisualElement;
         botonPlay = root.Q<Button>("Play");
         botonLogin = root.Q<Button>("InicioSesion");
+        creditosButton = root.Q<Button>("Creditos");
+        infoButton = root.Q<Button>("InfoButton");
+        infoText = root.Q<Label>("InfoText");
+        infoContainer = root.Q<Button>("InfoContainer");
+        cerrarJuegoButton = root.Q<Button>("Cerrar");
+
+        infoText.style.display = DisplayStyle.None;
+        infoContainer.style.display = DisplayStyle.None;
 
         botonPlay.RegisterCallback<ClickEvent, String>(IniciarJuego, "ModuleSelection");
         botonLogin.RegisterCallback<ClickEvent, String>(IniciarJuego, "Login");
+        creditosButton.RegisterCallback<ClickEvent, String>(IniciarJuego, "Credits");
+        infoButton.RegisterCallback<ClickEvent>(MostrarInfo);
+        cerrarJuegoButton.RegisterCallback<ClickEvent>(CerrarJuego);
+
+
+    }
+
+    private void MostrarInfo(ClickEvent evt)
+    {
+        if (infoText.style.display == DisplayStyle.Flex)
+        {
+            infoText.style.display = DisplayStyle.None;
+            infoContainer.style.display = DisplayStyle.None;
+            return;
+        }
+        infoText.style.display = DisplayStyle.Flex;
+        infoContainer.style.display = DisplayStyle.Flex;
+    }
+
+    private void CerrarJuego(ClickEvent evt)
+    {
+        UnityEditor.EditorApplication.isPlaying = false; 
+        Application.Quit(); 
     }
 
     private void IniciarJuego(ClickEvent evt, String escena)
     {
-        Debug.Log("Cargando escena: " + escena);
         SceneManager.LoadScene(escena);
     }
 }
