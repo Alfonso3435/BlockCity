@@ -1,6 +1,7 @@
 .intro {
     top: auto;
     font-size: 80px;
+    margin-top: 100px;
 }
 
 .play {
@@ -65,4 +66,42 @@
 
 .loginButton:active {
     -unity-background-image-tint-color: rgb(132, 132, 132);
+}
+
+.info {
+}
+
+.infoText {
+    font-size: 25px;
+    position: absolute;
+    align-items: flex-start;
+    align-self: flex-start;
+    margin-left: 150px;
+}
+
+.infoButton {
+    background-image: url("project://database/Assets/Layer%20Lab/GUI-SimpleRound/ResourcesData/Sprites/Components/ButtonIcons/ButtonIcon_Charcoal/btn_charcoal_question.png?fileID=2800000&guid=0adc4207dae104e0d8317de1eaf52bf7&type=3#btn_charcoal_question");
+    width: 70px;
+    height: 70px;
+    background-size: 70px 70px;
+    position: absolute;
+    justify-content: flex-start;
+    align-self: flex-start;
+    margin-left: 50px;
+    -unity-background-image-tint-color: rgb(255, 255, 255);
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.infoCointainer {
+    background-color: rgb(255, 255, 255);
+    position: absolute;
+    align-items: flex-start;
+    align-self: flex-start;
+    width: auto;
+    min-width: 60%;
+    margin-left: 140px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
 }

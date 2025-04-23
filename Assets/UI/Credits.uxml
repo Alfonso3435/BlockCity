@@ -1,0 +1,11 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/Credits.uss?fileID=7433441132597879392&amp;guid=ef28af26cb9e17b42a287621aed304fa&amp;type=3#Credits" />
+    <engine:VisualElement name="Contenedor" class="contenedor" style="flex-grow: 1;">
+        <engine:Button name="Cerrar" class="botonRegreso" style="border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0;" />
+        <engine:Label text="Credits" name="Titulo" class="titulo" style="margin-top: 85px;" />
+        <engine:Label text="Contributors/Students from&#10;Instituto Tecnológico y de Estudios Superiores de Monterrey" name="SubCont" class="subtitulo" />
+        <engine:Label text="Juan Alfonso Vega Sol&#10;Israel González Huerta&#10;Sebastián Álvarez Huerta&#10;Miguel Ángel Argumedo Ortiz&#10;Estrella Lolbeth Téllez Rivas&#10;&#10;" name="Contribuidores" class="contenido" />
+        <engine:Label text="Advisors and Professors" name="SubAs" class="subtitulo" />
+        <engine:Label text="Roberto Martínez Román&#10;Jesús Leopoldo Llano García&#10;Antonio Cedillo Hernández&#10;Jossian Abimelec García Quijano" name="Asesores" class="contenido" />
+    </engine:VisualElement>
+</engine:UXML>
