@@ -50,6 +50,8 @@ public class DBQuizReqHolder : MonoBehaviour
     private string GameType; // Quiz, Memory, Hangman
     private Pregunta[] preguntas;
 
+    private bool isLoggedIn = false;
+
     private void Awake()
     {
         Debug.Log("DBQuizReqHolder Awake() llamado.");
@@ -204,5 +206,16 @@ public class DBQuizReqHolder : MonoBehaviour
     public void SetPreguntas(Pregunta[] preguntasArray)
     {
         preguntas = preguntasArray;
+    }
+
+    // Getter and Setter for IsLoggedIn
+    public bool GetIsLoggedIn()
+    {
+        return isLoggedIn;
+    }
+
+    public void SetIsLoggedIn(bool loggedIn)
+    {
+        isLoggedIn = loggedIn;
     }
 }

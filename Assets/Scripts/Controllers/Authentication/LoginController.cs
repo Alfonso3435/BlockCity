@@ -65,8 +65,10 @@ public class LoginController : MonoBehaviour
 
         string json = JsonUtility.ToJson(datos);
         byte[] body = System.Text.Encoding.UTF8.GetBytes(json);
+        //string url = $"http://localhost:3000/quiz/{NivelID}";
 
-        UnityWebRequest request = new UnityWebRequest("http://192.168.100.143:3000/login", "POST");
+        //UnityWebRequest request = new UnityWebRequest("http://192.168.100.143:3000/login", "POST");
+        UnityWebRequest request = new UnityWebRequest("http://localhost:3000/login", "POST");
         request.uploadHandler = new UploadHandlerRaw(body);
         request.downloadHandler = new DownloadHandlerBuffer();
         request.SetRequestHeader("Content-Type", "application/json");
@@ -82,6 +84,7 @@ public class LoginController : MonoBehaviour
             {
                 mensaje.text = "Inicio de sesión exitoso.";
                 yield return new WaitForSeconds(1f);
+                DBQuizReqHolder.Instance.SetIsLoggedIn(true);
                 SceneManager.LoadScene("Menu");
             }
             else

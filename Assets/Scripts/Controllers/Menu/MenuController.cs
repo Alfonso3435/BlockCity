@@ -73,7 +73,7 @@ public class MenuController : MonoBehaviour
         infoText.style.display = DisplayStyle.None;
         infoContainer.style.display = DisplayStyle.None;
 
-        botonPlay.RegisterCallback<ClickEvent, String>(IniciarJuego, "ModuleSelection");
+        botonPlay.RegisterCallback<ClickEvent>(CheckLogin);
         botonLogin.RegisterCallback<ClickEvent, String>(IniciarJuego, "Login");
         creditosButton.RegisterCallback<ClickEvent, String>(IniciarJuego, "Credits");
         infoButton.RegisterCallback<ClickEvent>(MostrarInfo);
@@ -81,6 +81,19 @@ public class MenuController : MonoBehaviour
 
 
     }
+
+    private void CheckLogin(ClickEvent evt)
+    {
+        //DBQuizReqHolder.Instance.SetIsLoggedIn(true);
+        if (DBQuizReqHolder.Instance.GetIsLoggedIn() == false)
+        {
+            // Mostrar mensaje de error o realizar acción correspondiente
+            Debug.Log("Error: Debes iniciar sesión primero.");
+            return;
+        }
+        SceneManager.LoadScene("ModuleSelection");
+    }
+
 
     private void MostrarInfo(ClickEvent evt)
     {

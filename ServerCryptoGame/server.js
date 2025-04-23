@@ -101,8 +101,8 @@ app.post("/registro", (req, res) => {
 
             // Insertar nuevo usuario
             const insertQuery = `
-                INSERT INTO Usuarios (correo, contrasena, nombre_user, nombre_comp, nacionalidad, fecha_nacimiento, vidas)
-                VALUES (?, ?, ?, ?, ?, ?, 3)
+                INSERT INTO Usuarios (correo, contrasena, nombre_user, nombre_comp, nacionalidad, fecha_nacimiento)
+                VALUES (?, ?, ?, ?, ?, ?)
             `;
             db.query(insertQuery, [correo, contrasena, nombre_user, nombre_comp, nacionalidad, fecha_nacimiento], (err) => {
                 if (err) {

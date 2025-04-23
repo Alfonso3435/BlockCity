@@ -90,6 +90,7 @@ public class RegisterController : MonoBehaviour
         string json = JsonUtility.ToJson(datos);
 
         UnityWebRequest request = new UnityWebRequest("http://localhost:3000/registro", "POST");
+        
         byte[] body = System.Text.Encoding.UTF8.GetBytes(json);
         request.uploadHandler = new UploadHandlerRaw(body);
         request.downloadHandler = new DownloadHandlerBuffer();
