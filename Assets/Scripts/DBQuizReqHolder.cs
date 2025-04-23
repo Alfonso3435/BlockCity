@@ -27,6 +27,20 @@ public class PreguntasWrapper
     public Pregunta[] preguntas;
 }
 
+[System.Serializable]
+public class Item
+{
+    public int id_item;
+    public string nombre_item;
+    public int cantidad;
+}
+
+[System.Serializable]
+public class ItemsWrapper
+{
+    public Item[] items;
+}
+
 public class DBQuizReqHolder : MonoBehaviour
 {
     public static DBQuizReqHolder Instance;
@@ -111,6 +125,38 @@ public class DBQuizReqHolder : MonoBehaviour
                         Debug.Log($"Texto de respuesta: {respuesta.respuesta}");
                         */
                     }
+                }
+            }
+        }
+    }
+
+    public IEnumerator GetItemsData(int userID)
+    {
+        string url = $"http://localhost:3000/items/{userID}";
+        Debug.Log("Realizando solicitud a: " + url);
+
+        using (UnityWebRequest request = UnityWebRequest.Get(url))
+        {
+            yield return request.SendWebRequest();
+
+            if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
+            {
+                Debug.LogError("Error en la solicitud: " + request.error);
+            }
+            else
+            {
+                string jsonResponse = request.downloadHandler.text;
+                Debug.Log("Respuesta recibida: " + jsonResponse);
+
+                // Deserializar el JSON en una lista de ítems
+                Item[] items = JsonUtility.FromJson<ItemsWrapper>($"{{\"items\":{jsonResponse}}}").items;
+
+                // Acceder a los valores individuales
+                foreach (Item item in items)
+                {
+                    Debug.Log($"ID del ítem: {item.id_item}");
+                    Debug.Log($"Nombre del ítem: {item.nombre_item}");
+                    Debug.Log($"Cantidad: {item.cantidad}");
                 }
             }
         }
