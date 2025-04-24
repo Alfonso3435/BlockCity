@@ -89,7 +89,7 @@ public class LoginController : MonoBehaviour
             }
             else
             {
-                mensaje.text = "Correo o contraseña incorrectos.";
+                mensaje.text = "Correo o contraseña incorrectos o no encontrados.";
             }
         }
         else if (request.responseCode == 401)
