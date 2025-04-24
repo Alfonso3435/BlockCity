@@ -50,8 +50,8 @@ public class DBQuizReqHolder : MonoBehaviour
     private string GameType; // Quiz, Memory, Hangman
     private Pregunta[] preguntas;
     private bool isLoggedIn = false;
-    public string urlBD = "http://bd-cryptochicks.cmirgwrejba3.us-east-1.rds.amazonaws.com:3000/";
-
+    //public string urlBD = "http://bd-cryptochicks.cmirgwrejba3.us-east-1.rds.amazonaws.com:3000/";
+    public string urlBD = "http://10.48.66.147:3000/";
     private void Awake()
     {
         Debug.Log("DBQuizReqHolder Awake() llamado.");
@@ -85,6 +85,7 @@ public class DBQuizReqHolder : MonoBehaviour
         Debug.Log($"GameType: {GameType}");
 
         StartCoroutine(GetQuizData(LevelNumber));
+        
     }
 
     public IEnumerator GetQuizData(int NivelID)
@@ -136,7 +137,8 @@ public class DBQuizReqHolder : MonoBehaviour
 
     public IEnumerator GetItemsData(int userID)
     {
-        string url = $"http://localhost:3000/items/{userID}";
+        //string url = $"http://localhost:3000/items/{userID}";
+        string url = $"{urlBD}items/{userID}";
         Debug.Log("Realizando solicitud a: " + url);
 
         using (UnityWebRequest request = UnityWebRequest.Get(url))
