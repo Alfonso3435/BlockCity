@@ -9,6 +9,11 @@ public class MenuController : MonoBehaviour
     private Button botonPlay;
     private Button botonLogin;
 
+    //Error
+    private Button contenedorError;
+    private Button cerrarError;
+    private Label mensaje;
+
     private Button infoButton;
     private Label infoText;
     private Button creditosButton;
@@ -63,12 +68,22 @@ public class MenuController : MonoBehaviour
         menu = GetComponent<UIDocument>();
         var root = menu.rootVisualElement;
         botonPlay = root.Q<Button>("Play");
+
         botonLogin = root.Q<Button>("InicioSesion");
         creditosButton = root.Q<Button>("Creditos");
         infoButton = root.Q<Button>("InfoButton");
         infoText = root.Q<Label>("InfoText");
         infoContainer = root.Q<Button>("InfoContainer");
         cerrarJuegoButton = root.Q<Button>("Cerrar");
+
+        //Error
+        contenedorError = root.Q<Button>("ErrorPopUp");
+        mensaje = root.Q<Label>("Mensaje");
+        cerrarError = root.Q<Button>("CerrarPopUp");
+
+        cerrarError.RegisterCallback<ClickEvent>(CerrarError);
+        contenedorError.RegisterCallback<ClickEvent>(CerrarError);
+        contenedorError.style.display = DisplayStyle.None;
 
         infoText.style.display = DisplayStyle.None;
         infoContainer.style.display = DisplayStyle.None;
@@ -82,19 +97,29 @@ public class MenuController : MonoBehaviour
 
     }
 
+    
+
     private void CheckLogin(ClickEvent evt)
     {
         //DBQuizReqHolder.Instance.SetIsLoggedIn(true);
         if (DBQuizReqHolder.Instance.GetIsLoggedIn() == false)
         {
-            // Mostrar mensaje de error o realizar acción correspondiente
-            Debug.Log("Error: Debes iniciar sesión primero.");
+            contenedorError.style.display = DisplayStyle.Flex;
+            mensaje.text = "You must \nlogin first.";
             return;
         }
         SceneManager.LoadScene("ModuleSelection");
     }
 
-
+    private void CerrarError(ClickEvent evt)
+    {
+        if (contenedorError.style.display == DisplayStyle.Flex)
+        {
+            contenedorError.style.display = DisplayStyle.None;
+            return;
+        }
+        
+    }
     private void MostrarInfo(ClickEvent evt)
     {
         if (infoText.style.display == DisplayStyle.Flex)

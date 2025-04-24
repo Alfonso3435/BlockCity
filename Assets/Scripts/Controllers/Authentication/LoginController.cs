@@ -15,6 +15,9 @@ public class LoginController : MonoBehaviour
 
     private TextField campoCorreo;
     private TextField campoPassword;
+    //Error
+    private Button contenedorError;
+    private Button cerrarError;
     private Label mensaje;
 
     void OnEnable()
@@ -30,6 +33,15 @@ public class LoginController : MonoBehaviour
         campoPassword = root.Q<TextField>("Contrasena");
         mensaje = root.Q<Label>("Mensaje");
 
+        //Error
+        contenedorError = root.Q<Button>("ErrorPopUp");
+        mensaje = root.Q<Label>("Mensaje");
+        cerrarError = root.Q<Button>("CerrarPopUp");
+
+        cerrarError.RegisterCallback<ClickEvent>(CerrarError);
+        contenedorError.RegisterCallback<ClickEvent>(CerrarError);
+        contenedorError.style.display = DisplayStyle.None;
+
         if (mensaje == null)
         {
             mensaje = new Label();
@@ -43,11 +55,11 @@ public class LoginController : MonoBehaviour
 
             if (string.IsNullOrEmpty(correo) || string.IsNullOrEmpty(contrasena))
             {
-                mensaje.text = "Completa ambos campos.";
+                mensaje.text = "You must \nfill both \n text fields.";
                 return;
             }
 
-            mensaje.text = "Conectando...";
+            mensaje.text = "Connecting...";
             StartCoroutine(IniciarSesion(correo, contrasena));
         };
 
@@ -82,24 +94,34 @@ public class LoginController : MonoBehaviour
 
             if (respuesta.Contains("LOGIN_OK"))
             {
-                mensaje.text = "Inicio de sesión exitoso.";
+                mensaje.text = "Success in \n log in.";
                 yield return new WaitForSeconds(1f);
                 DBQuizReqHolder.Instance.SetIsLoggedIn(true);
                 SceneManager.LoadScene("Menu");
             }
             else
             {
-                mensaje.text = "Correo o contraseña incorrectos o no encontrados.";
+                mensaje.text = "Incorrect \nEmail or password \n or not found.";
             }
         }
         else if (request.responseCode == 401)
         {
-            mensaje.text = "Correo o contraseña incorrectos.";
+            mensaje.text = "Invalid credentials.";
         }
         else
         {
-            mensaje.text = "Error de conexión: " + request.responseCode;
+            mensaje.text = "Connection error.";
         }
+    }
+
+    private void CerrarError(ClickEvent evt)
+    {
+        if (contenedorError.style.display == DisplayStyle.Flex)
+        {
+            contenedorError.style.display = DisplayStyle.None;
+            return;
+        }
+        
     }
 
     private void IniciarJuego(ClickEvent evt, String escena)
