@@ -49,8 +49,8 @@ public class DBQuizReqHolder : MonoBehaviour
     private int LevelNumber;
     private string GameType; // Quiz, Memory, Hangman
     private Pregunta[] preguntas;
-
     private bool isLoggedIn = false;
+    public string urlBD = "http://bd-cryptochicks.cmirgwrejba3.us-east-1.rds.amazonaws.com:3000/";
 
     private void Awake()
     {
@@ -89,11 +89,13 @@ public class DBQuizReqHolder : MonoBehaviour
 
     public IEnumerator GetQuizData(int NivelID)
     {
-        string url = $"http://localhost:3000/quiz/{NivelID}";
+        //string url = $"http://localhost:3000/quiz/{NivelID}";
+        string url = $"{urlBD}quiz/{NivelID}";
         Debug.Log("Realizando solicitud a: " + url);
 
         using (UnityWebRequest request = UnityWebRequest.Get(url))
         {
+
             yield return request.SendWebRequest();
 
             if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
@@ -112,20 +114,20 @@ public class DBQuizReqHolder : MonoBehaviour
                 // Acceder a los valores individuales
                 foreach (Pregunta pregunta in preguntas)
                 {
-                    /*
+                    
                     Debug.Log($"Pregunta ID: {pregunta.id_pregunta}");
                     Debug.Log($"Texto de la pregunta: {pregunta.pregunta}");
                     Debug.Log($"Índice correcto: {pregunta.indice_correcto}");
                     Debug.Log($"Explicación: {pregunta.explicacion}"); // Mostrar la explicación
                     Debug.Log($"Tip: {pregunta.tip}");               // Mostrar el tip
-                    */
+                    
 
                     foreach (Respuesta respuesta in pregunta.respuestas)
                     {
-                        /*
+                        
                         Debug.Log($"Índice de respuesta: {respuesta.indice}");
                         Debug.Log($"Texto de respuesta: {respuesta.respuesta}");
-                        */
+                        
                     }
                 }
             }
