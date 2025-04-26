@@ -33,6 +33,20 @@ public class HangmanController : MonoBehaviour
         // Agregar un evento al botón para verificar la letra ingresada
         enviarLetraBtn.clicked += VerificarLetra;
 
+        // Restringir la entrada del campo de texto a una sola letra
+        letraInput.RegisterValueChangedCallback(evt =>
+        {
+            string input = evt.newValue.ToUpper(); // Convertir a mayúsculas
+            if (input.Length > 1) // Si hay más de una letra, tomar solo la primera
+            {
+                letraInput.value = input[0].ToString();
+            }
+            else if (!string.IsNullOrEmpty(input) && !char.IsLetter(input[0])) // Si no es una letra, limpiar el campo
+            {
+                letraInput.value = "";
+            }
+        });
+
         // Iniciar el juego
         IniciarJuego();
     }
