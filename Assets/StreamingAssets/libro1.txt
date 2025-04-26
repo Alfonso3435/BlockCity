@@ -1,6 +1,8 @@
 #Capítulo1
-<size=50><b>Basics of Cryptography</b>
 
+<size=55><b>Basics of Cryptography</b></size>
+
+<size=50>
 <i><b>What is cryptography?</b></i> 
 It is the practice of protecting communication so that only authorized people can read the messages.
 
@@ -8,29 +10,28 @@ It is the practice of protecting communication so that only authorized people ca
 The word "crypto" → "otpYrc" (Easy to decipher, but illustrates how data is transformed).
 
 <i><b>SHA-256: Real security</b></i> 
--> A hash algorithm that converts any text into a long string of numbers and letters.
-
--> Once generated, it cannot be reversed to the original message.
-
--> Protecting information with SHA-256 is so secure that deciphering it would take thousands of times the age of the Earth.
+    -> A hash algorithm that converts any text into a long string of numbers and letters.
+    -> Once generated, it cannot be reversed to the original message.
+    -> Protecting information with SHA-256 is so secure that deciphering it would take thousands of times the age of the Earth.
 
 <i><b>Conclusion:</b></i> 
-Cryptography enables secure communications and protects information from attacks. </size>
-
+Cryptography enables secure communications and protects information from attacks. 
+</size>
 
 --
 
 #Capítulo2
 
-<size=50><b>What's Inside a Blockchain and the Crypto-Economy</b>
+<size=55><b>What's Inside a Blockchain and the Crypto-Economy</b></size>
 
+<size=50>
 <i><b>What is inside a blockchain</b></i>
     The blockchain itself is a ledger of transactions where all operations are recorded. Each block in the chain contains:
         -> Nonce: A random number that helps validate the block.
         -> Hash of the previous block: What links the blocks in the chain.
         -> List of transactions: Validated data within the block.
         -> Hash of the current block: Unique identification of the block.
- Thus, each block is connected to the previous one, forming a secure and immutable chain.
+    Thus, each block is connected to the previous one, forming a secure and immutable chain.
 
 <i><b>The role of miners</b></i>
     Miners validate transactions and build new blocks in the blockchain through a process called Proof of Work (PoW). Their goal is to solve a mathematical puzzle called the miner's riddle, which consists of:
@@ -55,11 +56,11 @@ Cryptography enables secure communications and protects information from attacks
     -> Crowdfunding: Creating and selling your own tokens or cryptocurrencies.
     -> NFT Games: Creating unique items on the blockchain to trade in games.
 
- <i><b>Summary of today</b></i>
- -> What a blockchain is and how it works.
- -> The role of miners and Proof of Work.
- -> How mining difficulties are regulated.
- -> Main business models in blockchain.
+<i><b>Summary of today</b></i>
+    -> What a blockchain is and how it works.
+    -> The role of miners and Proof of Work.
+    -> How mining difficulties are regulated.
+    -> Main business models in blockchain.
 
 Blockchain is not just cryptocurrencies; it is a technological revolution!
 </size>
@@ -68,7 +69,55 @@ Blockchain is not just cryptocurrencies; it is a technological revolution!
 
 #Capítulo3
 
-<b><size=50>Capítulo 3</size></b>
+<b><size=55>What is cryptocurrency? What is a wallet?</size></b>
+
+<size=50>
+<i><b>1. Concept of Blockchain and Transactions</b></i>
+    -> Blockchain is a distributed ledger that securely and transparently stores transactions.  
+    -> Addresses in blockchain are generated through cryptography and show the origin and destination of cryptocurrencies like Bitcoin.  
+    -> Each transaction is recorded in the blockchain in an immutable manner.  
+
+<i><b>2. Cryptocurrencies and Their Use</b></i>
+    -> A cryptocurrency is decentralized digital money.  
+    -> It is not issued or controlled by any central entity, allowing for peer-to-peer exchanges without intermediaries.  
+    -> It can be used anywhere in the world without banking restrictions, facilitating fast and economical transfers.  
+
+<i><b>3. Advantages of Blockchain Technology</b></i>
+    -> Security: Based on cryptography and distributed consensus.  
+    -> Transparency: All transactions are visible on the blockchain.  
+    -> Accessibility: Anyone with internet access can use cryptocurrencies.  
+    -> Independence: It does not depend on traditional financial institutions.  
+
+<i><b>4. Bitcoin and the Mining Process</b></i>  
+    -> Bitcoin is the first decentralized cryptocurrency, created in 2009 by Satoshi Nakamoto.  
+    -> Its issuance is limited to 21 million coins.  
+    -> Mining is the process by which transactions are validated and blocks are added to the blockchain.  
+    -> It uses the "Proof of Work" consensus mechanism, which requires solving complex cryptographic problems.  
+    -> Mining consumes large amounts of energy, but it is still less than that of the traditional banking system.  
+
+<i><b>5. Proof of Stake as an Alternative</b></i>  
+    -> Ethereum, a popular blockchain, uses "Proof of Stake" instead of "Proof of Work."  
+    -> In this model, validators stake a certain amount of cryptocurrency to verify transactions.  
+    -> If they act dishonestly, they can lose their staked funds.  
+    -> It consumes up to 99% less energy compared to Proof of Work.  
+
+<i><b>6. How a Transaction Works in Ethereum</b></i>  
+    -> A user initiates a transaction (e.g., sending funds to another user).  
+    -> The transaction is sent to the "mempool" to be validated.  
+    -> Validators check the legitimacy of the transaction and add it to a block.  
+    -> The transaction is confirmed and reflected on the blockchain.  
+    -> "Gas" fees are paid to prioritize transactions based on network congestion.  
+
+<i><b>7. Ethereum and Its Ecosystem</b></i>  
+    -> Ethereum allows the creation of decentralized applications (DApps) and smart contracts.  
+    -> It is a platform that supports the development of new projects in Web3.  
+    -> Its blockchain not only facilitates cryptocurrency transactions but also the execution of code within smart contracts.  
+
+<i><b>8. Connecting to the Blockchain through Wallets</b></i>  
+    -> To interact with the blockchain, users need a wallet (digital wallet).  
+    -> Wallets store private keys, which allow access and control over funds.  
+    -> A private key is essential for security, as losing it means losing access to the funds.  
+</size>
 
 
 ---
