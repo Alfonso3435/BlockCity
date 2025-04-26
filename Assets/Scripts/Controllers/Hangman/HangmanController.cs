@@ -219,15 +219,10 @@ public class HangmanController : MonoBehaviour
         // Incrementar el nivel actual para pasar al siguiente nivel
         int nextLevel = currentLevel + 1;
         PlayerPrefs.SetInt("CurrentLevel", nextLevel);
+        PlayerPrefs.SetInt("UnlockedLevel", nextLevel); // Guardar el nivel desbloqueado
+        PlayerPrefs.SetInt("TempLevel", nextLevel); // Guardar el nivel temporal
+        PlayerPrefs.SetInt("TempModule", 1); // Guardar el módulo temporal
 
-        // Cargar la escena del siguiente nivel
-        if (nextLevel == 3 || nextLevel == 5)
-        {
-            SceneManager.LoadScene("StageClear"); // Cargar la escena StageClear antes del nivel 3 o 5
-        }
-        else
-        {
-            SceneManager.LoadScene("Lecture"); // Escena de nivel completado
-        }
+        SceneManager.LoadScene("StageClear"); // Cargar la escena de nivel completado
     }
 }

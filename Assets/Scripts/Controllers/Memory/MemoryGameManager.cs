@@ -38,10 +38,10 @@ public class MemoryGameManager : MonoBehaviour, ICardGameManager
         }
     }
 
-    public void ReturnToModuleSelection()
-    {        
-        SceneManager.LoadScene("ModuleSelection");
-    }
+        public void ReturnToModuleSelection()
+        {        
+            SceneManager.LoadScene("ModuleSelection");
+        }
 
     void Start()
     {

@@ -16,6 +16,6 @@ MonoBehaviour:
   - wallet
   - bitcoin
   - crypto
-  - w3
+  - blockchain
   maxFallos: 6
   maxPoints: 1000
