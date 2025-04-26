@@ -1,9 +1,9 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
     <Style src="project://database/Assets/UI/Hangman.uss?fileID=7433441132597879392&amp;guid=108bad13537d94affaf85d9a43250845&amp;type=3#Hangman" />
     <Style src="project://database/Assets/UI/UIRegreso.uss?fileID=7433441132597879392&amp;guid=c2343cd1a0fbaea47a664a72367aceee&amp;type=3#UIRegreso" />
-    <ui:Button name="enviarLetraBtn" style="width: 5%; color: rgb(76, 175, 80); height: 8%; top: 642px; left: 1128px;" />
+    <ui:Button name="enviarLetraBtn" style="width: 5%; color: rgba(76, 175, 80, 0); height: 8%; top: 642px; left: 1128px; -unity-background-image-tint-color: rgb(255, 255, 255); border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0;" />
     <ui:VisualElement class="container" style="align-items: center; justify-content: flex-start; align-self: center; flex-direction: column;">
-        <ui:Label name="Pista" />
+        <ui:Label name="Pista" style="font-size: 40px;" />
         <ui:Label name="palabraOculta" text="_ _ _ _" class="titulo" style="font-size: 40px;" />
         <ui:TextField name="letraInput" label="Letra:" style="font-size: 40px;" />
         <ui:Label name="letrasFalladas" text="Fallos: " style="font-size: 35px; top: 121px;" />
