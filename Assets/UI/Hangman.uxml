@@ -1,17 +1,17 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
     <Style src="project://database/Assets/UI/Hangman.uss?fileID=7433441132597879392&amp;guid=108bad13537d94affaf85d9a43250845&amp;type=3#Hangman" />
     <Style src="project://database/Assets/UI/UIRegreso.uss?fileID=7433441132597879392&amp;guid=c2343cd1a0fbaea47a664a72367aceee&amp;type=3#UIRegreso" />
+    <ui:Button name="enviarLetraBtn" style="width: 5%; color: rgb(76, 175, 80); height: 8%; top: 642px; left: 1128px;" />
     <ui:VisualElement class="container" style="align-items: center; justify-content: flex-start; align-self: center; flex-direction: column;">
         <ui:Label name="Pista" />
-        <ui:Label name="palabraOculta" text="_ _ _ _" class="titulo" />
-        <ui:TextField name="letraInput" label="Letra:" />
-        <ui:Button name="enviarLetraBtn" style="width: 15%; height: 15%;" />
-        <ui:Label name="letrasFalladas" text="Fallos: " />
+        <ui:Label name="palabraOculta" text="_ _ _ _" class="titulo" style="font-size: 40px;" />
+        <ui:TextField name="letraInput" label="Letra:" style="font-size: 40px;" />
+        <ui:Label name="letrasFalladas" text="Fallos: " style="font-size: 35px; top: 121px;" />
     </ui:VisualElement>
-    <ui:VisualElement class="container2" style="flex-grow: 1; height: 10%; width: 80%; min-height: 10%; max-height: 25%;">
-        <ui:Label text="¿Ejemplo de pregunta?" name="pregunta" class="pregunta" style="color: rgb(255, 255, 255);" />
+    <ui:VisualElement class="container2" style="flex-grow: 1; height: 10%; width: 80%; min-height: 10%; max-height: 25%; border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; border-bottom-left-radius: 0; background-image: none;">
+        <ui:Label text="¿Ejemplo de pregunta?" name="pregunta" class="pregunta" />
     </ui:VisualElement>
     <ui:VisualElement class="container3" style="flex-grow: 1;">
-        <ui:Button name="home" class="boton" style="background-image: url(&quot;project://database/Assets/Layer%20Lab/GUI-SimpleRound/ResourcesData/Sprites/Components/ButtonIcons/ButtonIcon_Charcoal/btn_charcoal_home.png?fileID=2800000&amp;guid=cb9446870fa8245f082f404994ea77bb&amp;type=3#btn_charcoal_home&quot;); width: 100px; height: 100px; top: -226px; right: 20px; -unity-background-image-tint-color: rgb(255, 255, 255); background-color: rgba(0, 0, 0, 0); border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0;" />
+        <ui:Button name="home" class="boton" style="background-image: url(&quot;project://database/Assets/Layer%20Lab/GUI-SimpleRound/ResourcesData/Sprites/Components/ButtonIcons/ButtonIcon_Charcoal/btn_charcoal_home.png?fileID=2800000&amp;guid=cb9446870fa8245f082f404994ea77bb&amp;type=3#btn_charcoal_home&quot;); width: 100px; height: 100px; top: -346px; right: 35px; -unity-background-image-tint-color: rgb(255, 255, 255); background-color: rgba(0, 0, 0, 0); border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0;" />
     </ui:VisualElement>
 </ui:UXML>
