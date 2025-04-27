@@ -159,7 +159,7 @@ public class RegisterController : MonoBehaviour
         }
         else
         {
-            mensaje.text = "Connection error";
+            mensaje.text = "Connection error \nor invalid data.";
         }
     }
 

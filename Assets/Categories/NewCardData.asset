@@ -14,32 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelName: Memory
   cardPairs:
-  - concept: 
-    definition: 
-  - concept: 
-    definition: 
-  - concept: 
-    definition: 
-  - concept: 
-    definition: 
-  - concept: 
-    definition: 
-  - concept: 
-    definition: 
-  - concept: 
-    definition: 
-  - concept: 
-    definition: 
-  - concept: 
-    definition: 
-  - concept: 
-    definition: 
-  - concept: 
-    definition: 
-  - concept: 
-    definition: 
-  - concept: 
-    definition: 
-  - concept: 
-    definition: 
-  maxPoints: 1000
+  - concept: C1
+    definition: D1
+  - concept: C2
+    definition: D2
+  - concept: C3
+    definition: D3
+  - concept: C4
+    definition: D4
+  - concept: C5
+    definition: D5
+  - concept: C6
+    definition: D6
+  maxPoints: 3000

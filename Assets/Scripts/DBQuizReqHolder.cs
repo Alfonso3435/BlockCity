@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Networking;
 using System.Collections;
+using System.Data.Common;
 
 [System.Serializable]
 public class Pregunta
@@ -50,16 +51,17 @@ public class DBQuizReqHolder : MonoBehaviour
     private string GameType; // Quiz, Memory, Hangman
     private Pregunta[] preguntas;
     private bool isLoggedIn = false;
+    private int potionCount = 0; // Store the potion count
+    private int shieldCount = 0; // Store the shield count
     //public string urlBD = "http://bd-cryptochicks.cmirgwrejba3.us-east-1.rds.amazonaws.com:3000/";
     public string urlBD = "http://10.48.66.147:3000/";
+    private int userID = 1; // Cambia esto por el ID de usuario real
     private void Awake()
     {
-        Debug.Log("DBQuizReqHolder Awake() llamado.");
         if (Instance == null)
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            Debug.Log("DBQuizReqHolder inicializado.");
         }
         else
         {
@@ -78,13 +80,20 @@ public class DBQuizReqHolder : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        /*
         Debug.Log("Escena cargada: " + scene.name);
-
         Debug.Log($"ModuleID: {ModuleID}");
         Debug.Log($"LevelNumber: {LevelNumber}");
-        Debug.Log($"GameType: {GameType}");
+        Debug.Log($"GameType: {GameType}");¨
+        */
 
+        // This is to avoid having loading screens
         StartCoroutine(GetQuizData(LevelNumber));
+        if (scene.name == "ModuleSelection")
+        {
+            StartCoroutine(GetItemsData(userID)); // Cambia esto por el ID de usuario real
+        }
+        
         
     }
 
@@ -92,7 +101,7 @@ public class DBQuizReqHolder : MonoBehaviour
     {
         //string url = $"http://localhost:3000/quiz/{NivelID}";
         string url = $"{urlBD}quiz/{NivelID}";
-        Debug.Log("Realizando solicitud a: " + url);
+        //Debug.Log("Realizando solicitud a: " + url);
 
         using (UnityWebRequest request = UnityWebRequest.Get(url))
         {
@@ -106,12 +115,13 @@ public class DBQuizReqHolder : MonoBehaviour
             else
             {
                 string jsonResponse = request.downloadHandler.text;
-                Debug.Log("Respuesta recibida: " + jsonResponse);
+                //Debug.Log("Respuesta recibida: " + jsonResponse);
 
                 // Deserializar el JSON utilizando el wrapper
                 PreguntasWrapper preguntasWrapper = JsonUtility.FromJson<PreguntasWrapper>($"{{\"preguntas\":{jsonResponse}}}");
                 preguntas = preguntasWrapper.preguntas;
 
+                /*
                 // Acceder a los valores individuales
                 foreach (Pregunta pregunta in preguntas)
                 {
@@ -131,13 +141,14 @@ public class DBQuizReqHolder : MonoBehaviour
                         
                     }
                 }
+                */
             }
         }
     }
 
     public IEnumerator GetItemsData(int userID)
     {
-        //string url = $"http://localhost:3000/items/{userID}";
+    //string url = $"http://localhost:3000/items/{userID}";
         string url = $"{urlBD}items/{userID}";
         Debug.Log("Realizando solicitud a: " + url);
 
@@ -154,18 +165,58 @@ public class DBQuizReqHolder : MonoBehaviour
                 string jsonResponse = request.downloadHandler.text;
                 Debug.Log("Respuesta recibida: " + jsonResponse);
 
-                // Deserializar el JSON en una lista de ítems
+                // Deserialize the JSON into a list of items
                 Item[] items = JsonUtility.FromJson<ItemsWrapper>($"{{\"items\":{jsonResponse}}}").items;
 
-                // Acceder a los valores individuales
+                // Log all items to the console
+                /*
                 foreach (Item item in items)
                 {
-                    Debug.Log($"ID del ítem: {item.id_item}");
-                    Debug.Log($"Nombre del ítem: {item.nombre_item}");
-                    Debug.Log($"Cantidad: {item.cantidad}");
+                    Debug.Log($"Item ID: {item.id_item}, Name: {item.nombre_item}, Quantity: {item.cantidad}");
                 }
+                */
+
+                // Update potion and shield counts
+                UpdateItemCounts(items);
             }
         }
+    }
+
+    private void UpdateItemCounts(Item[] items)
+    {
+        foreach (Item item in items)
+        {
+            if (item.id_item == 1) // Potion ItemId
+            {
+                shieldCount = item.cantidad;
+            }
+            else if (item.id_item == 2) // Shield ItemId
+            {
+                potionCount = item.cantidad;
+            }
+        }
+    }
+
+
+    public int GetPotionCount()
+    {
+        return potionCount;
+    }
+
+    public void SetPotionCount(int count) // MANDAR DATOS A LA DB
+    {
+        potionCount = count;
+    }
+
+
+    public int GetShieldCount()
+    {
+        return shieldCount;
+    }
+
+    public void SetShieldCount(int count) // MANDAR DATOS A LA DB
+    {
+        shieldCount = count;
     }
 
     // Métodos para ModuleID
@@ -221,5 +272,15 @@ public class DBQuizReqHolder : MonoBehaviour
     public void SetIsLoggedIn(bool loggedIn)
     {
         isLoggedIn = loggedIn;
+    }
+
+    public int GetUserID()
+    {
+        return userID;
+    }
+
+    public void SetUserID(int id)
+    {
+        userID = id;
     }
 }

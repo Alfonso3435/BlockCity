@@ -201,6 +201,9 @@ public class MemoryGameManager : MonoBehaviour, ICardGameManager
         int nextLevel = currentLevel + 1;
         PlayerPrefs.SetInt("CurrentLevel", nextLevel);
 
+        SceneManager.LoadScene("StageClear");
+
+        /*
         // Cargar la escena del siguiente nivel (nivel 3)
         if (nextLevel == 3)
         {
@@ -210,6 +213,7 @@ public class MemoryGameManager : MonoBehaviour, ICardGameManager
         {
             SceneManager.LoadScene("StageClear"); // Escena de nivel completado
         }
+        */
     }
     /*Solo es temporal
     void CompleteLevel()

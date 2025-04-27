@@ -213,7 +213,7 @@ app.get("/items/:id_usuario", (req, res) => {
         SELECT 
             id_item,
             cantidad 
-        FROM item_usuario
+        FROM Item_Usuario
         WHERE id_usuario = ?;`;
 
     db.query(query, [id_usuario], (err, results) => {

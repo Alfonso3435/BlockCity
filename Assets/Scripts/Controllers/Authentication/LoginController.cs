@@ -55,6 +55,7 @@ public class LoginController : MonoBehaviour
 
             if (string.IsNullOrEmpty(correo) || string.IsNullOrEmpty(contrasena))
             {
+                contenedorError.style.display = DisplayStyle.Flex;
                 mensaje.text = "You must \nfill both \n text fields.";
                 return;
             }
@@ -94,6 +95,7 @@ public class LoginController : MonoBehaviour
 
             if (respuesta.Contains("LOGIN_OK"))
             {
+                contenedorError.style.display = DisplayStyle.Flex;
                 mensaje.text = "Success in \n log in.";
                 yield return new WaitForSeconds(1f);
                 DBQuizReqHolder.Instance.SetIsLoggedIn(true);
@@ -101,15 +103,18 @@ public class LoginController : MonoBehaviour
             }
             else
             {
+                contenedorError.style.display = DisplayStyle.Flex;
                 mensaje.text = "Incorrect \nEmail or password \n or not found.";
             }
         }
         else if (request.responseCode == 401)
         {
+            contenedorError.style.display = DisplayStyle.Flex;
             mensaje.text = "Invalid credentials.";
         }
         else
         {
+            contenedorError.style.display = DisplayStyle.Flex;
             mensaje.text = "Connection error.";
         }
     }

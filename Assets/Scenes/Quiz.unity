@@ -642,8 +642,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d181122324e1684fb4a15c252d4ee4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shieldCount: 0
-  potionCount: 0
+  shieldCount: 1
+  potionCount: 1
   PotionPopUp: {fileID: 229210593}
   confirmPotionButton: {fileID: 126525582}
   rejectPotionText: {fileID: 1116021373}
