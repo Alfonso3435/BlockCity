@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class HangmanController : MonoBehaviour
 {
@@ -24,19 +25,39 @@ public class HangmanController : MonoBehaviour
     private Animator hangmanAnimator; // Referencia al Animator para animaciones
 
     [SerializeField]
-    private AudioSource loseAudioSource; // Sonido de derrota
-
-    [SerializeField]
-    private AudioSource winAudioSource; // Sonido de victoria
-
-    [SerializeField]
     private HangmanData hangmanData; // Referencia al ScriptableObject HangmanData
+
+    [SerializeField]
+    private GameObject nextButton; // Botón para continuar al siguiente nivel
     
     public TMP_Text triesText; // Referencia al texto de intentos
     private string word; // Palabra actual del juego
     private int incorrectGuesses, correctGuesses; // Contadores de aciertos y errores
     private int triesLeft; // Intentos restantes
     private int pointsEarned; // Puntos ganados en el nivel
+
+    public Button backButton;
+
+    private void Awake()
+    {
+        // Asegurarse de que el botón "nextButton" esté oculto al inicio
+        if (nextButton != null)
+        {
+            nextButton.SetActive(false);
+        }
+        
+        // Configurar el evento del botón "backButton" para regresar a la selección de módulos
+        if (backButton != null)
+        {
+            backButton.onClick.RemoveAllListeners(); // Eliminar posibles eventos duplicados
+            backButton.onClick.AddListener(ReturnToModuleSelection); // Asignar el evento
+        }
+    }
+
+    public void ReturnToModuleSelection()
+        {        
+            SceneManager.LoadScene("ModuleSelection");
+        }
 
     void Start()
     {
@@ -114,13 +135,6 @@ public class HangmanController : MonoBehaviour
 
     private void checkLetter(string inputLetter)
     {
-        // Validar la entrada del jugador
-        if (string.IsNullOrEmpty(inputLetter) || inputLetter.Length != 1 || !char.IsLetter(inputLetter[0]))
-        {
-            Debug.LogWarning("Entrada inválida: " + inputLetter);
-            return;
-        }
-
         bool letterInWord = false; // Bandera para verificar si la letra está en la palabra
         TextMeshProUGUI[] letters = wordContainer.GetComponentsInChildren<TextMeshProUGUI>();
 
@@ -143,11 +157,6 @@ public class HangmanController : MonoBehaviour
                 hangmanStages[incorrectGuesses - 1].SetActive(true); // Mostrar la siguiente etapa del ahorcado
                 triesLeft--; // Reducir intentos
                 UpdateTriesUI(); // Actualizar la UI de intentos
-
-                if (triesLeft <= 0)
-                {
-                    SceneManager.LoadScene("FailedQuiz"); // Cargar la escena de derrota
-                }
             }
         }
 
@@ -162,12 +171,14 @@ public class HangmanController : MonoBehaviour
         {
             for (int i = 0; i < word.Length; i++)
             {
-                letters[i].color = Color.green; // Cambiar el color de las letras a verde
+                letters[i].color = new Color(0.0f, 0.5f, 0.0f); // Cambiar el color de las letras a un verde oscuro
             }
 
-            CompleteLevel(); // Completar el nivel
+            // Retrasar la llamada a CompleteLevel para que se vea el cambio de color
+            Invoke("CompleteLevel", 2f); // Retraso de 2 segundos
         }
-        else if (incorrectGuesses == hangmanStages.Length) // Perder
+
+        if (incorrectGuesses == hangmanStages.Length) // Perder
         {
             for (int i = 0; i < word.Length; i++)
             {
@@ -175,14 +186,44 @@ public class HangmanController : MonoBehaviour
                 letters[i].text = word[i].ToString(); // Mostrar la palabra completa
             }
 
-            if(hangmanAnimator != null)
+            // Activar la animación de derrota
+            if (hangmanAnimator != null)
             {
-                hangmanAnimator.SetTrigger("flotar"); // Activar la animación de derrota
+                hangmanAnimator.SetTrigger("flotar");
             }
 
-            SceneManager.LoadScene("FailedQuiz"); // Cargar la escena de derrota con un retraso
+            Button buttonComponent = nextButton.GetComponent<Button>(); // Obtener el componente Button
+            if (buttonComponent != null)
+            {
+                buttonComponent.onClick.RemoveAllListeners(); // Asegurarse de no duplicar eventos
+                buttonComponent.onClick.AddListener(LoadFailedLevelScene); // Asignar evento al botón
+            }
+            nextButton.SetActive(true); // Hacer visible el botón
 
+            // Retrasar la aparición del botón hasta que la animación termine
+            //StartCoroutine(ShowNextButtonAfterAnimation(2f)); // Retraso de 2 segundos
         }
+    }
+
+    /*private IEnumerator ShowNextButtonAfterAnimation(float delay)
+    {
+        yield return new WaitForSeconds(delay); // Esperar 60 segundos
+        if (nextButton != null)
+        {
+            Button buttonComponent = nextButton.GetComponent<Button>(); // Obtener el componente Button
+            if (buttonComponent != null)
+            {
+                buttonComponent.onClick.RemoveAllListeners(); // Asegurarse de no duplicar eventos
+                buttonComponent.onClick.AddListener(LoadFailedLevelScene); // Asignar evento al botón
+            }
+            nextButton.SetActive(true); // Hacer visible el botón
+        }
+    }*/
+
+    private void LoadFailedLevelScene()
+    {
+        // Cargar la escena de nivel completado
+        SceneManager.LoadScene("FailedQuiz");
     }
 
     int CalculateStars()
