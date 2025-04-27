@@ -186,10 +186,10 @@ public class HangmanController : MonoBehaviour
                 letters[i].text = word[i].ToString(); // Mostrar la palabra completa
             }
 
-            // Activar la animación de derrota
             if (hangmanAnimator != null)
             {
-                hangmanAnimator.SetTrigger("flotar");
+                hangmanAnimator.SetTrigger("flotar"); // Activar la animación
+                StartCoroutine(StopAnimatorAfterDelay(2f)); // Desactivar el Animator después de 2 segundos
             }
 
             Button buttonComponent = nextButton.GetComponent<Button>(); // Obtener el componente Button
@@ -200,25 +200,17 @@ public class HangmanController : MonoBehaviour
             }
             nextButton.SetActive(true); // Hacer visible el botón
 
-            // Retrasar la aparición del botón hasta que la animación termine
-            //StartCoroutine(ShowNextButtonAfterAnimation(2f)); // Retraso de 2 segundos
         }
     }
 
-    /*private IEnumerator ShowNextButtonAfterAnimation(float delay)
+    private IEnumerator StopAnimatorAfterDelay(float delay)
     {
-        yield return new WaitForSeconds(delay); // Esperar 60 segundos
-        if (nextButton != null)
+        yield return new WaitForSeconds(delay); // Esperar el tiempo especificado
+        if (hangmanAnimator != null)
         {
-            Button buttonComponent = nextButton.GetComponent<Button>(); // Obtener el componente Button
-            if (buttonComponent != null)
-            {
-                buttonComponent.onClick.RemoveAllListeners(); // Asegurarse de no duplicar eventos
-                buttonComponent.onClick.AddListener(LoadFailedLevelScene); // Asignar evento al botón
-            }
-            nextButton.SetActive(true); // Hacer visible el botón
+            hangmanAnimator.enabled = false; // Desactivar el Animator
         }
-    }*/
+    }
 
     private void LoadFailedLevelScene()
     {

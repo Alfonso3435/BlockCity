@@ -439,7 +439,7 @@ MonoBehaviour:
   hangmanData: {fileID: 11400000, guid: b304aeca026f04403a7e1d6b4af20366, type: 2}
   nextButton: {fileID: 349646393}
   triesText: {fileID: 1165859828}
-  backButton: {fileID: 0}
+  backButton: {fileID: 520921081}
 --- !u!4 &69706816
 Transform:
   m_ObjectHideFlags: 0

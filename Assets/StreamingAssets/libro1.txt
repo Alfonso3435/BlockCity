@@ -67,7 +67,7 @@ Blockchain is not just cryptocurrencies; it is a technological revolution!
 
 ---
 
-#Capítulo3
+#Capítulo4
 
 <b><size=55>What is cryptocurrency? What is a wallet?</size></b>
 
@@ -118,12 +118,3 @@ Blockchain is not just cryptocurrencies; it is a technological revolution!
     -> Wallets store private keys, which allow access and control over funds.  
     -> A private key is essential for security, as losing it means losing access to the funds.  
 </size>
-
-
----
-
-#Capítulo4
-
-<b><size=50>Capítulo 4</size></b>
-
-Último capítulo del libro 1. ¡Felicidades por llegar aquí!
