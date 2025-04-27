@@ -37,6 +37,7 @@ db.connect((err) => {
     console.log("Conectado a MySQL (XAMPP)");
 });
 
+
 // Ruta que recibe JSON desde Unity
 app.post("/unity/recibeJSON", (req, res) => {
     const { usuario, hora, tipo } = req.body;
