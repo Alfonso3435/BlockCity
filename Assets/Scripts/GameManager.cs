@@ -112,23 +112,47 @@ public class GameManager : MonoBehaviour
 
     void UsePotion()
     {
+        if (isPotionActive)
+        {
+            // Mostrar mensaje de error si ya hay una poción activa
+            rejectPotionText.text = "You currently have an active booster";
+            rejectPotionText.gameObject.SetActive(true);
+            return;
+        }
+
         if (potionCount > 0)
         {
             potionCount--;
-            PotionText.text = potionCount.ToString(); // Update the UI text
-            //PotionText.text = potionCount.ToString(); // Update the UI text
-            currentQuestionMaxPoints *= 2; // Double the points for the next question
-            isPotionActive = true; // Activate the potion state
+            PotionText.text = potionCount.ToString(); // Actualizar el texto en la UI
+            currentQuestionMaxPoints *= 2; // Duplicar los puntos para la pregunta actual
+            isPotionActive = true; // Activar el estado de la poción
             PotionPopUp.gameObject.SetActive(false);
+            GameObject.Find("ActivateEffect").GetComponent<AudioSource>().Play();
+
+            // Cambiar los colores de los botones inmediatamente
+            foreach (Button button in replyButtons)
+            {
+                button.GetComponent<Image>().color = Color.magenta; // Cambiar a morado
+                button.GetComponentInChildren<TMP_Text>().color = Color.white; // Cambiar texto a blanco
+            }
         }
         else
         {
+            rejectPotionText.text = "No potions available";
             rejectPotionText.gameObject.SetActive(true);
         }
     }
 
     void UseShield()
     {
+        if (isShieldActive)
+        {
+            // Mostrar mensaje de error si ya hay un escudo activo
+            rejectShieldText.text = "You currently have an active shield";
+            rejectShieldText.gameObject.SetActive(true);
+            return;
+        }
+
         if (shieldCount > 0)
         {
             shieldCount--;
@@ -136,9 +160,11 @@ public class GameManager : MonoBehaviour
             wrongAnswersCount = -1; // Evitar que el próximo error cuente como incorrecto
             isShieldActive = true; // Activar el estado del escudo
             ShieldPopUp.gameObject.SetActive(false);
+            GameObject.Find("ActivateEffect").GetComponent<AudioSource>().Play();
         }
         else
         {
+            rejectShieldText.text = "No shields available";
             rejectShieldText.gameObject.SetActive(true);
         }
     }
@@ -159,8 +185,8 @@ public class GameManager : MonoBehaviour
             foreach (Button button in replyButtons)
             {
                 button.GetComponent<Image>().color = Color.magenta; // Cambiar a morado
+                button.GetComponentInChildren<TMP_Text>().color = Color.white; // Cambiar texto a blanco
             }
-            isPotionActive = false; // Restablecer el estado de la poción después de usarla
         }
 
         // Configurar la pregunta actual
@@ -179,11 +205,17 @@ public class GameManager : MonoBehaviour
             {
                 replyButtons[i].GetComponentInChildren<TMP_Text>().text = DBQuizReqHolder.Instance.GetPreguntas()[currentQuestionIndex].respuestas[i].respuesta;
 
-                // Restablecer colores iniciales
-                replyButtons[i].GetComponent<Image>().color = normalButtonColor;
-                replyButtons[i].GetComponentInChildren<TMP_Text>().color = normalTextColor;
+                // Restablecer colores iniciales si la poción ya no está activa
+                if (!isPotionActive)
+                {
+                    replyButtons[i].GetComponent<Image>().color = normalButtonColor;
+                    replyButtons[i].GetComponentInChildren<TMP_Text>().color = normalTextColor;
+                }
             }
         }
+
+        // Desactivar el estado de la poción después de configurar la pregunta
+        isPotionActive = false;
     }
 
     void ResetQuestionState()
@@ -196,23 +228,26 @@ public class GameManager : MonoBehaviour
     void CheckAnswer(int answerIndex)
     {
         Question currentQuestion = selectedCategory.questions[currentQuestionIndex];
-        //bool isCorrect = answerIndex == currentQuestion.correctReplyIndex; // INFO: Este es el índice de la respuesta correcta
         bool isCorrect = answerIndex == DBQuizReqHolder.Instance.GetPreguntas()[currentQuestionIndex].indice_correcto;
         Debug.Log("Correct answer index: " + DBQuizReqHolder.Instance.GetPreguntas()[currentQuestionIndex].indice_correcto);
+
+        // Guardar el valor original de los puntos
+        int originalQuestionMaxPoints = currentQuestionMaxPoints;
+
         if (isCorrect)
         {
-            //int pointsEarned = currentQuestionMaxPoints - (pointsReductionPerMistake * wrongAnswersCount);
             int pointsEarned = (currentQuestionMaxPoints / GetNumberOfQuestions()) - 
-            ((currentQuestionMaxPoints / GetNumberOfQuestions()) / 3) * wrongAnswersCount; // Elgi 3 pensando que es la cantidad de vidas, pero esto es arbitrario
+                ((currentQuestionMaxPoints / GetNumberOfQuestions()) / 3) * wrongAnswersCount;
             totalPointsEarned += pointsEarned;
             ShowFeedbackForCorrectAnswer(currentQuestion, pointsEarned);
         }
         else
         {
-            //totalPointsEarned -= (currentQuestionMaxPoints / GetNumberOfQuestions()) / 3;
             StartCoroutine(FlashWrongAnswerButton(answerIndex));
             HandleWrongAnswer(currentQuestion);
         }
+
+        // No desactivar isPotionActive aquí; se desactivará al pasar a la siguiente pregunta
     }
 
     IEnumerator FlashWrongAnswerButton(int buttonIndex)
@@ -228,10 +263,12 @@ public class GameManager : MonoBehaviour
         // Cambiar colores según el estado del escudo
         if (isShieldActive)
         {
+            GameObject.Find("BlockEffect").GetComponent<AudioSource>().Play();
             buttonImage.color = Color.blue; // Cambiar a azul si el escudo está activo
         }
         else
         {
+            GameObject.Find("IncorrectEffect").GetComponent<AudioSource>().Play();
             buttonImage.color = wrongAnswerColor; // Cambiar a rojo si no hay escudo
         }
         buttonText.color = wrongAnswerTextColor;
@@ -269,7 +306,6 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        GameObject.Find("IncorrectEffect").GetComponent<AudioSource>().Play();
         wrongAnswersCount++;
         quizErrors++;
 
@@ -297,7 +333,14 @@ public class GameManager : MonoBehaviour
     {
         feedbackPanel.SetActive(false);
         triviaGameObject.SetActive(true);
-        
+
+        // Restablecer los puntos al valor original si la poción estaba activa
+        if (isPotionActive)
+        {
+            currentQuestionMaxPoints /= 2; // Restablecer al valor original
+            isPotionActive = false; // Desactivar el estado de la poción
+        }
+
         currentQuestionIndex++;
         DisplayCurrentQuestion();
     }
