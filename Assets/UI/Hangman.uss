@@ -4,7 +4,7 @@
     justify-content: space-between;
     padding: 20px;
     gap: 10px;
-    top: 548px;
+    top: 350px;
     left: 222px;
 }
 
@@ -15,7 +15,6 @@
 }
 
 TextField {
-    width: 200px;
 }
 
 Button {
@@ -25,7 +24,7 @@ Button {
     background-image: url("project://database/Assets/Layer%20Lab/GUI-SimpleRound/ResourcesData/Sprites/Components/ButtonIcons/ButtonIcon_Blue/btn_blue_check.png?fileID=2800000&guid=4c1595a1e6b15405daf5c04fedd82667&type=3#btn_blue_check");
     -unity-background-image-tint-color: rgb(255, 255, 255);
     background-color: rgba(0, 0, 0, 0);
-    height: 20%;
+    height: 35%;
 }
 
 #letrasFalladas {
@@ -39,7 +38,7 @@ Button {
     width: 80%;
     height: 5%;
     align-self: center;
-    bottom: 130px;
+    bottom: 271px;
     align-items: center;
     border-top-width: 15px;
     border-right-width: 15px;
@@ -49,15 +48,19 @@ Button {
     border-right-color: rgb(8, 131, 200);
     border-top-color: rgb(8, 131, 200);
     border-bottom-color: rgb(8, 131, 200);
-    background-color: rgb(8, 131, 200);
+    background-color: rgba(8, 131, 200, 0);
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
     border-bottom-left-radius: 10px;
+    background-image: url("project://database/Assets/Layer%20Lab/GUI-SimpleRound/ResourcesData/Sprites/Components/Popup/Popup00_Button_n.png?fileID=2800000&guid=fcef31193443a4423b79be3c57a51b72&type=3#Popup00_Button_n");
 }
 
 .pregunta {
-    font-size: 30px;
+    font-size: 35px;
+    color: rgb(0, 0, 0);
+    -unity-background-image-tint-color: rgba(255, 255, 255, 0);
+    -unity-font-style: bold;
 }
 
 .container3 {
