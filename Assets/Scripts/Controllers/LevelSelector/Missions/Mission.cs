@@ -1,105 +1,107 @@
 using UnityEngine;
-using TMPro;
 using UnityEngine.UI;
+using TMPro;
+using System.Collections;
 
 public class Mission : MonoBehaviour
 {
     [Header("UI References")]
-    public TMP_Text titleText;
-    public TMP_Text descriptionText;
-    public TMP_Text progressText;
-    public TMP_Text rewardText;
-    public Slider progressSlider;
-    public Image statusBackground;
-    public TMP_Text currentStatusText;
-    public Button claimButton;
+    [SerializeField] private TMP_Text missionTitle;
+    [SerializeField] private TMP_Text missionDescription;
+    [SerializeField] private TMP_Text progressText;
+    [SerializeField] private Slider progressSlider;
+    [SerializeField] private Button claimButton;
+    [SerializeField] private TMP_Text claimButtonText; // Nueva referencia para el texto del botón
 
-    [Header("Colors")]
-    public Color inProgressColor = new Color(0.2f, 0.4f, 0.8f, 1f); // Azul
-    public Color claimableColor = new Color(0.2f, 0.8f, 0.2f, 1f); // Verde
-    public Color claimedColor = new Color(0.2f, 0.5f, 0.2f, 1f); // Verde oscuro
+    private UserQuest currentQuest;
 
-    private MissionData data;
-
-    public void Setup(MissionData missionData)
-{
-    data = missionData;
-    titleText.text = data.missionTitle;
-    descriptionText.text = data.missionDescription;
-    rewardText.text = data.rewardCoins.ToString();
-    
-    // Configurar el slider como no interactuable
-    if (progressSlider != null)
+    private void Awake()
     {
-        progressSlider.interactable = false; // Esto desactiva la interacción
-        progressSlider.maxValue = data.targetProgress;
-        progressSlider.value = PlayerPrefs.GetInt($"Mission_{data.missionID}_Progress", 0);
+        // Obtener la referencia al texto del botón si no está asignada
+        if (claimButton != null && claimButtonText == null)
+        {
+            claimButtonText = claimButton.GetComponentInChildren<TMP_Text>();
+        }
     }
-    
-    claimButton.onClick.RemoveAllListeners();
-    claimButton.onClick.AddListener(OnClaimButtonClicked);
-    
-    UpdateFromPlayerPrefs();
-}
 
-    public void UpdateFromPlayerPrefs()
+    public void Setup(UserQuest quest)
     {
-        int progress = PlayerPrefs.GetInt($"Mission_{data.missionID}_Progress", 0);
-        bool isClaimed = PlayerPrefs.GetInt($"Mission_{data.missionID}_Claimed", 0) == 1;
+        if (quest == null)
+        {
+            Debug.LogError("Se intentó configurar una misión nula");
+            return;
+        }
 
-        progressText.text = $"{progress}/{data.targetProgress}";
-        
+        currentQuest = quest;
+        UpdateUI();
+    }
+
+    private void UpdateUI()
+    {
+        // Verificar componentes antes de usarlos
+        if (missionTitle != null)
+            missionTitle.text = currentQuest.nombre ?? "Sin nombre";
+
+        if (missionDescription != null)
+            missionDescription.text = currentQuest.descrip_quest ?? "Sin descripción";
+
         if (progressSlider != null)
         {
-            progressSlider.maxValue = data.targetProgress;
-            progressSlider.value = progress;
+            progressSlider.maxValue = currentQuest.TargetProgress;
+            progressSlider.value = currentQuest.userProgress;
         }
 
-        UpdateStatusUI(progress, isClaimed);
-    }
+        if (progressText != null)
+            progressText.text = $"{currentQuest.userProgress}/{currentQuest.TargetProgress}";
 
-    private void UpdateStatusUI(int progress, bool isClaimed)
-    {
-        if (isClaimed)
+        // Configurar estado del botón
+        if (claimButton != null && claimButtonText != null)
         {
-            SetStatus("Claimed", claimedColor);
-            claimButton.interactable = false;
-        }
-        else if (progress >= data.targetProgress)
-        {
-            SetStatus("Claim", claimableColor);
-            claimButton.interactable = true;
-        }
-        else
-        {
-            SetStatus("In Progress", inProgressColor);
-            claimButton.interactable = false;
-        }
-    }
-
-    private void SetStatus(string text, Color color)
-    {
-        currentStatusText.text = text;
-        statusBackground.color = color;
-    }
-
-    private void OnClaimButtonClicked()
-    {
-        int progress = PlayerPrefs.GetInt($"Mission_{data.missionID}_Progress", 0);
-        bool isClaimed = PlayerPrefs.GetInt($"Mission_{data.missionID}_Claimed", 0) == 1;
-        
-        if (!isClaimed && progress >= data.targetProgress)
-        {
-            // Añadir recompensa
-            int totalCoins = PlayerPrefs.GetInt("TotalCoins", 0);
-            totalCoins += data.rewardCoins;
-            PlayerPrefs.SetInt("TotalCoins", totalCoins);
+            bool canClaim = currentQuest.completado == 1 && currentQuest.userProgress >= currentQuest.TargetProgress;
+            bool alreadyClaimed = currentQuest.completado == 2;
             
-            // Marcar como reclamada
-            PlayerPrefs.SetInt($"Mission_{data.missionID}_Claimed", 1);
-            UpdateFromPlayerPrefs();
+            claimButton.interactable = canClaim && !alreadyClaimed;
             
-            Debug.Log($"Reclamadas {data.rewardCoins} monedas. Total: {totalCoins}");
+            // Cambiar texto según estado
+            if (alreadyClaimed)
+            {
+                claimButtonText.text = "Claimed";
+            }
+            else if (canClaim)
+            {
+                claimButtonText.text = "Claim Reward";
+            }
+            else
+            {
+                claimButtonText.text = "In Progress";
+            }
         }
+    }
+
+    public void OnClaimButton()
+    {
+        if (claimButton != null)
+            claimButton.interactable = false;
+            
+        StartCoroutine(ClaimReward());
+    }
+
+    private IEnumerator ClaimReward()
+    {
+        if (currentQuest == null || MissionManager.Instance == null)
+        {
+            Debug.LogError("No se puede reclamar recompensa - referencia nula");
+            yield break;
+        }
+
+        yield return MissionManager.Instance.ClaimQuestReward(currentQuest.id_quest);
+        UpdateUI();
+    }
+
+    public void UpdateFromServerData(UserQuest questData)
+    {
+        if (questData == null) return;
+        currentQuest = questData;
+        UpdateUI();
     }
 }

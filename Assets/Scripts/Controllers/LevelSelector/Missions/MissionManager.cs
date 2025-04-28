@@ -1,19 +1,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System.Collections;
 
 public class MissionManager : MonoBehaviour
 {
     public static MissionManager Instance { get; private set; }
 
     [Header("Configuration")]
-    public List<MissionData> allMissions;
     public GameObject missionPrefab;
     public Transform missionsContainer;
     public TMP_Text missionsTitleText;
     
-    private Dictionary<string, Mission> activeMissions = new Dictionary<string, Mission>();
+    private Dictionary<int, Mission> activeMissions = new Dictionary<int, Mission>();
     private float lastUpdateTime;
+    private bool missionsLoaded = false;
+    private List<UserQuest> loadedMissions = new List<UserQuest>();
 
     void Awake()
     {
@@ -28,18 +30,28 @@ public class MissionManager : MonoBehaviour
         }
     }
 
-    void Update()
+    void Start()
     {
-        // Verificar cambios en PlayerPrefs cada segundo (ajustable)
-        if (Time.time - lastUpdateTime > 1f)
-        {
-            CheckForUpdates();
-            lastUpdateTime = Time.time;
-        }
+        StartCoroutine(InitializeMissions());
+    }
+
+    // En MissionManager
+    public IEnumerator InitializeMissions()
+    {   
+        int userId = DBQuizReqHolder.Instance.GetUserID();
+        yield return StartCoroutine(DBQuizReqHolder.Instance.GetUserQuestsData(userId));
+        loadedMissions = new List<UserQuest>(DBQuizReqHolder.Instance.GetUserQuests());
+        missionsLoaded = true;
     }
 
     public void ShowMissions(string panelTitle = "BlockCity Missions")
     {
+        if (!missionsLoaded)
+        {
+            Debug.LogWarning("Las misiones no han terminado de cargarse");
+            return;
+        }
+
         if (missionsTitleText != null)
             missionsTitleText.text = panelTitle;
 
@@ -58,50 +70,57 @@ public class MissionManager : MonoBehaviour
 
     private void CreateMissions()
     {
-        foreach (MissionData missionData in allMissions)
+        if (loadedMissions == null || loadedMissions.Count == 0)
+        {
+            Debug.LogWarning("No hay misiones cargadas para mostrar");
+            return;
+        }
+
+        foreach (UserQuest quest in loadedMissions)
         {
             GameObject missionObj = Instantiate(missionPrefab, missionsContainer);
             Mission missionComponent = missionObj.GetComponent<Mission>();
             
             if (missionComponent != null)
             {
-                missionComponent.Setup(missionData);
-                activeMissions[missionData.missionID] = missionComponent;
+                missionComponent.Setup(quest);
+                activeMissions[quest.id_quest] = missionComponent;
             }
         }
     }
 
-    private void CheckForUpdates()
+    public void UpdateQuestProgress(int questId, int progress)
     {
-        if (!missionsContainer.gameObject.activeInHierarchy)
-            return;
-
-        foreach (var missionPair in activeMissions)
-        {
-            string missionID = missionPair.Key;
-            Mission mission = missionPair.Value;
-            
-            // Solo actualizar si la misión está visible
-            if (mission.gameObject.activeInHierarchy)
-            {
-                mission.UpdateFromPlayerPrefs();
-            }
-        }
+        int userId = DBQuizReqHolder.Instance.GetUserID();
+        StartCoroutine(DBQuizReqHolder.Instance.UpdateQuestProgress(userId, questId, progress));
     }
 
-    [ContextMenu("Reset All Missions")]
-    public void ResetAllMissions()
+    public IEnumerator ClaimQuestReward(int questId)
     {
-        foreach (MissionData mission in allMissions)
-        {
-            PlayerPrefs.DeleteKey($"Mission_{mission.missionID}_Progress");
-            PlayerPrefs.DeleteKey($"Mission_{mission.missionID}_Claimed");
-        }
-        PlayerPrefs.Save();
+        int userId = DBQuizReqHolder.Instance.GetUserID();
+        yield return StartCoroutine(DBQuizReqHolder.Instance.ClaimQuestReward(userId, questId));
+        
+        // Actualizar la lista de misiones después de reclamar
+        yield return StartCoroutine(InitializeMissions());
         
         if (missionsContainer.gameObject.activeInHierarchy)
         {
             ShowMissions();
         }
+    }
+
+    public bool AreMissionsLoaded()
+    {
+        return missionsLoaded;
+    }
+
+    public List<UserQuest> GetAllMissions()
+    {
+        return loadedMissions;
+    }
+
+    public UserQuest GetMissionById(int questId)
+    {
+        return loadedMissions.Find(q => q.id_quest == questId);
     }
 }
