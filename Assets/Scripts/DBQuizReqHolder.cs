@@ -55,7 +55,7 @@ public class DBQuizReqHolder : MonoBehaviour
     private int shieldCount = 0; // Store the shield count
     //public string urlBD = "http://bd-cryptochicks.cmirgwrejba3.us-east-1.rds.amazonaws.com:3000/";
     public string urlBD = "http://10.48.66.147:3000/";
-    private int userID = 1; // Cambia esto por el ID de usuario real
+    private int userID = 10; // Cambia esto por el ID de usuario real
     private void Awake()
     {
         if (Instance == null)
@@ -93,6 +93,7 @@ public class DBQuizReqHolder : MonoBehaviour
         {
             StartCoroutine(GetItemsData(userID)); // Cambia esto por el ID de usuario real
         }
+        Debug.Log($"UserID: {userID}");
         
         
     }

@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using UnityEngine.Networking;
 
 public class GameManager : MonoBehaviour
 {
@@ -123,6 +124,8 @@ public class GameManager : MonoBehaviour
         if (potionCount > 0)
         {
             potionCount--;
+            StartCoroutine(UpdateItemQuantity(DBQuizReqHolder.Instance.GetUserID(), 2, potionCount));
+            DBQuizReqHolder.Instance.SetPotionCount(potionCount); // Actualizar el conteo de pociones en DBQuizReqHolder
             PotionText.text = potionCount.ToString(); // Actualizar el texto en la UI
             currentQuestionMaxPoints *= 2; // Duplicar los puntos para la pregunta actual
             isPotionActive = true; // Activar el estado de la poción
@@ -156,6 +159,8 @@ public class GameManager : MonoBehaviour
         if (shieldCount > 0)
         {
             shieldCount--;
+            StartCoroutine(UpdateItemQuantity(DBQuizReqHolder.Instance.GetUserID(), 1, shieldCount));
+            DBQuizReqHolder.Instance.SetPotionCount(potionCount);
             ShieldText.text = shieldCount.ToString(); // Actualizar el texto en la UI
             wrongAnswersCount = -1; // Evitar que el próximo error cuente como incorrecto
             isShieldActive = true; // Activar el estado del escudo
@@ -388,5 +393,45 @@ public class GameManager : MonoBehaviour
             Debug.LogError("No questions available in DBQuizReqHolder.");
             return 0;
         }
+    }
+
+    private IEnumerator UpdateItemQuantity(int userID, int itemID, int quantity)
+    {
+        string url = DBQuizReqHolder.Instance.urlBD + "items/update";
+
+        ItemUpdateRequest data = new ItemUpdateRequest
+        {
+            id_usuario = userID,
+            id_item = itemID,
+            cantidad = quantity
+        };
+
+        string json = JsonUtility.ToJson(data);
+        byte[] body = System.Text.Encoding.UTF8.GetBytes(json);
+
+        UnityWebRequest request = new UnityWebRequest(url, "PUT");
+        request.uploadHandler = new UploadHandlerRaw(body);
+        request.downloadHandler = new DownloadHandlerBuffer();
+        request.SetRequestHeader("Content-Type", "application/json");
+
+        yield return request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.Success)
+        {
+            Debug.Log("Item quantity updated successfully: " + request.downloadHandler.text);
+        }
+        else
+        {
+            Debug.LogError("Error updating item quantity: " + request.error);
+        }
+    }
+
+    // Class to represent the request body
+    [System.Serializable]
+    public class ItemUpdateRequest
+    {
+        public int id_usuario;
+        public int id_item;
+        public int cantidad;
     }
 }

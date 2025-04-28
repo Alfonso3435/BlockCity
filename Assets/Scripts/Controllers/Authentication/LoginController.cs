@@ -78,9 +78,9 @@ public class LoginController : MonoBehaviour
 
         string json = JsonUtility.ToJson(datos);
         byte[] body = System.Text.Encoding.UTF8.GetBytes(json);
-        //string url = $"http://localhost:3000/quiz/{NivelID}";
+//string url = $"http://localhost:3000/quiz/{NivelID}";
 
-        //UnityWebRequest request = new UnityWebRequest("http://192.168.100.143:3000/login", "POST");
+//UnityWebRequest request = new UnityWebRequest("http://192.168.100.143:3000/login", "POST");
         UnityWebRequest request = new UnityWebRequest("http://localhost:3000/login", "POST");
         request.uploadHandler = new UploadHandlerRaw(body);
         request.downloadHandler = new DownloadHandlerBuffer();
@@ -95,10 +95,15 @@ public class LoginController : MonoBehaviour
 
             if (respuesta.Contains("LOGIN_OK"))
             {
+                // Parse the response to extract id_usuario
+                LoginResponse loginResponse = JsonUtility.FromJson<LoginResponse>(respuesta);
+                DBQuizReqHolder.Instance.SetUserID(loginResponse.id_usuario); // Store the user ID
+
                 contenedorError.style.display = DisplayStyle.Flex;
                 mensaje.text = "Success in \n log in.";
                 yield return new WaitForSeconds(1f);
                 DBQuizReqHolder.Instance.SetIsLoggedIn(true);
+                DBQuizReqHolder.Instance.SetUserID(loginResponse.id_usuario); // Store the user ID
                 SceneManager.LoadScene("Menu");
             }
             else
@@ -139,5 +144,14 @@ public class LoginController : MonoBehaviour
     {
         public string correo;
         public string contrasena;
+    }
+
+    // Class to parse the login response
+    [Serializable]
+    public class LoginResponse
+    {
+        public string status;
+        public int id_usuario;
+        public string nombre_user;
     }
 }
