@@ -131,10 +131,15 @@ public class MenuController : MonoBehaviour
         infoText.style.display = DisplayStyle.Flex;
         infoContainer.style.display = DisplayStyle.Flex;
     }
-
+    /*
     private void CerrarJuego(ClickEvent evt)
     {
         UnityEditor.EditorApplication.isPlaying = false; 
+        Application.Quit(); 
+    }
+    */
+    private void CerrarJuego(ClickEvent evt)
+    {
         Application.Quit(); 
     }
 

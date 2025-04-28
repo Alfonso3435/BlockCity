@@ -232,6 +232,11 @@ app.get("/items/:id_usuario", (req, res) => {
     });
 });
 
+
+// Endpoint to update the quantity of an item for a user
+app.put("/items/update", (req, res) => {
+    const { id_usuario, id_item, cantidad } = req.body;
+
 //Misiones
 app.get("/quests", (req, res) => {
     const query = `
@@ -453,7 +458,30 @@ app.post("/update-quest-progress", (req, res) => {
 
 
 
+    // Validate the input
+    if (!id_usuario || !id_item || cantidad === undefined) {
+        return res.status(400).json({ error: "Faltan campos requeridos" });
+    }
 
+    const query = `
+        UPDATE Item_Usuario
+        SET cantidad = ?
+        WHERE id_usuario = ? AND id_item = ?
+    `;
+
+    db.query(query, [cantidad, id_usuario, id_item], (err, result) => {
+        if (err) {
+            console.error("Error al actualizar el item:", err);
+            return res.status(500).json({ error: "Error en la base de datos" });
+        }
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: "No se encontró el item para este usuario." });
+        }
+
+        res.json({ status: "UPDATE_OK", id_usuario, id_item, cantidad });
+    });
+});
 
 app.listen(puerto, () => {
     console.log(`Servidor escuchando en http://localhost:${puerto}`);
