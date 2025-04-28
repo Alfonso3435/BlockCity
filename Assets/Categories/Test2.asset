@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Test2
   m_EditorClassIdentifier: 
   category: Test2
+  maxPoints: 1000
   questions:
   - questionText: Test 2 Question
     replies:
@@ -23,6 +24,123 @@ MonoBehaviour:
     correctReplyIndex: 2
     explanation: Test 2 Explanation 1
     tip: Tip 1 Test 2
+  - questionText: Test 2 Question 2
+    replies:
+    - 5
+    - 6
+    - 7
+    - 8
+    correctReplyIndex: 3
+    explanation: Explanation question 2 test 2
+    tip: tip 2 test 2
+  - questionText: Test 2 Question 2
+    replies:
+    - 5
+    - 6
+    - 7
+    - 8
+    correctReplyIndex: 3
+    explanation: Explanation question 2 test 2
+    tip: tip 2 test 2
+  - questionText: Test 2 Question 2
+    replies:
+    - 5
+    - 6
+    - 7
+    - 8
+    correctReplyIndex: 3
+    explanation: Explanation question 2 test 2
+    tip: tip 2 test 2
+  - questionText: Test 2 Question 2
+    replies:
+    - 5
+    - 6
+    - 7
+    - 8
+    correctReplyIndex: 3
+    explanation: Explanation question 2 test 2
+    tip: tip 2 test 2
+  - questionText: Test 2 Question 2
+    replies:
+    - 5
+    - 6
+    - 7
+    - 8
+    correctReplyIndex: 3
+    explanation: Explanation question 2 test 2
+    tip: tip 2 test 2
+  - questionText: Test 2 Question 2
+    replies:
+    - 5
+    - 6
+    - 7
+    - 8
+    correctReplyIndex: 3
+    explanation: Explanation question 2 test 2
+    tip: tip 2 test 2
+  - questionText: Test 2 Question 2
+    replies:
+    - 5
+    - 6
+    - 7
+    - 8
+    correctReplyIndex: 3
+    explanation: Explanation question 2 test 2
+    tip: tip 2 test 2
+  - questionText: Test 2 Question 2
+    replies:
+    - 5
+    - 6
+    - 7
+    - 8
+    correctReplyIndex: 3
+    explanation: Explanation question 2 test 2
+    tip: tip 2 test 2
+  - questionText: Test 2 Question 2
+    replies:
+    - 5
+    - 6
+    - 7
+    - 8
+    correctReplyIndex: 3
+    explanation: Explanation question 2 test 2
+    tip: tip 2 test 2
+  - questionText: Test 2 Question 2
+    replies:
+    - 5
+    - 6
+    - 7
+    - 8
+    correctReplyIndex: 3
+    explanation: Explanation question 2 test 2
+    tip: tip 2 test 2
+  - questionText: Test 2 Question 2
+    replies:
+    - 5
+    - 6
+    - 7
+    - 8
+    correctReplyIndex: 3
+    explanation: Explanation question 2 test 2
+    tip: tip 2 test 2
+  - questionText: Test 2 Question 2
+    replies:
+    - 5
+    - 6
+    - 7
+    - 8
+    correctReplyIndex: 3
+    explanation: Explanation question 2 test 2
+    tip: tip 2 test 2
+  - questionText: Test 2 Question 2
+    replies:
+    - 5
+    - 6
+    - 7
+    - 8
+    correctReplyIndex: 3
+    explanation: Explanation question 2 test 2
+    tip: tip 2 test 2
   - questionText: Test 2 Question 2
     replies:
     - 5

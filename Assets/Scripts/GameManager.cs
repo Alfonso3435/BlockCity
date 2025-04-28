@@ -6,6 +6,23 @@ using System.Collections;
 
 public class GameManager : MonoBehaviour
 {
+    // Power-ups
+    private int shieldCount = DBQuizReqHolder.Instance.GetShieldCount(); // Inicializar el escudo desde DBQuizReqHolder
+    private int potionCount = DBQuizReqHolder.Instance.GetPotionCount(); // Inicializar la poción desde DBQuizReqHolder
+
+    public GameObject PotionPopUp;
+    public Button confirmPotionButton;
+    public TMP_Text rejectPotionText;
+
+
+    public GameObject ShieldPopUp;
+    public Button confirmShieldButton;
+    public TMP_Text rejectShieldText;
+
+    // Variables para rastrear poderes activos
+    private bool isShieldActive = false;
+    private bool isPotionActive = false;
+
     [Header("Question Settings")]
     private QuestionData selectedCategory;
     private int currentQuestionIndex;
@@ -49,11 +66,25 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        StartCoroutine(InitializeGameWithItems());
+    }
+
+    private IEnumerator InitializeGameWithItems()
+    {
         currentLevelNumber = QuizDataHolder.Instance.GetLevelNumber();
         currentLevelName = PlayerPrefs.GetString("CurrentLevelName");
         selectedCategory = QuizDataHolder.Instance.GetQuizData();
         currentQuestionMaxPoints = 3000;
-        
+        rejectPotionText.gameObject.SetActive(false);
+        rejectShieldText.gameObject.SetActive(false);
+
+        confirmPotionButton.onClick.AddListener(UsePotion);
+        confirmShieldButton.onClick.AddListener(UseShield);
+
+        // Wait for GetItemsData to complete
+        yield return StartCoroutine(DBQuizReqHolder.Instance.GetItemsData(DBQuizReqHolder.Instance.GetUserID()));
+
+        // Initialize the game after items data is received
         InitializeGame();
     }
 
@@ -71,46 +102,120 @@ public class GameManager : MonoBehaviour
         triviaGameObject.SetActive(true);
         
         DisplayCurrentQuestion();
+        StartCoroutine(DBQuizReqHolder.Instance.GetItemsData(DBQuizReqHolder.Instance.GetUserID()));
+        ShieldText.text = DBQuizReqHolder.Instance.GetShieldCount().ToString();
+        PotionText.text = DBQuizReqHolder.Instance.GetPotionCount().ToString();
+        Debug.Log("Shield count: " + DBQuizReqHolder.Instance.GetShieldCount());
+        Debug.Log("Potion count: " + DBQuizReqHolder.Instance.GetPotionCount());
+        
+    }
+
+    void UsePotion()
+    {
+        if (isPotionActive)
+        {
+            // Mostrar mensaje de error si ya hay una poción activa
+            rejectPotionText.text = "You currently have an active booster";
+            rejectPotionText.gameObject.SetActive(true);
+            return;
+        }
+
+        if (potionCount > 0)
+        {
+            potionCount--;
+            PotionText.text = potionCount.ToString(); // Actualizar el texto en la UI
+            currentQuestionMaxPoints *= 2; // Duplicar los puntos para la pregunta actual
+            isPotionActive = true; // Activar el estado de la poción
+            PotionPopUp.gameObject.SetActive(false);
+            GameObject.Find("ActivateEffect").GetComponent<AudioSource>().Play();
+
+            // Cambiar los colores de los botones inmediatamente
+            foreach (Button button in replyButtons)
+            {
+                button.GetComponent<Image>().color = Color.magenta; // Cambiar a morado
+                button.GetComponentInChildren<TMP_Text>().color = Color.white; // Cambiar texto a blanco
+            }
+        }
+        else
+        {
+            rejectPotionText.text = "No potions available";
+            rejectPotionText.gameObject.SetActive(true);
+        }
+    }
+
+    void UseShield()
+    {
+        if (isShieldActive)
+        {
+            // Mostrar mensaje de error si ya hay un escudo activo
+            rejectShieldText.text = "You currently have an active shield";
+            rejectShieldText.gameObject.SetActive(true);
+            return;
+        }
+
+        if (shieldCount > 0)
+        {
+            shieldCount--;
+            ShieldText.text = shieldCount.ToString(); // Actualizar el texto en la UI
+            wrongAnswersCount = -1; // Evitar que el próximo error cuente como incorrecto
+            isShieldActive = true; // Activar el estado del escudo
+            ShieldPopUp.gameObject.SetActive(false);
+            GameObject.Find("ActivateEffect").GetComponent<AudioSource>().Play();
+        }
+        else
+        {
+            rejectShieldText.text = "No shields available";
+            rejectShieldText.gameObject.SetActive(true);
+        }
     }
 
     void DisplayCurrentQuestion()
     {
         ResetQuestionState();
 
-        if (currentQuestionIndex >= GetNumberOfQuestions()/*selectedCategory.questions.Length*/)
+        if (currentQuestionIndex >= GetNumberOfQuestions())
         {
             CompleteQuiz();
             return;
         }
-        // Conectar estos 3 a la base de datos
-        ShieldText.text = PlayerPrefs.GetInt("Shield").ToString();
-        PotionText.text = PlayerPrefs.GetInt("Potion").ToString();
-        HeartText.text = PlayerPrefs.GetInt("Heart").ToString();
 
+        // Cambiar todos los botones a morado si la poción está activa
+        if (isPotionActive)
+        {
+            foreach (Button button in replyButtons)
+            {
+                button.GetComponent<Image>().color = Color.magenta; // Cambiar a morado
+                button.GetComponentInChildren<TMP_Text>().color = Color.white; // Cambiar texto a blanco
+            }
+        }
+
+        // Configurar la pregunta actual
         currentQuestionText.text = (currentQuestionIndex + 1) + "/" + GetNumberOfQuestions();
         HeartText.text = (lives - quizErrors).ToString();
-        
-        Debug.Log(currentQuestionIndex);
+
         Question currentQuestion = selectedCategory.questions[currentQuestionIndex];
-        //questionText.text = currentQuestion.questionText; // INFO: Este es el texto de la pregunta
         questionText.text = DBQuizReqHolder.Instance.GetPreguntas()[currentQuestionIndex].pregunta;
 
-        
         for (int i = 0; i < replyButtons.Length; i++)
         {
             bool shouldActivate = i < currentQuestion.replies.Length;
             replyButtons[i].gameObject.SetActive(shouldActivate);
-            
+
             if (shouldActivate)
             {
-                //replyButtons[i].GetComponentInChildren<TMP_Text>().text = currentQuestion.replies[i]; // INFO: Este es el texto de la respuesta
                 replyButtons[i].GetComponentInChildren<TMP_Text>().text = DBQuizReqHolder.Instance.GetPreguntas()[currentQuestionIndex].respuestas[i].respuesta;
-                
-                // Restablecer colores iniciales
-                replyButtons[i].GetComponent<Image>().color = normalButtonColor;
-                replyButtons[i].GetComponentInChildren<TMP_Text>().color = normalTextColor;
+
+                // Restablecer colores iniciales si la poción ya no está activa
+                if (!isPotionActive)
+                {
+                    replyButtons[i].GetComponent<Image>().color = normalButtonColor;
+                    replyButtons[i].GetComponentInChildren<TMP_Text>().color = normalTextColor;
+                }
             }
         }
+
+        // Desactivar el estado de la poción después de configurar la pregunta
+        isPotionActive = false;
     }
 
     void ResetQuestionState()
@@ -123,23 +228,26 @@ public class GameManager : MonoBehaviour
     void CheckAnswer(int answerIndex)
     {
         Question currentQuestion = selectedCategory.questions[currentQuestionIndex];
-        //bool isCorrect = answerIndex == currentQuestion.correctReplyIndex; // INFO: Este es el índice de la respuesta correcta
         bool isCorrect = answerIndex == DBQuizReqHolder.Instance.GetPreguntas()[currentQuestionIndex].indice_correcto;
         Debug.Log("Correct answer index: " + DBQuizReqHolder.Instance.GetPreguntas()[currentQuestionIndex].indice_correcto);
+
+        // Guardar el valor original de los puntos
+        int originalQuestionMaxPoints = currentQuestionMaxPoints;
+
         if (isCorrect)
         {
-            //int pointsEarned = currentQuestionMaxPoints - (pointsReductionPerMistake * wrongAnswersCount);
             int pointsEarned = (currentQuestionMaxPoints / GetNumberOfQuestions()) - 
-            ((currentQuestionMaxPoints / GetNumberOfQuestions()) / 3) * wrongAnswersCount; // Elgi 3 pensando que es la cantidad de vidas, pero esto es arbitrario
+                ((currentQuestionMaxPoints / GetNumberOfQuestions()) / 3) * wrongAnswersCount;
             totalPointsEarned += pointsEarned;
             ShowFeedbackForCorrectAnswer(currentQuestion, pointsEarned);
         }
         else
         {
-            //totalPointsEarned -= (currentQuestionMaxPoints / GetNumberOfQuestions()) / 3;
             StartCoroutine(FlashWrongAnswerButton(answerIndex));
             HandleWrongAnswer(currentQuestion);
         }
+
+        // No desactivar isPotionActive aquí; se desactivará al pasar a la siguiente pregunta
     }
 
     IEnumerator FlashWrongAnswerButton(int buttonIndex)
@@ -147,21 +255,33 @@ public class GameManager : MonoBehaviour
         Button wrongButton = replyButtons[buttonIndex];
         Image buttonImage = wrongButton.GetComponent<Image>();
         TMP_Text buttonText = wrongButton.GetComponentInChildren<TMP_Text>();
-        
+
         // Guardar los colores originales
         Color originalButtonColor = buttonImage.color;
         Color originalTextColor = buttonText.color;
-        
-        // Cambiar a colores de feedback
-        buttonImage.color = wrongAnswerColor;
+
+        // Cambiar colores según el estado del escudo
+        if (isShieldActive)
+        {
+            GameObject.Find("BlockEffect").GetComponent<AudioSource>().Play();
+            buttonImage.color = Color.blue; // Cambiar a azul si el escudo está activo
+        }
+        else
+        {
+            GameObject.Find("IncorrectEffect").GetComponent<AudioSource>().Play();
+            buttonImage.color = wrongAnswerColor; // Cambiar a rojo si no hay escudo
+        }
         buttonText.color = wrongAnswerTextColor;
-        
+
         // Esperar el tiempo especificado
         yield return new WaitForSeconds(flashDuration);
-        
+
         // Restaurar colores originales
         buttonImage.color = originalButtonColor;
         buttonText.color = originalTextColor;
+
+        // Restablecer el estado del escudo después de usarlo
+        isShieldActive = false;
     }
 
     void ShowFeedbackForCorrectAnswer(Question question, int pointsEarned)
@@ -179,20 +299,25 @@ public class GameManager : MonoBehaviour
 
     void HandleWrongAnswer(Question currentQuestion)
     {
-        GameObject.Find("IncorrectEffect").GetComponent<AudioSource>().Play();
+        if (wrongAnswersCount == -1)
+        {
+            // Si el escudo está activo, ignorar el error
+            wrongAnswersCount = 0; // Restablecer el contador de errores
+            return;
+        }
+
         wrongAnswersCount++;
         quizErrors++;
 
         HeartText.text = (lives - quizErrors).ToString();
-        
+
         if (wrongAnswersCount == 1 && !hasShownTipForCurrentQuestion && !string.IsNullOrEmpty(currentQuestion.tip))
         {
-            //ShowTip(currentQuestion.tip);
             ShowTip(DBQuizReqHolder.Instance.GetPreguntas()[currentQuestionIndex].tip);
             hasShownTipForCurrentQuestion = true;
         }
-        
-        if (quizErrors >= 3) // I chose 5 as it is the initial amount of lives, but this can be changed
+
+        if (quizErrors >= 3)
         {
             SceneManager.LoadScene("FailedQuiz");
         }
@@ -208,7 +333,14 @@ public class GameManager : MonoBehaviour
     {
         feedbackPanel.SetActive(false);
         triviaGameObject.SetActive(true);
-        
+
+        // Restablecer los puntos al valor original si la poción estaba activa
+        if (isPotionActive)
+        {
+            currentQuestionMaxPoints /= 2; // Restablecer al valor original
+            isPotionActive = false; // Desactivar el estado de la poción
+        }
+
         currentQuestionIndex++;
         DisplayCurrentQuestion();
     }

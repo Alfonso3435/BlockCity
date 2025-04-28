@@ -5515,7 +5515,7 @@ MonoBehaviour:
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -5771,7 +5771,7 @@ MonoBehaviour:
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -6036,7 +6036,7 @@ MonoBehaviour:
   - {fileID: 1275625624}
   starSprite: {fileID: 21300000, guid: 431ac49a5842d41fea4c5f19b068c88a, type: 3}
   quizData: {fileID: 0}
-  cardData: {fileID: 0}
+  cardData: {fileID: 11400000, guid: c34e97e0b92eb4a6dbe12c5c117a4cbc, type: 2}
   hangmanData: {fileID: 0}
   levelNum: 2
   quizSceneName: Quiz
@@ -6906,7 +6906,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22307fbbb80f50c4e964f454f90add96, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unlocked: 0
+  unlocked: 1
   unlockImage: {fileID: 730367871}
   stars:
   - {fileID: 1437963897}

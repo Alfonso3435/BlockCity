@@ -9,12 +9,23 @@ const puerto = 3000;
 app.use(cors());
 app.use(bodyParser.json());
 
+/*
 const db = mysql.createConnection({
     host: "localhost",
+    // host: "10.48.108.185",
     user: "root",
     password: "",
     port: 3306,
     database: "CryptoGame",
+});
+*/
+
+const db = mysql.createConnection({
+    host: "bd-cryptochicks.cmirgwrejba3.us-east-1.rds.amazonaws.com",
+    user: "admin", // Cambia esto por tu usuario real de RDS
+    password: "Cryptonenas", // Cambia esto por tu contraseña real de RDS
+    port: 3306,
+    database: "CryptoGame"
 });
 
 // Conecta con la base de datos
@@ -25,6 +36,7 @@ db.connect((err) => {
     }
     console.log("Conectado a MySQL (XAMPP)");
 });
+
 
 // Ruta que recibe JSON desde Unity
 app.post("/unity/recibeJSON", (req, res) => {
@@ -101,8 +113,8 @@ app.post("/registro", (req, res) => {
 
             // Insertar nuevo usuario
             const insertQuery = `
-                INSERT INTO Usuarios (correo, contrasena, nombre_user, nombre_comp, nacionalidad, fecha_nacimiento, vidas)
-                VALUES (?, ?, ?, ?, ?, ?, 3)
+                INSERT INTO Usuarios (correo, contrasena, nombre_user, nombre_comp, nacionalidad, fecha_nacimiento)
+                VALUES (?, ?, ?, ?, ?, ?)
             `;
             db.query(insertQuery, [correo, contrasena, nombre_user, nombre_comp, nacionalidad, fecha_nacimiento], (err) => {
                 if (err) {
@@ -202,7 +214,7 @@ app.get("/items/:id_usuario", (req, res) => {
         SELECT 
             id_item,
             cantidad 
-        FROM item_usuario
+        FROM Item_Usuario
         WHERE id_usuario = ?;`;
 
     db.query(query, [id_usuario], (err, results) => {
