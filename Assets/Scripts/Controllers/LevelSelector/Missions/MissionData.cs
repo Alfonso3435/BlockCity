@@ -8,15 +8,5 @@ public class MissionData : ScriptableObject
     [TextArea] public string missionDescription;
     public int targetProgress;
     public int rewardCoins;
-    public MissionType missionType;
 }
 
-public enum MissionType
-{
-    Trivia,
-    Memory,
-    Hangman,
-    Streak,
-    Points,
-    Daily
-}

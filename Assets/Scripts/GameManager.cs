@@ -347,6 +347,13 @@ public class GameManager : MonoBehaviour
 
     void CompleteQuiz()
     {
+        // Cuando el jugador responde correctamente
+        int triviaMissionId = 2; // ID de misión "Completar trivia"
+        DBQuizReqHolder.Instance.StartCoroutine(
+        DBQuizReqHolder.Instance.IncrementQuestProgress(triviaMissionId)
+        );
+        Debug.Log("Incrementing trivia mission progress");
+        
         string missionID = "2";
         int currentProgress = PlayerPrefs.GetInt($"Mission_{missionID}_Progress", 0);
         PlayerPrefs.SetInt($"Mission_{missionID}_Progress", currentProgress + 1);

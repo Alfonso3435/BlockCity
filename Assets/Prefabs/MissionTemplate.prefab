@@ -231,17 +231,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24f661cd551e24b4b968074d0abb0c0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  titleText: {fileID: 6509460195833028462}
-  descriptionText: {fileID: 7474434145423493711}
+  missionTitle: {fileID: 6509460195833028462}
+  missionDescription: {fileID: 7474434145423493711}
   progressText: {fileID: 865299395358966017}
-  rewardText: {fileID: 6142669738762201749}
   progressSlider: {fileID: 5369234029400988907}
-  statusBackground: {fileID: 625974803148283499}
-  currentStatusText: {fileID: 4791397575572846675}
   claimButton: {fileID: 663405649211454603}
-  inProgressColor: {r: 0.2, g: 0.4, b: 0.8, a: 1}
-  claimableColor: {r: 0.2, g: 0.8, b: 0.2, a: 1}
-  claimedColor: {r: 0.2, g: 0.5, b: 0.2, a: 1}
+  claimButtonText: {fileID: 4791397575572846675}
 --- !u!1 &544352436610591930
 GameObject:
   m_ObjectHideFlags: 0
