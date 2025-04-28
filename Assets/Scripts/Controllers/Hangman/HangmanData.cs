@@ -5,4 +5,5 @@ public class HangmanData : ScriptableObject
 {
     public string[] palabras = { "wallet", "bitcoin", "crypto", "w3" }; // Banco de palabras por defecto
     public int maxFallos = 6; // Número máximo de fallos
+    public int maxPoints = 1000; // Puntos máximos por nivel
 }
