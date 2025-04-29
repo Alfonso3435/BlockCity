@@ -237,7 +237,31 @@ app.get("/items/:id_usuario", (req, res) => {
 app.put("/items/update", (req, res) => {
     const { id_usuario, id_item, cantidad } = req.body;
 
-//Misiones
+    // Validate the input
+    if (!id_usuario || !id_item || cantidad === undefined) {
+        return res.status(400).json({ error: "Faltan campos requeridos" });
+    }
+
+    const query = `
+        UPDATE Item_Usuario
+        SET cantidad = ?
+        WHERE id_usuario = ? AND id_item = ?
+    `;
+
+    db.query(query, [cantidad, id_usuario, id_item], (err, result) => {
+        if (err) {
+            console.error("Error al actualizar el item:", err);
+            return res.status(500).json({ error: "Error en la base de datos" });
+        }
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: "No se encontró el item para este usuario." });
+        }
+
+        res.json({ status: "UPDATE_OK", id_usuario, id_item, cantidad });
+    });
+});
+
 app.get("/quests", (req, res) => {
     const query = `
        SELECT 
@@ -346,57 +370,121 @@ app.post("/increment-quest-progress", (req, res) => {
 
 // Endpoint para reclamar recompensa (modificado)
 app.post("/claim-quest-reward", (req, res) => {
+    console.log("Solicitud para reclamar recompensa recibida:", req.body);
+    
     const { userId, questId } = req.body;
-
+    
     if (!userId || !questId) {
-        return res.status(400).json({ error: "Faltan parámetros requeridos" });
+        console.error("Faltan parámetros requeridos");
+        return res.status(400).json({ 
+            success: false,
+            error: "Se requieren userId y questId" 
+        });
     }
 
-    // Verificar que la misión está completada pero no reclamada
+    // 1. Verificar estado actual de la misión
     const checkQuery = `
-        SELECT q.RewardCoins, uq.completado, uq.Progress, q.TargetProgress
+        SELECT q.RewardCoins, uq.completado, uq.reclamado
         FROM Usuario_quest uq
         JOIN Quests q ON uq.id_quest = q.id_quest
-        WHERE uq.id_usuario = ? AND uq.id_quest = ? AND uq.completado = 1 AND uq.reclamado = FALSE
+        WHERE uq.id_usuario = ? AND uq.id_quest = ?
     `;
 
     db.query(checkQuery, [userId, questId], (err, results) => {
         if (err) {
             console.error("Error al verificar misión:", err);
-            return res.status(500).json({ error: "Error en la base de datos" });
+            return res.status(500).json({ 
+                success: false,
+                error: "Error en la base de datos" 
+            });
         }
 
         if (results.length === 0) {
-            return res.status(400).json({ error: "La misión no está lista para reclamar" });
+            console.error("Misión no encontrada para el usuario");
+            return res.status(404).json({ 
+                success: false,
+                error: "Misión no encontrada" 
+            });
         }
 
         const mission = results[0];
         
-        // Actualizar monedas y marcar como reclamada
-        const updateQuery = `
-            START TRANSACTION;
-            
-            UPDATE Usuarios 
-            SET coins = coins + ?
-            WHERE id_usuario = ?;
-            
-            UPDATE Usuario_quest
-            SET completado = 2, reclamado = TRUE
-            WHERE id_usuario = ? AND id_quest = ?;
-            
-            COMMIT;
-        `;
+        // 2. Validar que se pueda reclamar
+        if (mission.completado !== 1 || mission.reclamado) {
+            console.error("La misión no está lista para reclamar", {
+                completado: mission.completado,
+                reclamado: mission.reclamado
+            });
+            return res.status(400).json({ 
+                success: false,
+                error: "La misión no está lista para reclamar" 
+            });
+        }
 
-        db.query(updateQuery, [mission.RewardCoins, userId, userId, questId], (err, results) => {
-            if (err) {
-                console.error("Error al reclamar recompensa:", err);
-                return res.status(500).json({ error: "Error en la base de datos" });
+        // 3. Iniciar transacción
+        db.query("START TRANSACTION", (transactionErr) => {
+            if (transactionErr) {
+                console.error("Error en transacción:", transactionErr);
+                return res.status(500).json({ 
+                    success: false,
+                    error: "Error al iniciar transacción" 
+                });
             }
 
-            res.json({ 
-                success: true, 
-                coinsAwarded: mission.RewardCoins,
-                newStatus: 2
+            // 4. Actualizar monedas del usuario
+            const updateCoinsQuery = `
+                UPDATE Usuarios 
+                SET coins = coins + ?
+                WHERE id_usuario = ?
+            `;
+            
+            db.query(updateCoinsQuery, [mission.RewardCoins, userId], (coinsErr, coinsResult) => {
+                if (coinsErr) {
+                    return db.query("ROLLBACK", () => {
+                        console.error("Error al actualizar monedas:", coinsErr);
+                        res.status(500).json({ 
+                            success: false,
+                            error: "Error al actualizar monedas" 
+                        });
+                    });
+                }
+
+                // 5. Marcar misión como reclamada
+                const updateQuestQuery = `
+                    UPDATE Usuario_quest
+                    SET completado = 2, reclamado = TRUE
+                    WHERE id_usuario = ? AND id_quest = ?
+                `;
+                
+                db.query(updateQuestQuery, [userId, questId], (questErr, questResult) => {
+                    if (questErr) {
+                        return db.query("ROLLBACK", () => {
+                            console.error("Error al actualizar misión:", questErr);
+                            res.status(500).json({ 
+                                success: false,
+                                error: "Error al actualizar misión" 
+                            });
+                        });
+                    }
+
+                    // 6. Confirmar transacción
+                    db.query("COMMIT", (commitErr) => {
+                        if (commitErr) {
+                            console.error("Error al confirmar transacción:", commitErr);
+                            return res.status(500).json({ 
+                                success: false,
+                                error: "Error al confirmar transacción" 
+                            });
+                        }
+
+                        console.log("Recompensa reclamada con éxito para usuario:", userId, "misión:", questId);
+                        res.json({ 
+                            success: true,
+                            coinsAwarded: mission.RewardCoins,
+                            newStatus: 2
+                        });
+                    });
+                });
             });
         });
     });
@@ -456,32 +544,6 @@ app.post("/update-quest-progress", (req, res) => {
     });
 });
 
-
-
-    // Validate the input
-    if (!id_usuario || !id_item || cantidad === undefined) {
-        return res.status(400).json({ error: "Faltan campos requeridos" });
-    }
-
-    const query = `
-        UPDATE Item_Usuario
-        SET cantidad = ?
-        WHERE id_usuario = ? AND id_item = ?
-    `;
-
-    db.query(query, [cantidad, id_usuario, id_item], (err, result) => {
-        if (err) {
-            console.error("Error al actualizar el item:", err);
-            return res.status(500).json({ error: "Error en la base de datos" });
-        }
-
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ error: "No se encontró el item para este usuario." });
-        }
-
-        res.json({ status: "UPDATE_OK", id_usuario, id_item, cantidad });
-    });
-});
 
 app.listen(puerto, () => {
     console.log(`Servidor escuchando en http://localhost:${puerto}`);

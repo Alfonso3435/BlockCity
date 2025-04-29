@@ -237,6 +237,7 @@ MonoBehaviour:
   progressSlider: {fileID: 5369234029400988907}
   claimButton: {fileID: 663405649211454603}
   claimButtonText: {fileID: 4791397575572846675}
+  rewardText: {fileID: 6142669738762201749}
 --- !u!1 &544352436610591930
 GameObject:
   m_ObjectHideFlags: 0
@@ -1360,7 +1361,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 625974803148283499}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 8029382671132001040}
+        m_TargetAssemblyTypeName: Mission, Assembly-CSharp
+        m_MethodName: OnClaimButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &7822441784440892857
 GameObject:
   m_ObjectHideFlags: 0

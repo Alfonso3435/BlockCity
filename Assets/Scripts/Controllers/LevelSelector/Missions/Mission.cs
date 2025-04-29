@@ -9,6 +9,8 @@ public class Mission : MonoBehaviour
     [SerializeField] private TMP_Text missionTitle;
     [SerializeField] private TMP_Text missionDescription;
     [SerializeField] private TMP_Text progressText;
+    [SerializeField] private TMP_Text rewardText;
+    
     [SerializeField] private Slider progressSlider;
     [SerializeField] private Button claimButton;
     [SerializeField] private TMP_Text claimButtonText; // Nueva referencia para el texto del botón
@@ -51,6 +53,12 @@ public class Mission : MonoBehaviour
             progressSlider.value = currentQuest.userProgress;
         }
 
+        if (rewardText != null)
+        {
+            rewardText.text = $"{currentQuest.RewardCoins}";
+        }
+
+
         if (progressText != null)
             progressText.text = $"{currentQuest.userProgress}/{currentQuest.TargetProgress}";
 
@@ -80,23 +88,53 @@ public class Mission : MonoBehaviour
 
     public void OnClaimButton()
     {
+        Debug.Log("Claim button clicked!");
         if (claimButton != null)
             claimButton.interactable = false;
+        
             
         StartCoroutine(ClaimReward());
     }
 
     private IEnumerator ClaimReward()
+{
+    if (currentQuest == null || MissionManager.Instance == null)
     {
-        if (currentQuest == null || MissionManager.Instance == null)
-        {
-            Debug.LogError("No se puede reclamar recompensa - referencia nula");
-            yield break;
-        }
+        Debug.LogError("No se puede reclamar recompensa - referencia nula");
+        yield break;
+    }
 
-        yield return MissionManager.Instance.ClaimQuestReward(currentQuest.id_quest);
+    // Desactivar el botón inmediatamente
+    if (claimButton != null)
+    {
+        claimButton.interactable = false;
+        claimButtonText.text = "Processing...";
+    }
+
+    // Llamar al manager para reclamar
+    yield return MissionManager.Instance.ClaimQuestReward(currentQuest.id_quest);
+
+    // Forzar actualización de datos
+    yield return MissionManager.Instance.InitializeMissions();
+
+    // Actualizar UI con los nuevos datos
+    var updatedQuest = MissionManager.Instance.GetMissionById(currentQuest.id_quest);
+    if (updatedQuest != null)
+    {
+        currentQuest = updatedQuest;
         UpdateUI();
     }
+    else
+    {
+        Debug.LogError("No se pudo obtener la misión actualizada del manager");
+    }
+
+    // Verificación adicional
+    if (claimButton != null && currentQuest.completado == 2)
+    {
+        claimButtonText.text = "Claimed";
+    }
+}
 
     public void UpdateFromServerData(UserQuest questData)
     {

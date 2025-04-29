@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using System.Collections;
+using System.Linq;
+using UnityEngine.Networking;
 
 public class MissionManager : MonoBehaviour
 {
@@ -96,18 +98,51 @@ public class MissionManager : MonoBehaviour
     }
 
     public IEnumerator ClaimQuestReward(int questId)
+{
+    int userId = DBQuizReqHolder.Instance.GetUserID();
+    string url = $"{DBQuizReqHolder.Instance.urlBD}claim-quest-reward";
+    
+    Debug.Log($"Intentando reclamar recompensa para misión {questId}, usuario {userId}");
+    
+    WWWForm form = new WWWForm();
+    form.AddField("userId", userId);
+    form.AddField("questId", questId);
+
+    using (UnityWebRequest request = UnityWebRequest.Post(url, form))
     {
-        int userId = DBQuizReqHolder.Instance.GetUserID();
-        yield return StartCoroutine(DBQuizReqHolder.Instance.ClaimQuestReward(userId, questId));
-        
-        // Actualizar la lista de misiones después de reclamar
+        request.timeout = 10;
+        yield return request.SendWebRequest();
+
+        if (request.result != UnityWebRequest.Result.Success)
+        {
+            Debug.LogError($"Error al reclamar: {request.error}");
+            Debug.LogError($"Respuesta: {request.downloadHandler.text}");
+            yield break;
+        }
+
+        Debug.Log($"Recompensa reclamada con éxito: {request.downloadHandler.text}");
+
+        // Actualizar datos locales inmediatamente
+        var quest = loadedMissions.FirstOrDefault(q => q.id_quest == questId);
+        if (quest != null)
+        {
+            quest.completado = 2; // Marcamos como reclamada localmente
+        }
+
+        // Actualizar datos desde el servidor
         yield return StartCoroutine(InitializeMissions());
         
-        if (missionsContainer.gameObject.activeInHierarchy)
+        // Notificar a las misiones activas para actualizar su UI
+        if (activeMissions.TryGetValue(questId, out Mission mission))
         {
-            ShowMissions();
+            var updatedQuest = loadedMissions.FirstOrDefault(q => q.id_quest == questId);
+            if (updatedQuest != null)
+            {
+                mission.UpdateFromServerData(updatedQuest);
+            }
         }
     }
+}
 
     public bool AreMissionsLoaded()
     {

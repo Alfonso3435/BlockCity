@@ -166,6 +166,16 @@ public class GameManager : MonoBehaviour
             isShieldActive = true; // Activar el estado del escudo
             ShieldPopUp.gameObject.SetActive(false);
             GameObject.Find("ActivateEffect").GetComponent<AudioSource>().Play();
+            
+            int triviaMissionId = 3; // ID de misión "Completar trivia"
+            DBQuizReqHolder.Instance.StartCoroutine(
+            DBQuizReqHolder.Instance.IncrementQuestProgress(triviaMissionId)
+            );
+            Debug.Log("Incrementing trivia mission progress");
+            
+            string missionID = "3";
+            int currentProgress = PlayerPrefs.GetInt($"Mission_{missionID}_Progress", 0);
+            PlayerPrefs.SetInt($"Mission_{missionID}_Progress", currentProgress + 1);
         }
         else
         {
@@ -353,13 +363,13 @@ public class GameManager : MonoBehaviour
     void CompleteQuiz()
     {
         // Cuando el jugador responde correctamente
-        int triviaMissionId = 2; // ID de misión "Completar trivia"
+        int triviaMissionId = 1; // ID de misión "Completar trivia"
         DBQuizReqHolder.Instance.StartCoroutine(
         DBQuizReqHolder.Instance.IncrementQuestProgress(triviaMissionId)
         );
         Debug.Log("Incrementing trivia mission progress");
         
-        string missionID = "2";
+        string missionID = "1";
         int currentProgress = PlayerPrefs.GetInt($"Mission_{missionID}_Progress", 0);
         PlayerPrefs.SetInt($"Mission_{missionID}_Progress", currentProgress + 1);
 
