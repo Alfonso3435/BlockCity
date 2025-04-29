@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
@@ -8,6 +9,7 @@ public class ModulesController : MonoBehaviour
    private UIDocument modulos;
     private Button moduloA; 
     private Button moduloB;
+    //public TMP_Text textoCoins;
 
     void OnEnable(){
         modulos = GetComponent<UIDocument>();

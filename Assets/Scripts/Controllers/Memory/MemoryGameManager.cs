@@ -9,7 +9,6 @@ using UnityEngine.UI;
 public class MemoryGameManager : MonoBehaviour, ICardGameManager
 {
     public static MemoryGameManager Instance;
-
     public Card cardPrefab;
     public Sprite cardBack;
     public Transform cardHolder;
@@ -74,11 +73,12 @@ public class MemoryGameManager : MonoBehaviour, ICardGameManager
         }
         cards.Clear();
         cardContents.Clear();
-
         foreach (CardData.CardPair pair in cardData.cardPairs)
         {
+            
             cardContents.Add(pair.concept);
             cardContents.Add(pair.definition);
+            
         }
 
         if (cardContents.Count % 2 != 0)
@@ -93,7 +93,8 @@ public class MemoryGameManager : MonoBehaviour, ICardGameManager
         {
             Card newCard = Instantiate(cardPrefab, cardHolder);
             newCard.gameManager = this;
-            newCard.SetContent(cardContents[i]);
+            //newCard.SetContent(cardContents[i]); // INFO: esto inserta texto en las cartas
+            newCard.SetContent(DBQuizReqHolder.Instance.GetMemoryDataArray()[i].ToString()); // INFO: esto inserta texto en las cartas
             cards.Add(newCard);
         }
     }

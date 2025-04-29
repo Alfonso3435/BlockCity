@@ -42,6 +42,20 @@ public class ItemsWrapper
     public Item[] items;
 }
 
+[System.Serializable]
+public class CoinsResponse
+{
+    public int id_usuario;
+    public int coins;
+}
+
+[System.Serializable]
+public class MemoryResponse
+{
+    public string concepto;
+    public string definicion;
+}
+
 public class DBQuizReqHolder : MonoBehaviour
 {
     public static DBQuizReqHolder Instance;
@@ -54,8 +68,11 @@ public class DBQuizReqHolder : MonoBehaviour
     private int potionCount = 0; // Store the potion count
     private int shieldCount = 0; // Store the shield count
     //public string urlBD = "http://bd-cryptochicks.cmirgwrejba3.us-east-1.rds.amazonaws.com:3000/";
+    private int coins = 0;
     public string urlBD = "http://10.48.66.147:3000/";
     private int userID = 10; // Cambia esto por el ID de usuario real
+    private MemoryResponse[] memoryData;
+
     private void Awake()
     {
         if (Instance == null)
@@ -89,9 +106,10 @@ public class DBQuizReqHolder : MonoBehaviour
 
         // This is to avoid having loading screens
         StartCoroutine(GetQuizData(LevelNumber));
+        StartCoroutine(GetCoinsData(userID));
         if (scene.name == "ModuleSelection")
         {
-            StartCoroutine(GetItemsData(userID)); // Cambia esto por el ID de usuario real
+            StartCoroutine(GetItemsData(userID));
         }
         Debug.Log($"UserID: {userID}");
         
@@ -197,7 +215,72 @@ public class DBQuizReqHolder : MonoBehaviour
             }
         }
     }
+    public IEnumerator GetCoinsData(int userID)
+    {
+        string url = $"{urlBD}coins/{userID}";
+        Debug.Log("Realizando solicitud a: " + url);
 
+        using (UnityWebRequest request = UnityWebRequest.Get(url))
+        {
+            yield return request.SendWebRequest();
+
+            if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
+            {
+                Debug.LogError("Error en la solicitud: " + request.error);
+            }
+            else
+            {
+                string jsonResponse = request.downloadHandler.text;
+                Debug.Log("Respuesta recibida: " + jsonResponse);
+
+                // Parse the JSON response to extract the coins value
+                CoinsResponse coinsResponse = JsonUtility.FromJson<CoinsResponse>(jsonResponse);
+                Debug.Log($"Coins for user {userID}: {coinsResponse.coins}");
+                coins = coinsResponse.coins; // Store the coins value
+            }
+        }
+    }
+
+    public IEnumerator GetMemoryData(int idMemorama)
+    {
+        string url = $"{urlBD}memory/{idMemorama}";
+        Debug.Log("Realizando solicitud a: " + url);
+
+        using (UnityWebRequest request = UnityWebRequest.Get(url))
+        {
+            yield return request.SendWebRequest();
+
+            if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
+            {
+                Debug.LogError("Error en la solicitud: " + request.error);
+            }
+            else
+            {
+                string jsonResponse = request.downloadHandler.text;
+                Debug.Log("Respuesta recibida: " + jsonResponse);
+
+                // Deserialize the JSON response into an array of MemoryResponse
+                memoryData = JsonUtility.FromJson<MemoryWrapper>($"{{\"memory\":{jsonResponse}}}").memory;
+
+                // Log the memory data for debugging
+                foreach (var memory in memoryData)
+                {
+                    Debug.Log($"Concepto: {memory.concepto}, Definición: {memory.definicion}");
+                }
+            }
+        }
+    }
+
+    public MemoryResponse[] GetMemoryDataArray()
+    {
+        return memoryData;
+    }
+
+    [System.Serializable]
+    private class MemoryWrapper
+    {
+        public MemoryResponse[] memory;
+    }
 
     public int GetPotionCount()
     {
@@ -284,4 +367,16 @@ public class DBQuizReqHolder : MonoBehaviour
     {
         userID = id;
     }
+
+    public int GetCoins()
+    {
+        return coins;
+    }
+
+    public void SetCoins(int value)
+    {
+        coins = value;
+    }
+
+
 }
