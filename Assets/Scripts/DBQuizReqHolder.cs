@@ -77,6 +77,18 @@ public class UserQuestsWrapper
 {
     public UserQuest[] quests;
 }
+public class CoinsResponse
+{
+    public int id_usuario;
+    public int coins;
+}
+
+[System.Serializable]
+public class MemoryResponse
+{
+    public string concepto;
+    public string definicion;
+}
 
 
 public class DBQuizReqHolder : MonoBehaviour
@@ -92,9 +104,11 @@ public class DBQuizReqHolder : MonoBehaviour
     private bool isLoggedIn = false;
     private int potionCount = 0; // Store the potion count
     private int shieldCount = 0; // Store the shield count
+    private MemoryResponse[] memoryData; // Array to store memory data
     //public string urlBD = "http://bd-cryptochicks.cmirgwrejba3.us-east-1.rds.amazonaws.com:3000/";
     public string urlBD = "http://10.48.66.147:3000/";
     private int userID = 10; // Cambia esto por el ID de usuario real
+    private int coins = 0; // Store the coins value
     private void Awake()
     {
         if (Instance == null)
@@ -400,6 +414,63 @@ public IEnumerator ClaimQuestReward(int userId, int questId)
     }
 }
 
+public IEnumerator GetCoinsData(int userID)
+    {
+        string url = $"{urlBD}coins/{userID}";
+        Debug.Log("Realizando solicitud a: " + url);
+
+        using (UnityWebRequest request = UnityWebRequest.Get(url))
+        {
+            yield return request.SendWebRequest();
+
+            if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
+            {
+                Debug.LogError("Error en la solicitud: " + request.error);
+            }
+            else
+            {
+                string jsonResponse = request.downloadHandler.text;
+                Debug.Log("Respuesta recibida: " + jsonResponse);
+
+                // Parse the JSON response to extract the coins value
+                CoinsResponse coinsResponse = JsonUtility.FromJson<CoinsResponse>(jsonResponse);
+                Debug.Log($"Coins for user {userID}: {coinsResponse.coins}");
+                coins = coinsResponse.coins; // Store the coins value
+            }
+        }
+    }
+
+    public IEnumerator GetMemoryData(int idMemorama)
+    {
+        string url = $"{urlBD}memory/{idMemorama}";
+        Debug.Log("Realizando solicitud a: " + url);
+
+        using (UnityWebRequest request = UnityWebRequest.Get(url))
+        {
+            yield return request.SendWebRequest();
+
+            if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
+            {
+                Debug.LogError("Error en la solicitud: " + request.error);
+            }
+            else
+            {
+                string jsonResponse = request.downloadHandler.text;
+                Debug.Log("Respuesta recibida: " + jsonResponse);
+
+                // Deserialize the JSON response into an array of MemoryResponse
+                memoryData = JsonUtility.FromJson<MemoryWrapper>($"{{\"memory\":{jsonResponse}}}").memory;
+
+                // Log the memory data for debugging
+                foreach (var memory in memoryData)
+                {
+                    Debug.Log($"Concepto: {memory.concepto}, Definición: {memory.definicion}");
+                }
+            }
+        }
+    }
+
+
 
     public int GetPotionCount()
     {
@@ -495,6 +566,29 @@ public IEnumerator ClaimQuestReward(int userId, int questId)
 {
     return userQuests;
 }
+
+    public MemoryResponse[] GetMemoryDataArray()
+    {
+        return memoryData;
+    }
+
+    [System.Serializable]
+    private class MemoryWrapper
+    {
+        public MemoryResponse[] memory;
+    }
+
+
+    public int GetCoins()
+    {
+        return coins;
+    }
+
+    public void SetCoins(int value)
+    {
+        coins = value;
+    }
+
 
 }
 

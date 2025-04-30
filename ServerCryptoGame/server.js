@@ -544,6 +544,58 @@ app.post("/update-quest-progress", (req, res) => {
     });
 });
 
+app.get("/coins/:id_usuario", (req, res) => {
+    const id_usuario = req.params.id_usuario;
+
+    // Validate the input
+    if (!id_usuario) {
+        return res.status(400).json({ error: "Faltan campos requeridos" });
+    }
+
+    const query = `
+        SELECT coins
+        FROM Usuarios
+        WHERE id_usuario = ?;
+    `;
+
+    db.query(query, [id_usuario], (err, results) => {
+        if (err) {
+            console.error("Error al obtener las monedas:", err);
+            return res.status(500).json({ error: "Error en la base de datos" });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({ error: "No se encontraron monedas para este usuario." });
+        }
+
+        res.json({ id_usuario, coins: results[0].coins });
+    });
+});
+
+app.get("/memory/:id_memorama", (req, res) => {
+    const id_memorama = req.params.id_memorama;
+    
+    const query = `
+        SELECT concepto,
+        definicion
+        FROM Respuestas_Memorama
+        WHERE id_memorama = ?
+    `;
+
+    db.query(query, [id_memorama], (err, results) => {
+        if (err) {
+            console.error("Error al obtener las respuestas del memorama", err);
+            return res.status(500).json({ error: "Error en la base de datos" });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({ error: "No se encontraron elementos en este memorama" });
+        }
+
+        //res.json({ id_usuario, coins: results[0].coins });
+        res.json(results);
+    });
+});
 
 app.listen(puerto, () => {
     console.log(`Servidor escuchando en http://localhost:${puerto}`);
