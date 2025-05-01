@@ -3,24 +3,12 @@ const mysql = require("mysql");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 
-
 const app = express();
 const puerto = 3000;
 
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true })); // Añade esta línea
-
-/*
-const db = mysql.createConnection({
-    host: "localhost",
-    // host: "10.48.108.185",
-    user: "root",
-    password: "",
-    port: 3306,
-    database: "CryptoGame",
-});
-*/
 
 const db = mysql.createConnection({
     host: "bd-cryptochicks.cmirgwrejba3.us-east-1.rds.amazonaws.com",
@@ -36,7 +24,7 @@ db.connect((err) => {
         console.error("Error de conexión MySQL:", err);
         return;
     }
-    console.log("Conectado a MySQL (XAMPP)");
+    console.log("Conectado a DB MySQL RDS");
 });
 
 
@@ -45,7 +33,7 @@ app.post("/unity/recibeJSON", (req, res) => {
     const { usuario, hora, tipo } = req.body;
     
     if (tipo === "inicio") {
-        const query = "INSERT INTO sesiones (usuario, hora_inicio) VALUES (?, ?)";
+        const query = "INSERT INTO Sesiones (usuario, hora_inicio) VALUES (?, ?)";
         db.query(query, [usuario, hora], (err, result) => {
             if (err) {
                 console.error("Error al insertar:", err);
@@ -54,7 +42,7 @@ app.post("/unity/recibeJSON", (req, res) => {
             res.json({ status: "Inicio guardado" });
         }); 
     } else if (tipo === "fin") {
-        const query = "UPDATE sesiones SET hora_fin = ? WHERE usuario = ? ORDER BY id DESC LIMIT 1";
+        const query = "UPDATE Sesiones SET hora_fin = ? WHERE usuario = ? ORDER BY id DESC LIMIT 1";
         db.query(query, [hora, usuario], (err, result) => {
             if (err) {
                 console.error("Error al actualizar:", err);
@@ -969,6 +957,39 @@ app.get("/memory/:id_memorama", (req, res) => {
 
         //res.json({ id_usuario, coins: results[0].coins });
         res.json(results);
+    });
+});
+
+// Agregar este endpoint después de los demás endpoints existentes
+app.post("/logout", (req, res) => {
+    const { correo, hora, tipo, id_usuario } = req.body;
+
+    if (!correo || !hora || !tipo || !id_usuario) {
+        console.error("Faltan datos requeridos para el logout");
+        return res.status(400).json({ 
+            success: false,
+            error: "Faltan datos requeridos" 
+        });
+    }
+
+    const query = `
+        INSERT INTO Sesiones (id_usuario, correo, hora_fin, tipo) 
+        VALUES (?, ?, ?, ?)
+    `;
+
+    db.query(query, [id_usuario, correo, hora, tipo], (err, result) => {
+        if (err) {
+            console.error("Error al registrar logout:", err);
+            return res.status(500).json({ 
+                success: false,
+                error: "Error al registrar logout" 
+            });
+        }
+
+        res.json({ 
+            success: true,
+            message: "Logout registrado correctamente"
+        });
     });
 });
 
