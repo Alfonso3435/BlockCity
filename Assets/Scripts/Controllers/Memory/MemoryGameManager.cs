@@ -36,7 +36,7 @@ public class MemoryGameManager : MonoBehaviour, ICardGameManager
             backButton.onClick.AddListener(ReturnToModuleSelection);
         }
         Debug.Log("Llegué");
-        StartCoroutine(DBQuizReqHolder.Instance.GetMemoryData(2)); // CAMBIAR AL ID DEL NIVEL
+        StartCoroutine(DBQuizReqHolder.Instance.GetMemoryData(DBQuizReqHolder.Instance.GetLevelNumber())); // CAMBIAR AL ID DEL NIVEL
         Debug.Log("CardData: ");
     }
 
@@ -92,8 +92,6 @@ public class MemoryGameManager : MonoBehaviour, ICardGameManager
             cardContents.Add("Definición: " + i);
         }
         */
-        Debug.Log("Primer valor: "+ DBQuizReqHolder.Instance.GetMemoryDataArray()[1].concepto);
-        Debug.Log("Segundo valor: "+ DBQuizReqHolder.Instance.GetMemoryDataArray()[1].definicion);
         for (int i = 0; i < 6; i++)
         {
 
@@ -150,8 +148,8 @@ public class MemoryGameManager : MonoBehaviour, ICardGameManager
         bool isMatch = false;
         string firstContent = firstCard.GetComponentInChildren<TextMeshProUGUI>().text;
         string secondContent = secondCard.GetComponentInChildren<TextMeshProUGUI>().text;
-        Debug.Log("firstContent: " + firstContent);
-        Debug.Log("secondContent: " + secondContent);
+        //Debug.Log("firstContent: " + firstContent);
+        //Debug.Log("secondContent: " + secondContent);
 
         
         foreach (CardData.CardPair pair in cardData.cardPairs)
@@ -228,7 +226,12 @@ public class MemoryGameManager : MonoBehaviour, ICardGameManager
         PlayerPrefs.SetInt(currentLevelKey, starsEarned);
         PlayerPrefs.SetInt("TempStars", starsEarned);
         PlayerPrefs.SetInt("TempPoints", pointsEarned);
-        PlayerPrefs.SetInt("TempCoins", starsEarned * 500);
+        PlayerPrefs.SetInt("TempCoins", starsEarned * 200);
+
+        Debug.Log("=============================");
+        StartCoroutine(DBQuizReqHolder.Instance.UpdateCoins(
+            DBQuizReqHolder.Instance.GetUserID(),
+            starsEarned * 200)); // Guardar monedas ganadas en el servidor
 
         // Incrementar el nivel actual para pasar al siguiente nivel
         int nextLevel = currentLevel + 1;

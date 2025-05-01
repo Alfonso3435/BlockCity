@@ -591,16 +591,16 @@ app.get("/coins/:id_usuario", (req, res) => {
     });
 });
 
-// Endpoint para actualizar monedas con callbacks
+// Agregar una cantidad de monedas a un usuario
 app.put("/coins/update", (req, res) => {
-    const { id_usuario, amount } = req.body;
+    const { id_usuario, coins } = req.body;
 
     // Validación de entrada
-    if (!id_usuario || amount === undefined) {
+    if (!id_usuario || coins === undefined) {
         console.error("Faltan campos requeridos");
         return res.status(400).json({ 
             success: false,
-            error: "Se requieren id_usuario y amount" 
+            error: "Se requieren id_usuario y coins" 
         });
     }
 
@@ -638,7 +638,7 @@ app.put("/coins/update", (req, res) => {
             }
 
             const currentCoins = getResults[0].coins;
-            const newCoins = currentCoins + amount;
+            const newCoins = currentCoins + coins;
 
             // Validar que no queden monedas negativas
             if (newCoins < 0) {
@@ -681,7 +681,105 @@ app.put("/coins/update", (req, res) => {
                         success: true,
                         id_usuario,
                         newCoins,
-                        amountChanged: amount 
+                        amountChanged: coins
+                    });
+                });
+            });
+        });
+    });
+});
+
+// Endpoint to update the amount of coins for a user
+app.put("/coins/modify", (req, res) => {
+    const { id_usuario, coins } = req.body;
+
+    // Validate the input
+    if (!id_usuario || coins === undefined) {
+        console.error("Missing required fields");
+        return res.status(400).json({
+            success: false,
+            error: "id_usuario and coins are required"
+        });
+    }
+
+    // Start a transaction
+    db.query("START TRANSACTION", (transactionErr) => {
+        if (transactionErr) {
+            console.error("Error starting transaction:", transactionErr);
+            return res.status(500).json({
+                success: false,
+                error: "Error starting transaction"
+            });
+        }
+
+        // Step 1: Get the current amount of coins
+        const getQuery = "SELECT coins FROM Usuarios WHERE id_usuario = ?";
+        db.query(getQuery, [id_usuario], (getErr, getResults) => {
+            if (getErr) {
+                return db.query("ROLLBACK", () => {
+                    console.error("Error fetching coins:", getErr);
+                    res.status(500).json({
+                        success: false,
+                        error: "Error fetching coins"
+                    });
+                });
+            }
+
+            if (getResults.length === 0) {
+                return db.query("ROLLBACK", () => {
+                    console.error("User not found");
+                    res.status(404).json({
+                        success: false,
+                        error: "User not found"
+                    });
+                });
+            }
+
+            const currentCoins = getResults[0].coins;
+            const newCoins = currentCoins + coins;
+
+            // Validate that the new coin amount is not negative
+            if (newCoins < 0) {
+                return db.query("ROLLBACK", () => {
+                    console.error("Insufficient coins");
+                    res.status(400).json({
+                        success: false,
+                        error: "Insufficient coins"
+                    });
+                });
+            }
+
+            // Step 2: Update the coins
+            const updateQuery = "UPDATE Usuarios SET coins = ? WHERE id_usuario = ?";
+            db.query(updateQuery, [newCoins, id_usuario], (updateErr, updateResult) => {
+                if (updateErr) {
+                    return db.query("ROLLBACK", () => {
+                        console.error("Error updating coins:", updateErr);
+                        res.status(500).json({
+                            success: false,
+                            error: "Error updating coins"
+                        });
+                    });
+                }
+
+                // Commit the transaction
+                db.query("COMMIT", (commitErr) => {
+                    if (commitErr) {
+                        return db.query("ROLLBACK", () => {
+                            console.error("Error committing transaction:", commitErr);
+                            res.status(500).json({
+                                success: false,
+                                error: "Error committing transaction"
+                            });
+                        });
+                    }
+
+                    console.log("Coins updated successfully");
+                    res.json({
+                        success: true,
+                        id_usuario,
+                        newCoins,
+                        amountChanged: coins
                     });
                 });
             });

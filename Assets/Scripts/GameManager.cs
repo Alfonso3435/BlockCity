@@ -106,8 +106,8 @@ public class GameManager : MonoBehaviour
         StartCoroutine(DBQuizReqHolder.Instance.GetItemsData(DBQuizReqHolder.Instance.GetUserID()));
         ShieldText.text = DBQuizReqHolder.Instance.GetShieldCount().ToString();
         PotionText.text = DBQuizReqHolder.Instance.GetPotionCount().ToString();
-        Debug.Log("Shield count: " + DBQuizReqHolder.Instance.GetShieldCount());
-        Debug.Log("Potion count: " + DBQuizReqHolder.Instance.GetPotionCount());
+        //Debug.Log("Shield count: " + DBQuizReqHolder.Instance.GetShieldCount());
+        //Debug.Log("Potion count: " + DBQuizReqHolder.Instance.GetPotionCount());
         
     }
 
@@ -244,7 +244,7 @@ public class GameManager : MonoBehaviour
     {
         Question currentQuestion = selectedCategory.questions[currentQuestionIndex];
         bool isCorrect = answerIndex == DBQuizReqHolder.Instance.GetPreguntas()[currentQuestionIndex].indice_correcto;
-        Debug.Log("Correct answer index: " + DBQuizReqHolder.Instance.GetPreguntas()[currentQuestionIndex].indice_correcto);
+        //Debug.Log("Correct answer index: " + DBQuizReqHolder.Instance.GetPreguntas()[currentQuestionIndex].indice_correcto);
 
         // Guardar el valor original de los puntos
         int originalQuestionMaxPoints = currentQuestionMaxPoints;
@@ -367,7 +367,7 @@ public class GameManager : MonoBehaviour
         DBQuizReqHolder.Instance.StartCoroutine(
         DBQuizReqHolder.Instance.IncrementQuestProgress(triviaMissionId)
         );
-        Debug.Log("Incrementing trivia mission progress");
+        //Debug.Log("Incrementing trivia mission progress");
         
         string missionID = "1";
         int currentProgress = PlayerPrefs.GetInt($"Mission_{missionID}_Progress", 0);
@@ -385,7 +385,16 @@ public class GameManager : MonoBehaviour
         
         PlayerPrefs.SetInt("TempStars", starsEarned);
         PlayerPrefs.SetInt("TempPoints", totalPointsEarned);
-        PlayerPrefs.SetInt("TempCoins", starsEarned * 500);
+        PlayerPrefs.SetInt("TempCoins", starsEarned * 150);
+
+        Debug.Log("=================================");
+        Debug.Log("ID:" + DBQuizReqHolder.Instance.GetUserID());
+        StartCoroutine(
+            DBQuizReqHolder.Instance.UpdateCoins(
+                DBQuizReqHolder.Instance.GetUserID(),
+                starsEarned * 150
+                 ));
+        // Incrementar la cantidad de monedas ganadas en la DB
         
         SceneManager.LoadScene("StageClear");
     }

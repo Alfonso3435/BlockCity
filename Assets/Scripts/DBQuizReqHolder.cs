@@ -203,7 +203,7 @@ public class DBQuizReqHolder : MonoBehaviour
     {
     //string url = $"http://localhost:3000/items/{userID}";
         string url = $"{urlBD}items/{userID}";
-        Debug.Log("Realizando solicitud a: " + url);
+        //Debug.Log("Realizando solicitud a: " + url);
 
         using (UnityWebRequest request = UnityWebRequest.Get(url))
         {
@@ -342,7 +342,7 @@ public IEnumerator IncrementQuestProgress(int questId, int increment = 1)
         request.SetRequestHeader("Content-Type", "application/json");
         request.timeout = 10;
         
-        Debug.Log($"Enviando a {url} con body: {jsonBody}");
+        //Debug.Log($"Enviando a {url} con body: {jsonBody}");
         yield return request.SendWebRequest();
         
         if (request.result != UnityWebRequest.Result.Success)
@@ -352,7 +352,7 @@ public IEnumerator IncrementQuestProgress(int questId, int increment = 1)
         }
         else
         {
-            Debug.Log($"Respuesta exitosa: {request.downloadHandler.text}");
+            //Debug.Log($"Respuesta exitosa: {request.downloadHandler.text}");
             yield return GetUserQuestsData(userId);
         }
     }
@@ -416,7 +416,7 @@ public IEnumerator ClaimQuestReward(int userId, int questId)
 public IEnumerator GetCoinsData(int userID)
     {
         string url = $"{urlBD}coins/{userID}";
-        Debug.Log("Realizando solicitud a: " + url);
+        //Debug.Log("Realizando solicitud a: " + url);
 
         using (UnityWebRequest request = UnityWebRequest.Get(url))
         {
@@ -429,11 +429,11 @@ public IEnumerator GetCoinsData(int userID)
             else
             {
                 string jsonResponse = request.downloadHandler.text;
-                Debug.Log("Respuesta recibida: " + jsonResponse);
+                //Debug.Log("Respuesta recibida: " + jsonResponse);
 
                 // Parse the JSON response to extract the coins value
                 CoinsResponse coinsResponse = JsonUtility.FromJson<CoinsResponse>(jsonResponse);
-                Debug.Log($"Coins for user {userID}: {coinsResponse.coins}");
+                //Debug.Log($"Coins for user {userID}: {coinsResponse.coins}");
                 coins = coinsResponse.coins; // Store the coins value
             }
         }
@@ -469,7 +469,34 @@ public IEnumerator GetMemoryData(int idMemorama)
     }
 }
 
+public IEnumerator UpdateCoins(int userID, int amount)
+{
+    string url = $"{urlBD}coins/update";
+    Debug.Log($"Updating coins for user {userID} by {amount}");
 
+    // Create the request body as JSON
+    string jsonBody = $"{{\"id_usuario\":{userID},\"coins\":{amount}}}";
+    byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonBody);
+
+    using (UnityWebRequest request = new UnityWebRequest(url, "PUT"))
+    {
+        request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+        request.downloadHandler = new DownloadHandlerBuffer();
+        request.SetRequestHeader("Content-Type", "application/json");
+
+        yield return request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
+        {
+            Debug.LogError($"Error updating coins: {request.error}");
+            Debug.LogError($"Response: {request.downloadHandler.text}");
+        }
+        else
+        {
+            Debug.Log($"Coins updated successfully: {request.downloadHandler.text}");
+        }
+    }
+}
 
     public int GetPotionCount()
     {

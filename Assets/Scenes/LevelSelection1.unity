@@ -7482,7 +7482,7 @@ MonoBehaviour:
   - {fileID: 1709683654}
   starSprite: {fileID: 21300000, guid: 431ac49a5842d41fea4c5f19b068c88a, type: 3}
   quizData: {fileID: 0}
-  cardData: {fileID: 0}
+  cardData: {fileID: 11400000, guid: c34e97e0b92eb4a6dbe12c5c117a4cbc, type: 2}
   hangmanData: {fileID: 0}
   levelNum: 3
   quizSceneName: Quiz

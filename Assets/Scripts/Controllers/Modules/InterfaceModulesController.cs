@@ -53,7 +53,7 @@ public class InterfaceModulesController : MonoBehaviour
     {
         // Construir URL correctamente
         string url = $"{DBQuizReqHolder.Instance.urlBD}user/name?id={userId}";
-        Debug.Log($"Solicitando nombre de usuario a: {url}");
+        //Debug.Log($"Solicitando nombre de usuario a: {url}");
 
         using (UnityWebRequest request = UnityWebRequest.Get(url))
         {
@@ -65,7 +65,7 @@ public class InterfaceModulesController : MonoBehaviour
             // Verificar resultados
             if (request.result == UnityWebRequest.Result.Success)
             {
-                Debug.Log($"Respuesta del servidor: {request.downloadHandler.text}");
+                //Debug.Log($"Respuesta del servidor: {request.downloadHandler.text}");
                 
                 try
                 {
@@ -74,7 +74,7 @@ public class InterfaceModulesController : MonoBehaviour
                     if (response != null && response.success && response.data != null)
                     {
                         nombreUsuario.text = $"Welcome Back {response.data.nombre_user}!";
-                        Debug.Log($"Nombre mostrado: {response.data.nombre_user}");
+                        //Debug.Log($"Nombre mostrado: {response.data.nombre_user}");
                     }
                     else
                     {

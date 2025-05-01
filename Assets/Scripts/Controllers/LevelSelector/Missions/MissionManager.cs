@@ -143,7 +143,6 @@ public class MissionManager : MonoBehaviour
             else if (questId ==3){
                 DBQuizReqHolder.Instance.SetCoins(DBQuizReqHolder.Instance.GetCoins() + 400);
             }
-            
         }
 
         // Actualizar datos desde el servidor
