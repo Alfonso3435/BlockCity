@@ -9,7 +9,6 @@ using UnityEngine.UI;
 public class MemoryGameManager : MonoBehaviour, ICardGameManager
 {
     public static MemoryGameManager Instance;
-
     public Card cardPrefab;
     public Sprite cardBack;
     public Transform cardHolder;
@@ -36,6 +35,9 @@ public class MemoryGameManager : MonoBehaviour, ICardGameManager
         {
             backButton.onClick.AddListener(ReturnToModuleSelection);
         }
+        Debug.Log("Llegué");
+        StartCoroutine(DBQuizReqHolder.Instance.GetMemoryData(2)); // CAMBIAR AL ID DEL NIVEL
+        Debug.Log("CardData: ");
     }
 
         public void ReturnToModuleSelection()
@@ -75,18 +77,39 @@ public class MemoryGameManager : MonoBehaviour, ICardGameManager
         cards.Clear();
         cardContents.Clear();
 
+        /*
         foreach (CardData.CardPair pair in cardData.cardPairs)
         {
             cardContents.Add(pair.concept);
             cardContents.Add(pair.definition);
         }
-
-        if (cardContents.Count % 2 != 0)
+        */
+        // INFO: Aquí es donde puedo modificar el texto que se inserta a las cartas
+        /*
+        for (int i = 0; i < 6; i++)
         {
-            Debug.LogError("Número impar de cartas. Verifica tus pares concepto-definición.");
-            return;
+            cardContents.Add("Concepto: " + i);
+            cardContents.Add("Definición: " + i);
+        }
+        */
+        Debug.Log("Primer valor: "+ DBQuizReqHolder.Instance.GetMemoryDataArray()[1].concepto);
+        Debug.Log("Segundo valor: "+ DBQuizReqHolder.Instance.GetMemoryDataArray()[1].definicion);
+        for (int i = 0; i < 6; i++)
+        {
+
+            cardContents.Add(DBQuizReqHolder.Instance.GetMemoryDataArray()[i].concepto);
+            cardContents.Add(DBQuizReqHolder.Instance.GetMemoryDataArray()[i].definicion);
         }
 
+        int k = 0;
+        foreach (CardData.CardPair pair in cardData.cardPairs)
+        {
+            pair.concept = cardContents[k];
+            pair.definition = cardContents[k + 1];
+            k += 2;
+        }
+
+        // Primero que funcione sin shuffle
         ShuffleCards();
 
         for (int i = 0; i < cardContents.Count; i++)
@@ -127,9 +150,19 @@ public class MemoryGameManager : MonoBehaviour, ICardGameManager
         bool isMatch = false;
         string firstContent = firstCard.GetComponentInChildren<TextMeshProUGUI>().text;
         string secondContent = secondCard.GetComponentInChildren<TextMeshProUGUI>().text;
+        Debug.Log("firstContent: " + firstContent);
+        Debug.Log("secondContent: " + secondContent);
+
         
         foreach (CardData.CardPair pair in cardData.cardPairs)
         {
+            /*
+            Debug.Log("----------------------------------------");
+            Debug.Log("firstcontent: " + firstContent);
+            Debug.Log("pair.concept: " + pair.concept);
+            Debug.Log("secondcontent: " + secondContent);
+            Debug.Log("pair.definition: " + pair.definition);
+            */
             if ((firstContent == pair.concept && secondContent == pair.definition) ||
                 (firstContent == pair.definition && secondContent == pair.concept))
             {

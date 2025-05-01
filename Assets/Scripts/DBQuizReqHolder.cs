@@ -146,7 +146,7 @@ public class DBQuizReqHolder : MonoBehaviour
         {
             StartCoroutine(GetItemsData(userID)); // Cambia esto por el ID de usuario real
         }
-        Debug.Log($"UserID: {userID}");
+        //Debug.Log($"UserID: {userID}");
         
     }
 
@@ -216,7 +216,7 @@ public class DBQuizReqHolder : MonoBehaviour
             else
             {
                 string jsonResponse = request.downloadHandler.text;
-                Debug.Log("Respuesta recibida: " + jsonResponse);
+                //Debug.Log("Respuesta recibida: " + jsonResponse);
 
                 // Deserialize the JSON into a list of items
                 Item[] items = JsonUtility.FromJson<ItemsWrapper>($"{{\"items\":{jsonResponse}}}").items;
@@ -278,7 +278,7 @@ public class DBQuizReqHolder : MonoBehaviour
 public IEnumerator GetUserQuestsData(int userId)
 {
     string url = $"{urlBD}user-quests/{userId}";
-    Debug.Log("Obteniendo misiones del usuario: " + url);
+    //Debug.Log("Obteniendo misiones del usuario: " + url);
 
     using (UnityWebRequest request = UnityWebRequest.Get(url))
     {
@@ -292,7 +292,7 @@ public IEnumerator GetUserQuestsData(int userId)
         else
         {
             string jsonResponse = request.downloadHandler.text;
-            Debug.Log("Respuesta recibida: " + jsonResponse);
+            //Debug.Log("Respuesta recibida: " + jsonResponse);
 
             userQuests = JsonUtility.FromJson<UserQuestsWrapper>($"{{\"quests\":{jsonResponse}}}").quests;
         }
@@ -439,35 +439,35 @@ public IEnumerator GetCoinsData(int userID)
         }
     }
 
-    public IEnumerator GetMemoryData(int idMemorama)
+public IEnumerator GetMemoryData(int idMemorama)
+{
+    string url = $"{urlBD}memory/{idMemorama}";
+    Debug.Log("Realizando solicitud a: " + url);
+
+    using (UnityWebRequest request = UnityWebRequest.Get(url))
     {
-        string url = $"{urlBD}memory/{idMemorama}";
-        Debug.Log("Realizando solicitud a: " + url);
+        yield return request.SendWebRequest();
 
-        using (UnityWebRequest request = UnityWebRequest.Get(url))
+        if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
         {
-            yield return request.SendWebRequest();
+            Debug.LogError("Error en la solicitud: " + request.error);
+        }
+        else
+        {
+            string jsonResponse = request.downloadHandler.text;
+            Debug.Log("Respuesta recibida: " + jsonResponse);
 
-            if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
+            // Deserialize the JSON response into an array of MemoryResponse
+            memoryData = JsonUtility.FromJson<MemoryWrapper>($"{{\"memory\":{jsonResponse}}}").memory;
+
+            // Log the memory data for debugging
+            foreach (var memory in memoryData)
             {
-                Debug.LogError("Error en la solicitud: " + request.error);
-            }
-            else
-            {
-                string jsonResponse = request.downloadHandler.text;
-                Debug.Log("Respuesta recibida: " + jsonResponse);
-
-                // Deserialize the JSON response into an array of MemoryResponse
-                memoryData = JsonUtility.FromJson<MemoryWrapper>($"{{\"memory\":{jsonResponse}}}").memory;
-
-                // Log the memory data for debugging
-                foreach (var memory in memoryData)
-                {
-                    Debug.Log($"Concepto: {memory.concepto}, Definición: {memory.definicion}");
-                }
+                Debug.Log($"Concepto: {memory.concepto}\nDefinición: {memory.definicion}");
             }
         }
     }
+}
 
 
 
