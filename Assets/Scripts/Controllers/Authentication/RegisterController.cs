@@ -124,7 +124,7 @@ public class RegisterController : MonoBehaviour
     {
         string json = JsonUtility.ToJson(datos);
 
-        UnityWebRequest request = new UnityWebRequest("http://localhost:3000/registro", "POST");
+        UnityWebRequest request = new UnityWebRequest($"{DBQuizReqHolder.Instance.urlBD}registro", "POST");
         
         byte[] body = System.Text.Encoding.UTF8.GetBytes(json);
         request.uploadHandler = new UploadHandlerRaw(body);

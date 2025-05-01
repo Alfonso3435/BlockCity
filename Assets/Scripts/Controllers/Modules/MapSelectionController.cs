@@ -78,7 +78,7 @@ public class MapSelectionController : MonoBehaviour
                 {
                     isUnlocked = true;
                     UpdateUI();
-                    // Actualizar monedas localmente
+
                     DBQuizReqHolder.Instance.SetCoins(playerCoins - coinsRequired);
                     UpdateUI();
                 }

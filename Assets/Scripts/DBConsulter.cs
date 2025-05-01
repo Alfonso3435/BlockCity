@@ -4,8 +4,6 @@ using UnityEngine.Networking;
 
 public class QuizRequest : MonoBehaviour
 {
-    private string baseUrl = "http://localhost:3000/quiz"; // Cambia esto si tu servidor está en otro lugar
-
     public void GetQuizData(int idQuiz)
     {
         StartCoroutine(GetQuizCoroutine(idQuiz));
@@ -13,27 +11,28 @@ public class QuizRequest : MonoBehaviour
 
     private IEnumerator GetQuizCoroutine(int idQuiz)
     {
-        string url = $"{baseUrl}/{idQuiz}"; // Construir la URL con el ID del quiz
+        // Use urlBD from DBQuizReqHolder
+        string url = $"{DBQuizReqHolder.Instance.urlBD}quiz/{idQuiz}"; // Construct the URL dynamically
         Debug.Log("Realizando solicitud a: " + url);
 
         using (UnityWebRequest request = UnityWebRequest.Get(url))
         {
-            // Enviar la solicitud
+            // Send the request
             yield return request.SendWebRequest();
 
-            // Manejar errores
+            // Handle errors
             if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
             {
                 Debug.LogError("Error en la solicitud: " + request.error);
             }
             else
             {
-                // Procesar la respuesta
+                // Process the response
                 string jsonResponse = request.downloadHandler.text;
                 Debug.Log("Respuesta recibida: " + jsonResponse);
 
-                // Aquí puedes deserializar el JSON si es necesario
-                // Ejemplo: QuizData[] quizData = JsonUtility.FromJson<QuizData[]>(jsonResponse);
+                // Deserialize the JSON if necessary
+                // Example: QuizData[] quizData = JsonUtility.FromJson<QuizData[]>(jsonResponse);
             }
         }
     }
