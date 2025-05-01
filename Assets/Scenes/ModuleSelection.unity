@@ -283,6 +283,7 @@ GameObject:
   - component: {fileID: 180294983}
   - component: {fileID: 180294985}
   - component: {fileID: 180294984}
+  - component: {fileID: 180294986}
   m_Layer: 5
   m_Name: MapPanel
   m_TagString: Untagged
@@ -350,6 +351,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 180294982}
   m_CullTransparentMesh: 1
+--- !u!114 &180294986
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 180294982}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1e6c34d09c732f4a975a4c7b49f4a24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  coinsText: {fileID: 1452280025}
+  nombreUsuario: {fileID: 1321007442}
 --- !u!1 &228797584
 GameObject:
   m_ObjectHideFlags: 0
@@ -2261,9 +2276,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1520cf60bbc38c940a7100959e505261, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isUnlocked: 0
   mapIndex: 4
-  coinsRequired: 2200
+  coinsRequired: 7000
   levelSelectionSceneName: 
   lockPanel: {fileID: 744586663}
   unlockPanel: {fileID: 979142966}
@@ -3091,7 +3105,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1520cf60bbc38c940a7100959e505261, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isUnlocked: 0
   mapIndex: 2
   coinsRequired: 1000
   levelSelectionSceneName: 
@@ -3175,7 +3188,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 6655102050203562253, guid: 25b6a1b86764ed64a8efd6091e36b898, type: 3}
+  m_Sprite: {fileID: -2202100874561688202, guid: eaaca5dda7d0a644c93527951ea0c2df, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3836,7 +3849,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -8768856151172562981, guid: 4c208954b12217b41adb5e930236108f, type: 3}
+  m_Sprite: {fileID: 6655102050203562253, guid: 25b6a1b86764ed64a8efd6091e36b898, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3866,7 +3879,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1520cf60bbc38c940a7100959e505261, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isUnlocked: 1
   mapIndex: 1
   coinsRequired: 0
   levelSelectionSceneName: LevelSelection1
@@ -4496,9 +4508,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1520cf60bbc38c940a7100959e505261, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isUnlocked: 0
   mapIndex: 3
-  coinsRequired: 1800
+  coinsRequired: 3000
   levelSelectionSceneName: 
   lockPanel: {fileID: 1520537916}
   unlockPanel: {fileID: 2066474590}

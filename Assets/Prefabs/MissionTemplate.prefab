@@ -234,10 +234,10 @@ MonoBehaviour:
   missionTitle: {fileID: 6509460195833028462}
   missionDescription: {fileID: 7474434145423493711}
   progressText: {fileID: 865299395358966017}
+  rewardText: {fileID: 6142669738762201749}
   progressSlider: {fileID: 5369234029400988907}
   claimButton: {fileID: 663405649211454603}
   claimButtonText: {fileID: 4791397575572846675}
-  rewardText: {fileID: 6142669738762201749}
 --- !u!1 &544352436610591930
 GameObject:
   m_ObjectHideFlags: 0
@@ -544,7 +544,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 1411550607861241312}
   m_FillRect: {fileID: 8114260219614451734}
   m_HandleRect: {fileID: 8009427897476814163}

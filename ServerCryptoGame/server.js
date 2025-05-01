@@ -3,6 +3,7 @@ const mysql = require("mysql");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 
+
 const app = express();
 const puerto = 3000;
 
@@ -297,73 +298,91 @@ app.post("/increment-quest-progress", (req, res) => {
     const { userId, questId, increment } = req.body;
     
     if (!userId || !questId || increment === undefined) {
-        console.error("[MISIONES] Faltan parámetros requeridos");
         return res.status(400).json({ 
             success: false,
-            error: "Se requieren userId, questId e increment",
-            received: req.body
+            error: "Se requieren userId, questId e increment"
         });
     }
 
-    const query = `
-        INSERT INTO Usuario_quest (id_usuario, id_quest, Progress)
-        VALUES (?, ?, ?)
-        ON DUPLICATE KEY UPDATE 
-            Progress = LEAST(Progress + ?, (SELECT TargetProgress FROM Quests WHERE id_quest = ?)),
-            completado = CASE WHEN Progress + ? >= (SELECT TargetProgress FROM Quests WHERE id_quest = ?) THEN 1 ELSE completado END
+    // Primero verificar si la misión ya está reclamada
+    const checkQuery = `
+        SELECT completado, reclamado FROM Usuario_quest 
+        WHERE id_usuario = ? AND id_quest = ?
     `;
     
-    const params = [userId, questId, increment, increment, questId, increment, questId];
-    
-    console.log("[MISIONES] Ejecutando query:", query);
-    console.log("[MISIONES] Parámetros:", params);
-
-    // Ejecutar la primera query
-    db.query(query, params, (err, result) => {
+    db.query(checkQuery, [userId, questId], (err, checkResults) => {
         if (err) {
-            console.error("[MISIONES] Error en la query:", err);
+            console.error("[MISIONES] Error al verificar estado:", err);
             return res.status(500).json({ 
                 success: false,
-                error: "Error en la base de datos",
-                details: err.message
+                error: "Error en la base de datos"
             });
         }
 
-        // Obtener el nuevo estado
-        const statusQuery = `
-            SELECT uq.Progress, uq.completado, q.TargetProgress 
-            FROM Usuario_quest uq
-            JOIN Quests q ON uq.id_quest = q.id_quest
-            WHERE uq.id_usuario = ? AND uq.id_quest = ?
+        // Si la misión ya está reclamada, no hacer nada
+        if (checkResults.length > 0 && (checkResults[0].completado === 2 || checkResults[0].reclamado)) {
+            return res.json({ 
+                success: true,
+                message: "Misión ya reclamada, no se actualiza"
+            });
+        }
+
+        // Proceder con la actualización normal
+        const updateQuery = `
+            INSERT INTO Usuario_quest (id_usuario, id_quest, Progress)
+            VALUES (?, ?, ?)
+            ON DUPLICATE KEY UPDATE 
+                Progress = LEAST(Progress + ?, (SELECT TargetProgress FROM Quests WHERE id_quest = ?)),
+                completado = CASE 
+                    WHEN reclamado = FALSE AND Progress + ? >= (SELECT TargetProgress FROM Quests WHERE id_quest = ?) 
+                    THEN 1 
+                    ELSE completado 
+                END
         `;
         
-        db.query(statusQuery, [userId, questId], (err, missionStatus) => {
+        const params = [userId, questId, increment, increment, questId, increment, questId];
+        
+        db.query(updateQuery, params, (err, result) => {
             if (err) {
-                console.error("[MISIONES] Error al verificar estado:", err);
+                console.error("[MISIONES] Error en la query:", err);
                 return res.status(500).json({ 
                     success: false,
-                    error: "Error al verificar estado",
-                    details: err.message
+                    error: "Error en la base de datos"
                 });
             }
 
-            if (missionStatus.length === 0) {
-                console.error("[MISIONES] No se encontró la misión actualizada");
-                return res.status(404).json({ 
-                    success: false,
-                    error: "No se encontró la misión actualizada"
+            // Obtener el nuevo estado
+            const statusQuery = `
+                SELECT uq.Progress, uq.completado, uq.reclamado, q.TargetProgress 
+                FROM Usuario_quest uq
+                JOIN Quests q ON uq.id_quest = q.id_quest
+                WHERE uq.id_usuario = ? AND uq.id_quest = ?
+            `;
+            
+            db.query(statusQuery, [userId, questId], (err, missionStatus) => {
+                if (err) {
+                    console.error("[MISIONES] Error al verificar estado:", err);
+                    return res.status(500).json({ 
+                        success: false,
+                        error: "Error al verificar estado"
+                    });
+                }
+
+                if (missionStatus.length === 0) {
+                    return res.status(404).json({ 
+                        success: false,
+                        error: "No se encontró la misión"
+                    });
+                }
+
+                res.json({
+                    success: true,
+                    newProgress: missionStatus[0].Progress,
+                    isCompleted: missionStatus[0].completado === 1,
+                    isClaimed: missionStatus[0].reclamado === 1,
+                    targetProgress: missionStatus[0].TargetProgress
                 });
-            }
-
-            const responseData = {
-                success: true,
-                newProgress: missionStatus[0].Progress,
-                isCompleted: missionStatus[0].completado === 1,
-                targetProgress: missionStatus[0].TargetProgress
-            };
-
-            console.log("[MISIONES] Respuesta exitosa:", responseData);
-            res.json(responseData);
+            });
         });
     });
 });
@@ -569,6 +588,264 @@ app.get("/coins/:id_usuario", (req, res) => {
         }
 
         res.json({ id_usuario, coins: results[0].coins });
+    });
+});
+
+// Endpoint para actualizar monedas con callbacks
+app.put("/coins/update", (req, res) => {
+    const { id_usuario, amount } = req.body;
+
+    // Validación de entrada
+    if (!id_usuario || amount === undefined) {
+        console.error("Faltan campos requeridos");
+        return res.status(400).json({ 
+            success: false,
+            error: "Se requieren id_usuario y amount" 
+        });
+    }
+
+    // Iniciar transacción
+    db.query("START TRANSACTION", (transactionErr) => {
+        if (transactionErr) {
+            console.error("Error al iniciar transacción:", transactionErr);
+            return res.status(500).json({ 
+                success: false,
+                error: "Error al iniciar transacción" 
+            });
+        }
+
+        // 1. Obtener monedas actuales primero
+        const getQuery = "SELECT coins FROM Usuarios WHERE id_usuario = ?";
+        db.query(getQuery, [id_usuario], (getErr, getResults) => {
+            if (getErr) {
+                return db.query("ROLLBACK", () => {
+                    console.error("Error al obtener monedas:", getErr);
+                    res.status(500).json({ 
+                        success: false,
+                        error: "Error al obtener monedas" 
+                    });
+                });
+            }
+
+            if (getResults.length === 0) {
+                return db.query("ROLLBACK", () => {
+                    console.error("Usuario no encontrado");
+                    res.status(404).json({ 
+                        success: false,
+                        error: "Usuario no encontrado" 
+                    });
+                });
+            }
+
+            const currentCoins = getResults[0].coins;
+            const newCoins = currentCoins + amount;
+
+            // Validar que no queden monedas negativas
+            if (newCoins < 0) {
+                return db.query("ROLLBACK", () => {
+                    console.error("Monedas insuficientes");
+                    res.status(400).json({ 
+                        success: false,
+                        error: "No hay suficientes monedas" 
+                    });
+                });
+            }
+
+            // 2. Actualizar monedas
+            const updateQuery = "UPDATE Usuarios SET coins = ? WHERE id_usuario = ?";
+            db.query(updateQuery, [newCoins, id_usuario], (updateErr, updateResult) => {
+                if (updateErr) {
+                    return db.query("ROLLBACK", () => {
+                        console.error("Error al actualizar monedas:", updateErr);
+                        res.status(500).json({ 
+                            success: false,
+                            error: "Error al actualizar monedas" 
+                        });
+                    });
+                }
+
+                // Confirmar transacción
+                db.query("COMMIT", (commitErr) => {
+                    if (commitErr) {
+                        return db.query("ROLLBACK", () => {
+                            console.error("Error al confirmar transacción:", commitErr);
+                            res.status(500).json({ 
+                                success: false,
+                                error: "Error al confirmar transacción" 
+                            });
+                        });
+                    }
+
+                    console.log("Monedas actualizadas correctamente");
+                    res.json({ 
+                        success: true,
+                        id_usuario,
+                        newCoins,
+                        amountChanged: amount 
+                    });
+                });
+            });
+        });
+    });
+});
+
+// Obtener estado de un módulo para un usuario
+app.get("/module/status", (req, res) => {
+    const userId = req.query.userId;
+    const moduleId = req.query.moduleId;
+
+    if (!userId || !moduleId) {
+        return res.status(400).json({ error: "Faltan parámetros requeridos" });
+    }
+
+    const query = `
+        SELECT desbloqueado 
+        FROM Usuario_Modulos 
+        WHERE id_usuario = ? AND id_modulo = ?
+    `;
+
+    db.query(query, [userId, moduleId], (err, results) => {
+        if (err) {
+            console.error("Error al consultar módulo:", err);
+            return res.status(500).json({ error: "Error en la base de datos" });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({ error: "Módulo no encontrado para este usuario" });
+        }
+
+        res.json({ desbloqueado: results[0].desbloqueado });
+    });
+});
+
+// Desbloquear módulo
+app.post("/module/unlock", (req, res) => {
+    const { id_usuario, id_modulo, precio } = req.body;
+
+    if (!id_usuario || !id_modulo || precio === undefined) {
+        return res.status(400).json({ error: "Faltan campos requeridos" });
+    }
+
+    // Iniciar transacción
+    db.query("START TRANSACTION", (transactionErr) => {
+        if (transactionErr) {
+            return res.status(500).json({ error: "Error al iniciar transacción" });
+        }
+
+        // 1. Verificar monedas del usuario
+        const checkCoinsQuery = "SELECT coins FROM Usuarios WHERE id_usuario = ?";
+        db.query(checkCoinsQuery, [id_usuario], (coinsErr, coinsResults) => {
+            if (coinsErr) {
+                return db.query("ROLLBACK", () => {
+                    res.status(500).json({ error: "Error al verificar monedas" });
+                });
+            }
+
+            if (coinsResults.length === 0) {
+                return db.query("ROLLBACK", () => {
+                    res.status(404).json({ error: "Usuario no encontrado" });
+                });
+            }
+
+            const currentCoins = coinsResults[0].coins;
+            if (currentCoins < precio) {
+                return db.query("ROLLBACK", () => {
+                    res.status(400).json({ success: false, error: "Monedas insuficientes" });
+                });
+            }
+
+            // 2. Actualizar monedas
+            const updateCoinsQuery = "UPDATE Usuarios SET coins = coins - ? WHERE id_usuario = ?";
+            db.query(updateCoinsQuery, [precio, id_usuario], (updateErr, updateResult) => {
+                if (updateErr) {
+                    return db.query("ROLLBACK", () => {
+                        res.status(500).json({ error: "Error al actualizar monedas" });
+                    });
+                }
+
+                // 3. Desbloquear módulo
+                const unlockQuery = `
+                    UPDATE Usuario_Modulos 
+                    SET desbloqueado = TRUE 
+                    WHERE id_usuario = ? AND id_modulo = ?
+                `;
+                db.query(unlockQuery, [id_usuario, id_modulo], (unlockErr, unlockResult) => {
+                    if (unlockErr) {
+                        return db.query("ROLLBACK", () => {
+                            res.status(500).json({ error: "Error al desbloquear módulo" });
+                        });
+                    }
+
+                    // Confirmar transacción
+                    db.query("COMMIT", (commitErr) => {
+                        if (commitErr) {
+                            return db.query("ROLLBACK", () => {
+                                res.status(500).json({ error: "Error al confirmar transacción" });
+                            });
+                        }
+
+                        // Obtener nuevas monedas
+                        db.query(checkCoinsQuery, [id_usuario], (err, finalCoins) => {
+                            if (err) {
+                                console.error("Error al obtener monedas finales", err);
+                                // Aún así devolvemos éxito porque la transacción se completó
+                                return res.json({ 
+                                    success: true, 
+                                    nuevas_monedas: currentCoins - precio 
+                                });
+                            }
+
+                            res.json({ 
+                                success: true, 
+                                nuevas_monedas: finalCoins[0].coins 
+                            });
+                        });
+                    });
+                });
+            });
+        });
+    });
+});
+
+// Endpoint para obtener el nombre de usuario
+// Endpoint para obtener nombre de usuario con callbacks
+app.get("/user/name", (req, res) => {
+    const userId = req.query.id;
+
+    if (!userId) {
+        return res.status(400).json({ 
+            success: false,
+            error: "Se requiere el ID de usuario" 
+        });
+    }
+
+    const query = "SELECT nombre_user FROM Usuarios WHERE id_usuario = ?";
+    
+    db.query(query, [userId], (err, results) => {
+        if (err) {
+            console.error("Error al obtener nombre:", err);
+            return res.status(500).json({ 
+                success: false,
+                error: "Error en la base de datos",
+                details: err.message // Agregamos detalles del error
+            });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({ 
+                success: false,
+                error: "Usuario no encontrado" 
+            });
+        }
+
+        // Respuesta mejor estructurada
+        res.json({ 
+            success: true,
+            data: {
+                id_usuario: userId,
+                nombre_user: results[0].nombre_user
+            }
+        });
     });
 });
 

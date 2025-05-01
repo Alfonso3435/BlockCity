@@ -19,6 +19,8 @@ public class MissionManager : MonoBehaviour
     private bool missionsLoaded = false;
     private List<UserQuest> loadedMissions = new List<UserQuest>();
 
+    [SerializeField] private TMP_Text coinsText;
+
     void Awake()
     {
         if (Instance == null)
@@ -35,6 +37,11 @@ public class MissionManager : MonoBehaviour
     void Start()
     {
         StartCoroutine(InitializeMissions());
+    }
+
+    private void Update()
+    {
+        coinsText.text = DBQuizReqHolder.Instance.GetCoins().ToString();
     }
 
     // En MissionManager
@@ -126,7 +133,17 @@ public class MissionManager : MonoBehaviour
         var quest = loadedMissions.FirstOrDefault(q => q.id_quest == questId);
         if (quest != null)
         {
-            quest.completado = 2; // Marcamos como reclamada localmente
+            quest.completado = 2;// Marcamos como reclamada localmente
+            if (questId ==1){
+                DBQuizReqHolder.Instance.SetCoins(DBQuizReqHolder.Instance.GetCoins() + 300);
+            }
+            else if (questId ==2){
+                DBQuizReqHolder.Instance.SetCoins(DBQuizReqHolder.Instance.GetCoins() + 250);
+            }
+            else if (questId ==3){
+                DBQuizReqHolder.Instance.SetCoins(DBQuizReqHolder.Instance.GetCoins() + 400);
+            }
+            
         }
 
         // Actualizar datos desde el servidor
