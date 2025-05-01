@@ -3,6 +3,20 @@ DROP DATABASE IF EXISTS Cryptogame;
 CREATE DATABASE Cryptogame;
 USE CryptoGame;
 
+CREATE TABLE UsuariosAdmin (
+    id_usuario_admin INT AUTO_INCREMENT PRIMARY KEY,
+    contrasena_hash  VARCHAR(255) NOT NULL,
+    fecha_registro   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    email            VARCHAR(321) NOT NULL UNIQUE,
+    username         VARCHAR(100) NOT NULL UNIQUE,
+    rol              ENUM('Admin', 'Analytical') NOT NULL,
+    avatar_url       VARCHAR(255),
+    twitter          VARCHAR(255),
+    linkedin         VARCHAR(255),
+    github           VARCHAR(255)
+);
+
+
 CREATE TABLE Usuarios(
     id_usuario INT AUTO_INCREMENT PRIMARY KEY,
     nacionalidad VARCHAR(50) NOT NULL,
