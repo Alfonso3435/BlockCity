@@ -241,6 +241,17 @@ public class HangmanController : MonoBehaviour
             )
         );
 
+        DBQuizReqHolder.Instance.StartCoroutine(
+            DBQuizReqHolder.Instance.UpdateQuizUsuario(
+                DBQuizReqHolder.Instance.GetLevelNumber(),
+                DBQuizReqHolder.Instance.GetUserID(),
+                1,
+                starsEarned,
+                3000,
+                1
+            )
+        );
+
         // Incrementar misión
         int hangmanMissionId = 4;
         DBQuizReqHolder.Instance.StartCoroutine(

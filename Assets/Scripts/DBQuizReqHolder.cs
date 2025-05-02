@@ -743,44 +743,6 @@ public IEnumerator UpdateCoins(int userID, int amount)
     }
 }
 
-/*
-public IEnumerator UpdateQuizUsuario(int idQuiz, int idUsuario, int desbloqueado, int estrellas, int puntos, int completado)
-{
-    string url = $"{urlBD}quiz-usuario/update";
-
-    // Create the request body
-    QuizUsuarioUpdateRequest data = new QuizUsuarioUpdateRequest
-    {
-        id_quiz = idQuiz,
-        id_usuario = idUsuario,
-        desbloqueado = desbloqueado,
-        estrellas = estrellas,
-        puntos = puntos,
-        completado = completado
-    };
-
-    string json = JsonUtility.ToJson(data);
-    byte[] body = System.Text.Encoding.UTF8.GetBytes(json);
-
-    using (UnityWebRequest request = new UnityWebRequest(url, "PUT"))
-    {
-        request.uploadHandler = new UploadHandlerRaw(body);
-        request.downloadHandler = new DownloadHandlerBuffer();
-        request.SetRequestHeader("Content-Type", "application/json");
-
-        yield return request.SendWebRequest();
-
-        if (request.result == UnityWebRequest.Result.Success)
-        {
-            Debug.Log("Quiz_Usuario updated successfully: " + request.downloadHandler.text);
-        }
-        else
-        {
-            Debug.LogError("Error updating Quiz_Usuario: " + request.error);
-        }
-    }
-}
-*/
 public IEnumerator UpdateQuizUsuario(int idQuiz, int idUsuario, int desbloqueado, int estrellas, int puntos, int completado)
 {
     string url = $"{urlBD}quiz-usuario/update";
