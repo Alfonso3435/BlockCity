@@ -101,7 +101,7 @@ public class MenuController : MonoBehaviour
 
     private void CheckLogin(ClickEvent evt)
     {
-        //DBQuizReqHolder.Instance.SetIsLoggedIn(true);
+        DBQuizReqHolder.Instance.SetIsLoggedIn(true);
         if (DBQuizReqHolder.Instance.GetIsLoggedIn() == false)
         {
             contenedorError.style.display = DisplayStyle.Flex;

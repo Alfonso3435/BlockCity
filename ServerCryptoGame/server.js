@@ -960,6 +960,232 @@ app.get("/memory/:id_memorama", (req, res) => {
     });
 });
 
+app.put("/quiz-usuario/update", (req, res) => {
+    const { id_quiz, id_usuario, desbloqueado, estrellas, puntos, completado } = req.body;
+
+    // Validate the input
+    if (!id_quiz || !id_usuario || desbloqueado === undefined || estrellas === undefined || puntos === undefined || completado === undefined) {
+        return res.status(400).json({
+            success: false,
+            error: "All fields (id_quiz, id_usuario, desbloqueado, estrellas, puntos, completado) are required"
+        });
+    }
+
+    // Query to update the specific tuple
+    const query = `
+        UPDATE Quiz_Usuario
+        SET 
+            desbloqueado = COALESCE(?, desbloqueado),
+            estrellas = COALESCE(?, estrellas),
+            puntos = COALESCE(?, puntos),
+            completado = COALESCE(?, completado)
+        WHERE 
+            id_quiz = ? AND 
+            id_usuario = ?
+    `;
+
+    const params = [desbloqueado, estrellas, puntos, completado, id_quiz, id_usuario];
+
+    db.query(query, params, (err, result) => {
+        if (err) {
+            console.error("Error updating Quiz_Usuario:", err);
+            return res.status(500).json({
+                success: false,
+                error: "Error updating the database"
+            });
+        }
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({
+                success: false,
+                error: "No matching record found for the given id_quiz and id_usuario"
+            });
+        }
+
+        res.json({
+            success: true,
+            message: "Quiz_Usuario updated successfully",
+            affectedRows: result.affectedRows
+        });
+    });
+});
+
+app.put("/quiz-usuario/unlock", (req, res) => {
+    const { id_quiz, id_usuario, desbloqueado } = req.body;
+
+    // Validate the input
+    if (!id_quiz || !id_usuario || desbloqueado === undefined) {
+        return res.status(400).json({
+            success: false,
+            error: "id_quiz, id_usuario, and desbloqueado are required"
+        });
+    }
+
+    // Query to update only the desbloqueado field
+    const query = `
+        UPDATE Quiz_Usuario
+        SET desbloqueado = ?
+        WHERE id_quiz = ? AND id_usuario = ?
+    `;
+
+    const params = [desbloqueado, id_quiz, id_usuario];
+
+    db.query(query, params, (err, result) => {
+        if (err) {
+            console.error("Error updating desbloqueado in Quiz_Usuario:", err);
+            return res.status(500).json({
+                success: false,
+                error: "Error updating the database"
+            });
+        }
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({
+                success: false,
+                error: "No matching record found for the given id_quiz and id_usuario"
+            });
+        }
+
+        res.json({
+            success: true,
+            message: "Quiz_Usuario desbloqueado updated successfully",
+            affectedRows: result.affectedRows
+        });
+    });
+});
+
+app.get("/module/quiz-stars", (req, res) => {
+    const { id_modulo, id_usuario } = req.query;
+
+    // Validate the input
+    if (!id_modulo || !id_usuario) {
+        return res.status(400).json({
+            success: false,
+            error: "Both id_modulo and id_usuario are required"
+        });
+    }
+
+    // Query to fetch the stars for each quiz in the module
+    const query = `
+        SELECT 
+            q.id_quiz, 
+            q.nombre_quiz, 
+            IFNULL(qu.estrellas, 0) AS estrellas
+        FROM Quizzes q
+        LEFT JOIN Quiz_Usuario qu 
+            ON q.id_quiz = qu.id_quiz AND qu.id_usuario = ?
+        WHERE q.id_modulo = ?
+    `;
+
+    db.query(query, [id_usuario, id_modulo], (err, results) => {
+        if (err) {
+            console.error("Error fetching quiz stars:", err);
+            return res.status(500).json({
+                success: false,
+                error: "Error in the database"
+            });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({
+                success: false,
+                error: "No quizzes found for the given module and user"
+            });
+        }
+
+        res.json({
+            success: true,
+            quizzes: results
+        });
+    });
+});
+
+app.get("/module/stars", (req, res) => {
+    const { id_modulo, id_usuario } = req.query;
+
+    // Validate the input
+    if (!id_modulo || !id_usuario) {
+        return res.status(400).json({
+            success: false,
+            error: "Both id_modulo and id_usuario are required"
+        });
+    }
+
+    // Query to calculate the total stars
+    const query = `
+        SELECT SUM(qu.estrellas) AS total_stars
+        FROM Quiz_Usuario qu
+        JOIN Quizzes q ON qu.id_quiz = q.id_quiz
+        WHERE q.id_modulo = ? AND qu.id_usuario = ?
+    `;
+
+    db.query(query, [id_modulo, id_usuario], (err, results) => {
+        if (err) {
+            console.error("Error calculating total stars:", err);
+            return res.status(500).json({
+                success: false,
+                error: "Error in the database"
+            });
+        }
+
+        // If no quizzes are found, return 0 stars
+        const totalStars = results[0]?.total_stars || 0;
+
+        res.json({
+            success: true,
+            id_modulo,
+            id_usuario,
+            total_stars: totalStars
+        });
+    });
+});
+
+app.get("/module/levels", (req, res) => {
+    const { id_modulo, id_usuario } = req.query;
+
+    // Validate the input
+    if (!id_modulo || !id_usuario) {
+        return res.status(400).json({
+            success: false,
+            error: "Both id_modulo and id_usuario are required"
+        });
+    }
+
+    // Query to fetch the unlock state for all quizzes in the module
+    const query = `
+        SELECT 
+            q.id_quiz, 
+            q.nombre_quiz, 
+            IFNULL(qu.desbloqueado, FALSE) AS desbloqueado
+        FROM Quizzes q
+        LEFT JOIN Quiz_Usuario qu 
+            ON q.id_quiz = qu.id_quiz AND qu.id_usuario = ?
+        WHERE q.id_modulo = ?
+    `;
+
+    db.query(query, [id_usuario, id_modulo], (err, results) => {
+        if (err) {
+            console.error("Error fetching levels:", err);
+            return res.status(500).json({
+                success: false,
+                error: "Error in the database"
+            });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({
+                success: false,
+                error: "No levels found for the given module and user"
+            });
+        }
+
+        res.json({
+            success: true,
+            levels: results
+        });
+    });
+});
+
 // Agregar este endpoint después de los demás endpoints existentes
 app.post("/logout", (req, res) => {
     const { correo, hora, tipo, id_usuario } = req.body;
