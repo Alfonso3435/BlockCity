@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections;
 using UnityEngine.Networking;
+using System.Data.Common;
 
 public class GameManager : MonoBehaviour
 {
@@ -72,7 +73,8 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator InitializeGameWithItems()
     {
-        currentLevelNumber = QuizDataHolder.Instance.GetLevelNumber();
+        currentLevelNumber = DBQuizReqHolder.Instance.GetLevelNumber();
+        Debug.Log("Current Level Number: " + currentLevelNumber);
         currentLevelName = PlayerPrefs.GetString("CurrentLevelName");
         selectedCategory = QuizDataHolder.Instance.GetQuizData();
         currentQuestionMaxPoints = 3000;
@@ -84,6 +86,7 @@ public class GameManager : MonoBehaviour
 
         // Wait for GetItemsData to complete
         yield return StartCoroutine(DBQuizReqHolder.Instance.GetItemsData(DBQuizReqHolder.Instance.GetUserID()));
+        yield return StartCoroutine(DBQuizReqHolder.Instance.GetQuizData(currentLevelNumber)); // Optional delay for UI update
 
         // Initialize the game after items data is received
         InitializeGame();
@@ -101,9 +104,10 @@ public class GameManager : MonoBehaviour
         feedbackPanel.SetActive(false);
         tipPanel.SetActive(false);
         triviaGameObject.SetActive(true);
-        
-        DisplayCurrentQuestion();
+
         StartCoroutine(DBQuizReqHolder.Instance.GetItemsData(DBQuizReqHolder.Instance.GetUserID()));
+        DisplayCurrentQuestion();
+        
         ShieldText.text = DBQuizReqHolder.Instance.GetShieldCount().ToString();
         PotionText.text = DBQuizReqHolder.Instance.GetPotionCount().ToString();
         //Debug.Log("Shield count: " + DBQuizReqHolder.Instance.GetShieldCount());
@@ -208,12 +212,12 @@ public class GameManager : MonoBehaviour
         currentQuestionText.text = (currentQuestionIndex + 1) + "/" + GetNumberOfQuestions();
         HeartText.text = (lives - quizErrors).ToString();
 
-        Question currentQuestion = selectedCategory.questions[currentQuestionIndex];
+        //Question currentQuestion = selectedCategory.questions[currentQuestionIndex];
         questionText.text = DBQuizReqHolder.Instance.GetPreguntas()[currentQuestionIndex].pregunta;
 
         for (int i = 0; i < replyButtons.Length; i++)
         {
-            bool shouldActivate = i < currentQuestion.replies.Length;
+            bool shouldActivate = i < 7;
             replyButtons[i].gameObject.SetActive(shouldActivate);
 
             if (shouldActivate)

@@ -13,6 +13,9 @@ public class LectureController : MonoBehaviour
 
     void Start()
     {
+        Debug.Log("WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW");
+        Debug.Log("levelNum: " + DBQuizReqHolder.Instance.GetLevelNumber());
+        StartCoroutine(DBQuizReqHolder.Instance.GetQuizData(DBQuizReqHolder.Instance.GetLevelNumber()));
         // Verificar si el nivel actual es 3 o 5
         int currentLevel = PlayerPrefs.GetInt("CurrentLevel", 1); // Nivel actual, por defecto 1
         if (currentLevel == 3 || currentLevel == 5)
@@ -30,7 +33,7 @@ public class LectureController : MonoBehaviour
         nextButton.onClick.AddListener(() =>
         {
             string nextScene = PlayerPrefs.GetString("NextScene", "Quiz");
-            LoadScene(nextScene);
+            LoadScene("Quiz");
         });
     }
 

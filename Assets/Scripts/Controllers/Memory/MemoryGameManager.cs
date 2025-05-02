@@ -228,6 +228,16 @@ public class MemoryGameManager : MonoBehaviour, ICardGameManager
         PlayerPrefs.SetInt("TempPoints", pointsEarned);
         PlayerPrefs.SetInt("TempCoins", starsEarned * 200);
 
+        StartCoroutine(
+            DBQuizReqHolder.Instance.UpdateQuizUsuario(
+                DBQuizReqHolder.Instance.GetLevelNumber(), // ID del nivel
+                DBQuizReqHolder.Instance.GetUserID(), // ID del usuario
+                1,
+                starsEarned, // Estrellas ganadas
+                pointsEarned, // Puntos ganados
+                starsEarned * 200 // Monedas ganadas
+            ));
+
         Debug.Log("=============================");
         StartCoroutine(DBQuizReqHolder.Instance.UpdateCoins(
             DBQuizReqHolder.Instance.GetUserID(),

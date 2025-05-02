@@ -76,6 +76,11 @@ public class StageClearManager : MonoBehaviour
 
     private void ContinueToNextLevel()
     {
+        StartCoroutine(DBQuizReqHolder.Instance.UnlockQuiz(
+            DBQuizReqHolder.Instance.GetLevelNumber() + 1,
+            DBQuizReqHolder.Instance.GetUserID(),
+            1
+        ));
         string currentModule = PlayerPrefs.GetString("CurrentModule", "LevelSelection1");
         SceneManager.LoadScene(currentModule);
     }

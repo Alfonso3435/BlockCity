@@ -24,6 +24,12 @@ EditorBuildSettings:
     path: Assets/Scenes/Lecture1.unity
     guid: 83d1847f3f30f0246a0536f4bec5b0a1
   - enabled: 1
+    path: Assets/Scenes/Lecture2.unity
+    guid: 6b906b0f925124f8a98041a7528c7084
+  - enabled: 1
+    path: Assets/Scenes/Lecture4.unity
+    guid: 22d87401f55424a238f15283d9216b74
+  - enabled: 1
     path: Assets/Scenes/Quiz.unity
     guid: 762d23834533ba54ebb05f730b3f5254
   - enabled: 1

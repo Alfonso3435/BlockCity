@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Collections;
+using NUnit.Framework.Constraints;
 
 public class LevelSelectionController : MonoBehaviour
 {
@@ -20,24 +22,78 @@ public class LevelSelectionController : MonoBehaviour
     public string quizSceneName = "Quiz";
     public string memorySceneName = "Memory";
     public string hangmanSceneName = "Hangman"; // Added for Hangman
+    public bool[] desbloqueos = {false, false, false, false, false, false};
+    public int[] starobtained = {0, 0, 0, 0, 0, 0};
 
     private void Start()
     {
+        StartCoroutine(Starter());
+    }
+    private IEnumerator Starter()
+    {
         UpdateLevelState();
+        yield return StartCoroutine(DBQuizReqHolder.Instance.GetModuleQuizStars(
+            DBQuizReqHolder.Instance.GetModuleID(),
+            DBQuizReqHolder.Instance.GetUserID()));
+
+        var quizStars = DBQuizReqHolder.Instance.GetModuleQuizStarsData();
+
+        int j = 0;
+        if (quizStars != null)
+        {
+            Debug.Log("Quiz Stars Data:");
+            foreach (var quiz in quizStars)
+            {
+                Debug.Log($"Quiz ID: {quiz.id_quiz}, Name: {quiz.nombre_quiz}, Stars: {quiz.estrellas}");
+                starobtained[j] = quiz.estrellas;
+                j++;
+            }
+        }
+        else
+        {
+            Debug.LogError("No quiz stars data available.");
+        }
+
+        yield return StartCoroutine(DBQuizReqHolder.Instance.GetModuleLevels(idModulo: 1,
+            idUsuario: 13,
+            onSuccess: (levels) =>
+            {
+                Debug.Log("GetModuleLevels Success:");
+                foreach (var level in levels)
+                {
+                    //Debug.Log($"Level ID: {level.id_quiz}, Name: {level.nombre_quiz}, Unlocked: {level.desbloqueado}");
+                    desbloqueos[level.id_quiz - 1] = level.desbloqueado;
+                }
+            },
+            onError: (error) =>
+            {
+                Debug.LogError($"GetModuleLevels Error: {error}");
+            }
+            ));
+
+        //Debug.Log("=========================== ");
+        for (int i = 0; i < desbloqueos.Length; i++)
+            {
+                //Debug.Log($"desbloqueos[{i}]: {desbloqueos[i]}");
+            }
     }
 
     private void Update()
     {
         UpdateLevelState();
     }
-
     private void UpdateLevelState()
     {
         string currentModule = PlayerPrefs.GetString("CurrentModule", "LevelSelection1");
         int prevLevelNum = levelNum - 1;
-        
+        //Debug.Log("================================");
+        //Debug.Log("LevelNum: " + levelNum);
+
+
         unlocked = prevLevelNum == 0 || 
-                  PlayerPrefs.GetInt(currentModule + "_Lv" + prevLevelNum, 0) > 0;
+                  PlayerPrefs.GetInt(currentModule + "_Lv" + prevLevelNum, 0) > 0
+                  ;
+        unlocked = desbloqueos[levelNum - 1];
 
         UpdateLevelUI();
     }
@@ -45,7 +101,6 @@ public class LevelSelectionController : MonoBehaviour
     private void UpdateLevelUI()
     {
         unlockImage.gameObject.SetActive(!unlocked);
-        
         foreach (GameObject star in stars)
         {
             star.SetActive(unlocked);
@@ -56,7 +111,7 @@ public class LevelSelectionController : MonoBehaviour
             string currentModule = PlayerPrefs.GetString("CurrentModule", "LevelSelection1");
             int starsObtained = PlayerPrefs.GetInt(currentModule + "_Lv" + levelNum, 0);
             
-            for (int i = 0; i < starsObtained; i++)
+            for (int i = 0; i < starobtained[levelNum - 1]; i++)
             {
                 stars[i].GetComponent<Image>().sprite = starSprite;
             }

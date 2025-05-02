@@ -112,6 +112,33 @@ public class ModuleStarsResponse
     public string error;
 }
 
+// Class to represent the response from the server
+[System.Serializable]
+public class ModuleLevelsResponse
+{
+    public bool success;
+    public List<LevelData> levels;
+    public string error;
+}
+
+// Class to represent individual level data
+[System.Serializable]
+public class LevelData
+{
+    public int id_quiz;
+    public string nombre_quiz;
+    public bool desbloqueado;
+}
+
+// Class to represent the request body
+[System.Serializable]
+public class UnlockQuizRequest
+{
+    public int id_quiz;
+    public int id_usuario;
+    public int desbloqueado;
+}
+
 public class DBQuizReqHolder : MonoBehaviour
 {
     public static DBQuizReqHolder Instance;
@@ -130,6 +157,8 @@ public class DBQuizReqHolder : MonoBehaviour
     public string urlBD = "";
     private int userID = 13; // Cambia esto por el ID de usuario real
     private int coins = 0; // Store the coins value
+    private List<QuizStarsData> moduleQuizStars; // Class-level variable to store quiz stars data
+
     private void Awake()
     {
         if (Instance == null)
@@ -150,6 +179,71 @@ public class DBQuizReqHolder : MonoBehaviour
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
+    public IEnumerator GetModuleQuizStars(int idModulo, int idUsuario)
+    {
+        string url = $"{urlBD}module/quiz-stars?id_modulo={idModulo}&id_usuario={idUsuario}";
+        Debug.Log($"Requesting quiz stars for module {idModulo} and user {idUsuario} from: {url}");
+
+        using (UnityWebRequest request = UnityWebRequest.Get(url))
+        {
+            yield return request.SendWebRequest();
+
+            if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
+            {
+                Debug.LogError($"Error fetching quiz stars: {request.error}");
+                moduleQuizStars = null; // Clear the data on error
+            }
+            else
+            {
+                string jsonResponse = request.downloadHandler.text;
+                Debug.Log($"Response received: {jsonResponse}");
+
+                try
+                {
+                    // Parse the JSON response to extract quiz stars data
+                    QuizStarsResponse response = JsonUtility.FromJson<QuizStarsResponse>(jsonResponse);
+                    if (response.success)
+                    {
+                        moduleQuizStars = response.quizzes; // Store the data
+                    }
+                    else
+                    {
+                        Debug.LogError($"Error in response: {response.error}");
+                        moduleQuizStars = null; // Clear the data on error
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"Error parsing response: {ex.Message}");
+                    moduleQuizStars = null; // Clear the data on error
+                }
+            }
+        }
+    }
+
+    // Getter method to access the stored quiz stars data
+    public List<QuizStarsData> GetModuleQuizStarsData()
+    {
+        return moduleQuizStars;
+    }
+
+    // Class to represent the response from the server
+    [System.Serializable]
+    private class QuizStarsResponse
+    {
+        public bool success;
+        public List<QuizStarsData> quizzes;
+        public string error;
+    }
+
+    // Class to represent individual quiz stars data
+    [System.Serializable]
+    public class QuizStarsData
+    {
+        public int id_quiz;
+        public string nombre_quiz;
+        public int estrellas;
+    }
     public string GetLocalIPAddress()
     {
         try
@@ -543,6 +637,7 @@ public IEnumerator UpdateCoins(int userID, int amount)
     }
 }
 
+/*
 public IEnumerator UpdateQuizUsuario(int idQuiz, int idUsuario, int desbloqueado, int estrellas, int puntos, int completado)
 {
     string url = $"{urlBD}quiz-usuario/update";
@@ -579,6 +674,78 @@ public IEnumerator UpdateQuizUsuario(int idQuiz, int idUsuario, int desbloqueado
         }
     }
 }
+*/
+public IEnumerator UpdateQuizUsuario(int idQuiz, int idUsuario, int desbloqueado, int estrellas, int puntos, int completado)
+{
+    string url = $"{urlBD}quiz-usuario/update";
+
+    // Create the request body
+    QuizUsuarioUpdateRequest data = new QuizUsuarioUpdateRequest
+    {
+        id_quiz = idQuiz,
+        id_usuario = idUsuario,
+        desbloqueado = desbloqueado,
+        estrellas = estrellas,
+        puntos = puntos,
+        completado = completado
+    };
+
+    string json = JsonUtility.ToJson(data);
+    byte[] body = System.Text.Encoding.UTF8.GetBytes(json);
+
+    using (UnityWebRequest request = new UnityWebRequest(url, "PUT"))
+    {
+        request.uploadHandler = new UploadHandlerRaw(body);
+        request.downloadHandler = new DownloadHandlerBuffer();
+        request.SetRequestHeader("Content-Type", "application/json");
+
+        yield return request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.Success)
+        {
+            Debug.Log("Quiz_Usuario updated successfully: " + request.downloadHandler.text);
+        }
+        else
+        {
+            Debug.LogError("Error updating Quiz_Usuario: " + request.error);
+        }
+    }
+}
+
+public IEnumerator UnlockQuiz(int idQuiz, int idUsuario, int desbloqueado)
+{
+    string url = $"{urlBD}quiz-usuario/unlock";
+    Debug.Log($"Unlocking quiz {idQuiz} for user {idUsuario} with desbloqueado: {desbloqueado}");
+
+    // Create the request body
+    string jsonBody = JsonUtility.ToJson(new UnlockQuizRequest
+    {
+        id_quiz = idQuiz,
+        id_usuario = idUsuario,
+        desbloqueado = desbloqueado
+    });
+
+    byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonBody);
+
+    using (UnityWebRequest request = new UnityWebRequest(url, "PUT"))
+    {
+        request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+        request.downloadHandler = new DownloadHandlerBuffer();
+        request.SetRequestHeader("Content-Type", "application/json");
+
+        yield return request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.Success)
+        {
+            Debug.Log($"Quiz {idQuiz} unlocked successfully for user {idUsuario}: {request.downloadHandler.text}");
+        }
+        else
+        {
+            Debug.LogError($"Error unlocking quiz {idQuiz} for user {idUsuario}: {request.error}");
+        }
+    }
+}
+
 
 public IEnumerator GetModuleStars(int idModulo, int idUsuario, Action<int> onSuccess, Action<string> onError)
 {
@@ -621,6 +788,46 @@ public IEnumerator GetModuleStars(int idModulo, int idUsuario, Action<int> onSuc
     }
 }
 
+public IEnumerator GetModuleLevels(int idModulo, int idUsuario, Action<List<LevelData>> onSuccess, Action<string> onError)
+{
+    string url = $"{urlBD}module/levels?id_modulo={idModulo}&id_usuario={idUsuario}";
+    Debug.Log($"Requesting levels for module {idModulo} and user {idUsuario} from: {url}");
+
+    using (UnityWebRequest request = UnityWebRequest.Get(url))
+    {
+        yield return request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
+        {
+            Debug.LogError($"Error fetching module levels: {request.error}");
+            onError?.Invoke(request.error);
+        }
+        else
+        {
+            string jsonResponse = request.downloadHandler.text;
+            Debug.Log($"Response received: {jsonResponse}");
+
+            try
+            {
+                // Parse the JSON response to extract level data
+                ModuleLevelsResponse response = JsonUtility.FromJson<ModuleLevelsResponse>(jsonResponse);
+                if (response.success)
+                {
+                    onSuccess?.Invoke(response.levels);
+                }
+                else
+                {
+                    onError?.Invoke(response.error);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Error parsing response: {ex.Message}");
+                onError?.Invoke("Failed to parse server response.");
+            }
+        }
+    }
+}
     public int GetPotionCount()
     {
         return potionCount;
