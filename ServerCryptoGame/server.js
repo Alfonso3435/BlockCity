@@ -994,5 +994,5 @@ app.post("/logout", (req, res) => {
 });
 
 app.listen(puerto, () => {
-    console.log(`Servidor escuchando en http://localhost:${puerto}`);
+    console.log(`Servidor escuchando`);
 });

@@ -2,9 +2,12 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Networking;
 using System.Collections;
+using System;
 using System.Data.Common;
 using System.Linq;
 using System.Collections.Generic;
+using System.Net;
+using System.Net.Sockets;
 
 [System.Serializable]
 public class Pregunta
@@ -106,7 +109,7 @@ public class DBQuizReqHolder : MonoBehaviour
     private int shieldCount = 0; // Store the shield count
     private MemoryResponse[] memoryData; // Array to store memory data
     //public string urlBD = "http://bd-cryptochicks.cmirgwrejba3.us-east-1.rds.amazonaws.com:3000/";
-    public string urlBD = "http://10.48.66.147:3000/";
+    public string urlBD = "";
     private int userID = 13; // Cambia esto por el ID de usuario real
     private int coins = 0; // Store the coins value
     private void Awake()
@@ -115,6 +118,10 @@ public class DBQuizReqHolder : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+
+        string localIP = GetLocalIPAddress();
+        urlBD = $"http://{localIP}:3000/";
+        Debug.Log($"Server URL set to: {urlBD}");
         }
         else
         {
@@ -123,6 +130,28 @@ public class DBQuizReqHolder : MonoBehaviour
         }
 
         SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    public string GetLocalIPAddress()
+    {
+        try
+        {
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    return ip.ToString(); // Return the first IPv4 address found
+                }
+            }
+            Debug.LogError("No IPv4 address found.");
+            return "127.0.0.1"; // Default to localhost if no IP is found
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Error obtaining local IP address: {ex.Message}");
+            return "127.0.0.1"; // Default to localhost in case of an error
+        }
     }
 
     private void OnDestroy()
@@ -152,7 +181,6 @@ public class DBQuizReqHolder : MonoBehaviour
 
     public IEnumerator GetQuizData(int NivelID)
     {
-        //string url = $"http://localhost:3000/quiz/{NivelID}";
         string url = $"{urlBD}quiz/{NivelID}";
         //Debug.Log("Realizando solicitud a: " + url);
 
@@ -201,7 +229,6 @@ public class DBQuizReqHolder : MonoBehaviour
 
     public IEnumerator GetItemsData(int userID)
     {
-    //string url = $"http://localhost:3000/items/{userID}";
         string url = $"{urlBD}items/{userID}";
         //Debug.Log("Realizando solicitud a: " + url);
 
