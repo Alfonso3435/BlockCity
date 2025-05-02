@@ -1,5 +1,5 @@
 using UnityEngine;
-using UnityEngine.UIElements;
+using UnityEngine.UI;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using System;
@@ -7,8 +7,7 @@ using System.Collections;
 
 public class LogoutController : MonoBehaviour
 {
-    private Button botonLogout;
-    private UIDocument menu;
+    [SerializeField] private Button logoutButton; // Asignar desde el Inspector
 
     [Serializable]
     public class DatosSesion
@@ -19,20 +18,25 @@ public class LogoutController : MonoBehaviour
         public int id_usuario;
     }
 
-    void OnEnable()
+    void Start()
     {
-        menu = GetComponent<UIDocument>();
-        var root = menu.rootVisualElement;
-        botonLogout = root.Q<Button>("Logout");
-
-        botonLogout.clicked += () =>
+        if (logoutButton != null)
         {
-            string correo = PlayerPrefs.GetString("usuario", "unknown");
-            int id_usuario = PlayerPrefs.GetInt("id_usuario", 0);
-            DateTime horaFin = DateTime.Now;
+            logoutButton.onClick.AddListener(OnLogoutButtonClicked);
+        }
+        else
+        {
+            Debug.LogError("LogoutButton no asignado en el Inspector");
+        }
+    }
 
-            StartCoroutine(EnviarDatosLogout("logout", correo, horaFin, id_usuario));
-        };
+    private void OnLogoutButtonClicked()
+    {
+        string correo = PlayerPrefs.GetString("usuario", "unknown");
+        int id_usuario = PlayerPrefs.GetInt("id_usuario", 0);
+        DateTime horaFin = DateTime.Now;
+
+        StartCoroutine(EnviarDatosLogout("logout", correo, horaFin, id_usuario));
     }
 
     private IEnumerator EnviarDatosLogout(string tipo, string correo, DateTime hora, int id_usuario)
@@ -46,13 +50,22 @@ public class LogoutController : MonoBehaviour
         };
 
         string datosJSON = JsonUtility.ToJson(datos);
-        UnityWebRequest request = new UnityWebRequest("http://localhost:3000/logout", "POST");
+        
+        // Usamos la URL base de DBQuizReqHolder
+        string url = DBQuizReqHolder.Instance.urlBD + (DBQuizReqHolder.Instance.urlBD.EndsWith("/") ? "logout" : "/logout");
+        
+        UnityWebRequest request = new UnityWebRequest(url, "POST");
         byte[] body = System.Text.Encoding.UTF8.GetBytes(datosJSON);
         request.uploadHandler = new UploadHandlerRaw(body);
         request.downloadHandler = new DownloadHandlerBuffer();
         request.SetRequestHeader("Content-Type", "application/json");
 
         yield return request.SendWebRequest();
+
+        if (request.result != UnityWebRequest.Result.Success)
+        {
+            Debug.LogError("Error en logout: " + request.error);
+        }
 
         // Limpiar PlayerPrefs
         PlayerPrefs.DeleteKey("usuario");
@@ -62,10 +75,19 @@ public class LogoutController : MonoBehaviour
         PlayerPrefs.Save();
 
         // Limpiar estado en memoria
-        DBQuizReqHolder.Instance.SetIsLoggedIn(false);
-        DBQuizReqHolder.Instance.SetUserID(0);
+        DBQuizReqHolder.Instance?.SetIsLoggedIn(false);
+        DBQuizReqHolder.Instance?.SetUserID(0);
         
         // Redirigir a la escena de login
         SceneManager.LoadScene("Login");
+    }
+
+    void OnDestroy()
+    {
+        // Limpiar el listener para evitar memory leaks
+        if (logoutButton != null)
+        {
+            logoutButton.onClick.RemoveListener(OnLogoutButtonClicked);
+        }
     }
 }
