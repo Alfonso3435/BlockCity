@@ -252,11 +252,6 @@ public class HangmanController : MonoBehaviour
             )
         );
 
-        // Incrementar misión
-        int hangmanMissionId = 4;
-        DBQuizReqHolder.Instance.StartCoroutine(
-            DBQuizReqHolder.Instance.IncrementQuestProgress(hangmanMissionId)
-        );
 
         SceneManager.LoadScene("StageClear");
     }
@@ -271,7 +266,7 @@ public class HangmanController : MonoBehaviour
         
         return 0; // Más del 50% de errores
     }
-
+    
     public void ReturnToModuleSelection()
     {
         SceneManager.LoadScene("LevelSelection1");

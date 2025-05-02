@@ -178,7 +178,7 @@ public class DBQuizReqHolder : MonoBehaviour
     private MemoryResponse[] memoryData; // Array to store memory data
     //public string urlBD = "http://bd-cryptochicks.cmirgwrejba3.us-east-1.rds.amazonaws.com:3000/";
     public string urlBD = "";
-    private int userID = 13; // Cambia esto por el ID de usuario real
+    private int userID; // Cambia esto por el ID de usuario real
     private int coins = 0; // Store the coins value
     private List<QuizStarsData> moduleQuizStars; // Class-level variable to store quiz stars data
 

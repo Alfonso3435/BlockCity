@@ -55,7 +55,7 @@ public class LevelSelectionController : MonoBehaviour
         }
 
         yield return StartCoroutine(DBQuizReqHolder.Instance.GetModuleLevels(idModulo: 1,
-            idUsuario: 13,
+            idUsuario: DBQuizReqHolder.Instance.GetUserID(),
             onSuccess: (levels) =>
             {
                 Debug.Log("GetModuleLevels Success:");
@@ -94,6 +94,11 @@ public class LevelSelectionController : MonoBehaviour
                   PlayerPrefs.GetInt(currentModule + "_Lv" + prevLevelNum, 0) > 0
                   ;
         unlocked = desbloqueos[levelNum - 1];
+
+        if (levelNum == 1)
+        {
+            unlocked = true; // El primer nivel siempre está desbloqueado
+        }
 
         UpdateLevelUI();
     }
@@ -163,9 +168,10 @@ public class LevelSelectionController : MonoBehaviour
                 if (levelNum == 5){
                      SceneManager.LoadScene("Hangman"); // Cargar la escena de hangman
                 }
-                else{SceneManager.LoadScene($"Lecture{levelNum}");}
+                else{SceneManager.LoadScene($"Lecture{levelNum}");
             }
         }
+    }
     }
 
     public static int GetTotalStars(string moduleName)

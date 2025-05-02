@@ -29,21 +29,25 @@ public class MemoryGameManager : MonoBehaviour, ICardGameManager
 
     private void Awake()
     {
+        
         Instance = this;
         cardData = QuizDataHolder.Instance.GetCardData();
         if (backButton != null)
         {
             backButton.onClick.AddListener(ReturnToModuleSelection);
         }
-        Debug.Log("Llegué");
         StartCoroutine(DBQuizReqHolder.Instance.GetMemoryData(DBQuizReqHolder.Instance.GetLevelNumber())); // CAMBIAR AL ID DEL NIVEL
-        Debug.Log("CardData: ");
     }
 
-        public void ReturnToModuleSelection()
-        {        
-            SceneManager.LoadScene("ModuleSelection");
-        }
+
+
+    public void ReturnToModuleSelection()
+    {        
+        SceneManager.LoadScene("ModuleSelection");
+    }
+
+
+
 
     void Start()
     {

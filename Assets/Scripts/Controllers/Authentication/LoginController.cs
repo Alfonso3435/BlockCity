@@ -108,6 +108,9 @@ public class LoginController : MonoBehaviour
                 mensaje.text = "Success in \n log in.";
                 yield return new WaitForSeconds(1f);
                 DBQuizReqHolder.Instance.SetIsLoggedIn(true);
+
+                Debug.Log("WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW");
+                Debug.Log("Usuario logueado: " + loginResponse.id_usuario);
                 DBQuizReqHolder.Instance.SetUserID(loginResponse.id_usuario);
                 SceneManager.LoadScene("Menu");
             }
