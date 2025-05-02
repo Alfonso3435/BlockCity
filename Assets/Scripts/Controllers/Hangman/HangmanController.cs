@@ -1,261 +1,268 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using UnityEngine.SceneManagement;
 using System.Collections;
+using UnityEngine.SceneManagement;
+using System.Linq;
+using System.Collections.Generic;
 
 public class HangmanController : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject wordContainer; // Contenedor de las letras de la palabra
+    [Header("UI Elements")]
+    [SerializeField] private TMP_Text ValTries;
+    [SerializeField] private Transform WordContainer;
+    [SerializeField] private TMP_Text Question;
+    [SerializeField] private Transform KeyboardContainer;
+    [SerializeField] private GameObject[] hangmanStages;
 
-    [SerializeField]
-    private GameObject keyboardContainer; // Contenedor del teclado virtual
+    [SerializeField] private Button Regreso;
+    [SerializeField] private TMP_Text descConteo;
+    [SerializeField] private TMP_Text conteoText;
 
-    [SerializeField]
-    private GameObject letterContainer; // Prefab para las letras de la palabra
+    private int conteo = 1;
 
-    [SerializeField]
-    private GameObject[] hangmanStages; // Etapas del ahorcado (partes del cuerpo)
+    [Header("Prefabs")]
+    [SerializeField] private GameObject letterPrefab;
+    [SerializeField] private GameObject keyboardButtonPrefab;
 
-    [SerializeField]
-    private GameObject letterButton; // Prefab para los botones del teclado
+    [Header("Game Settings")]
+    [SerializeField] private int quizId = 5;
+    [SerializeField] private int basePoints = 1000;
+    [SerializeField] private int attemptsPerGame = 6;
+    [SerializeField] private int totalAttemptsAllowed = 42;
 
-    [SerializeField]
-    private Animator hangmanAnimator; // Referencia al Animator para animaciones
-
-    [SerializeField]
-    private HangmanData hangmanData; // Referencia al ScriptableObject HangmanData
-
-    [SerializeField]
-    private GameObject nextButton; // Botón para continuar al siguiente nivel
-    
-    public TMP_Text triesText; // Referencia al texto de intentos
-    private string word; // Palabra actual del juego
-    private int incorrectGuesses, correctGuesses; // Contadores de aciertos y errores
-    private int triesLeft; // Intentos restantes
-    private int pointsEarned; // Puntos ganados en el nivel
-
-    public Button backButton;
+    private string targetWord;
+    private string currentWordState;
+    private int remainingTotalAttempts;
+    private int remainingGameAttempts;
+    private int currentErrors = 0;
+    private bool gameActive = false;
+    private List<HangmanItem> availableWords;
+    private List<HangmanItem> completedWords = new List<HangmanItem>();
 
     private void Awake()
     {
-        // Asegurarse de que el botón "nextButton" esté oculto al inicio
-        if (nextButton != null)
-        {
-            nextButton.SetActive(false);
-        }
-        
-        // Configurar el evento del botón "backButton" para regresar a la selección de módulos
-        if (backButton != null)
-        {
-            backButton.onClick.RemoveAllListeners(); // Eliminar posibles eventos duplicados
-            backButton.onClick.AddListener(ReturnToModuleSelection); // Asignar el evento
-        }
+        Regreso.onClick.AddListener(ReturnToModuleSelection);
     }
 
-    public void ReturnToModuleSelection()
-        {        
-            SceneManager.LoadScene("ModuleSelection");
-        }
-
-    void Start()
+    private IEnumerator Start()
     {
-        InitializeButtons(); // Inicializar los botones del teclado
-        InitializeGame(); // Configurar el estado inicial del juego
+        remainingTotalAttempts = totalAttemptsAllowed;
+        yield return StartCoroutine(InitializeGame());
+        conteo=0;
+        conteoText.text =conteo.ToString();
     }
 
-    private void InitializeButtons()
+    private IEnumerator InitializeGame()
     {
-        // Crear botones para las letras (A-Z)
-        for (int i = 65; i <= 90; i++)
-        {
-            createButton(i);
-        }
+        ClearGameUI();
+
+        yield return StartCoroutine(DBQuizReqHolder.Instance.GetHangmanData(
+            quizId,
+            (success, hangmanData) => {
+                if (success && hangmanData != null && hangmanData.Length > 0)
+                {
+                    availableWords = new List<HangmanItem>(hangmanData);
+                    StartNextWord();
+                }
+                else
+                {
+                    Debug.LogError("Error loading hangman data");
+                    // Mostrar mensaje de error
+                }
+            }
+        ));
     }
 
-    private void InitializeGame()
+    private void StartNextWord()
     {
-        incorrectGuesses = 0;
-        correctGuesses = 0;
-        triesLeft = hangmanData.maxFallos; // Usar el número máximo de fallos desde HangmanData
-        pointsEarned = hangmanData.maxPoints; // Usar los puntos máximos desde HangmanData
-        UpdateTriesUI(); // Actualizar la UI de intentos
-
-        // Habilitar todos los botones del teclado virtual
-        foreach (Button child in keyboardContainer.GetComponentsInChildren<Button>())
+        if (availableWords.Count == 0)
         {
-            child.interactable = true; // Hacer que los botones sean interactivos
+            CompleteAllWords();
+            return;
         }
 
-        // Eliminar todas las letras generadas previamente
-        foreach (Transform child in wordContainer.transform)
+        // Reiniciar contadores para el nuevo minijuego
+        remainingGameAttempts = attemptsPerGame;
+        currentErrors = 0;
+        UpdateTriesDisplay();
+        ClearGameUI();
+        conteo++;
+        conteoText.text =conteo.ToString();
+
+        // Seleccionar palabra aleatoria de las disponibles
+        int randomIndex = Random.Range(0, availableWords.Count);
+        var selectedItem = availableWords[randomIndex];
+        availableWords.RemoveAt(randomIndex);
+
+        targetWord = selectedItem.word.ToUpper().Trim();
+        Question.text = selectedItem.definition.Trim();
+        currentWordState = new string('_', targetWord.Length);
+
+        CreateWordDisplay();
+        CreateKeyboard();
+
+        gameActive = true;
+        Debug.Log($"Current word: {targetWord}");
+    }
+
+    private void ClearGameUI()
+    {
+        // Limpiar letras y teclado
+        foreach (Transform child in WordContainer)
         {
             Destroy(child.gameObject);
         }
 
-        // Reiniciar las etapas del ahorcado
-        foreach (GameObject stage in hangmanStages)
+        foreach (Transform child in KeyboardContainer)
         {
-            stage.SetActive(false); // Ocultar todas las partes del ahorcado
+            Destroy(child.gameObject);
         }
 
-        // Generar una nueva palabra
-        word = GenerateWord().ToUpper();
-        foreach (char letter in word)
+        // Reiniciar visualización del ahorcado
+        foreach (var stage in hangmanStages)
         {
-            var temp = Instantiate(letterContainer, wordContainer.transform); // Crear letras en la UI
+            stage.SetActive(false);
         }
     }
 
-    private string GenerateWord()
+    private void CreateWordDisplay()
     {
-        // Seleccionar una palabra aleatoria del banco de palabras en HangmanData
-        string[] wordList = hangmanData.palabras;
-        string line = wordList[Random.Range(0, wordList.Length)];
-        return line.Trim().ToUpper(); // Eliminar espacios y convertir a mayúsculas
-    }
-
-    void UpdateTriesUI()
-    {
-        // Actualizar el texto de intentos restantes en la UI
-        if (triesText != null)
+        foreach (char _ in targetWord)
         {
-            triesText.text = $"{triesLeft}/{hangmanData.maxFallos}";
+            var letterObj = Instantiate(letterPrefab, WordContainer);
+            letterObj.GetComponentInChildren<TMP_Text>().text = "_";
         }
     }
 
-    private void createButton(int i)
+    private void CreateKeyboard()
     {
-        // Crear un botón para cada letra del teclado
-        GameObject temp = Instantiate(letterButton, keyboardContainer.transform);
-        temp.GetComponentInChildren<TextMeshProUGUI>().text = ((char)i).ToString(); // Asignar la letra al botón
-        temp.GetComponent<Button>().onClick.AddListener(delegate { checkLetter(((char)i).ToString()); }); // Asignar evento al botón
+        for (char c = 'A'; c <= 'Z'; c++)
+        {
+            var buttonObj = Instantiate(keyboardButtonPrefab, KeyboardContainer);
+            buttonObj.GetComponentInChildren<TMP_Text>().text = c.ToString();
+            
+            var button = buttonObj.GetComponent<Button>();
+            char currentChar = c;
+            button.onClick.AddListener(() => OnLetterGuessed(currentChar));
+        }
     }
 
-    private void checkLetter(string inputLetter)
+    private void OnLetterGuessed(char guessedLetter)
     {
-        bool letterInWord = false; // Bandera para verificar si la letra está en la palabra
-        TextMeshProUGUI[] letters = wordContainer.GetComponentsInChildren<TextMeshProUGUI>();
+        if (!gameActive) return;
 
-        // Verificar si la letra está en la palabra
-        for (int i = 0; i < word.Length; i++)
+        bool correctGuess = false;
+        char[] wordState = currentWordState.ToCharArray();
+
+        for (int i = 0; i < targetWord.Length; i++)
         {
-            if (inputLetter == word[i].ToString())
+            if (targetWord[i] == guessedLetter)
             {
-                letterInWord = true;
-                correctGuesses++;
-                letters[i].text = inputLetter; // Mostrar la letra en la UI
+                wordState[i] = guessedLetter;
+                correctGuess = true;
+                WordContainer.GetChild(i).GetComponentInChildren<TMP_Text>().text = guessedLetter.ToString();
             }
         }
 
-        if (!letterInWord)
+        if (!correctGuess)
         {
-            incorrectGuesses++;
-            if (incorrectGuesses <= hangmanStages.Length)
-            {
-                hangmanStages[incorrectGuesses - 1].SetActive(true); // Mostrar la siguiente etapa del ahorcado
-                triesLeft--; // Reducir intentos
-                UpdateTriesUI(); // Actualizar la UI de intentos
-            }
+            remainingGameAttempts--;
+            remainingTotalAttempts--;
+            currentErrors++;
+            UpdateHangmanVisual();
         }
 
-        checkOutcome(); // Verificar si el jugador ganó o perdió
+        currentWordState = new string(wordState);
+        CheckGameState();
     }
 
-    private void checkOutcome()
+    private void UpdateHangmanVisual()
     {
-        TextMeshProUGUI[] letters = wordContainer.GetComponentsInChildren<TextMeshProUGUI>();
-
-        if (correctGuesses == word.Length) // Ganar
+        // Mostrar solo las partes correspondientes a los errores actuales
+        for (int i = 0; i < hangmanStages.Length; i++)
         {
-            for (int i = 0; i < word.Length; i++)
-            {
-                letters[i].color = new Color(0.0f, 0.5f, 0.0f); // Cambiar el color de las letras a un verde oscuro
-            }
-
-            // Retrasar la llamada a CompleteLevel para que se vea el cambio de color
-            Invoke("CompleteLevel", 2f); // Retraso de 2 segundos
+            hangmanStages[i].SetActive(i < currentErrors);
         }
 
-        if (incorrectGuesses == hangmanStages.Length) // Perder
+        UpdateTriesDisplay();
+    }
+
+    private void UpdateTriesDisplay()
+    {
+        ValTries.text = remainingGameAttempts.ToString();
+    }
+
+    private void CheckGameState()
+    {
+        if (!currentWordState.Contains('_'))
         {
-            for (int i = 0; i < word.Length; i++)
-            {
-                letters[i].color = Color.red; // Cambiar el color de las letras a rojo
-                letters[i].text = word[i].ToString(); // Mostrar la palabra completa
-            }
-
-            if (hangmanAnimator != null)
-            {
-                hangmanAnimator.SetTrigger("flotar"); // Activar la animación
-                StartCoroutine(StopAnimatorAfterDelay(2f)); // Desactivar el Animator después de 2 segundos
-            }
-
-            Button buttonComponent = nextButton.GetComponent<Button>(); // Obtener el componente Button
-            if (buttonComponent != null)
-            {
-                buttonComponent.onClick.RemoveAllListeners(); // Asegurarse de no duplicar eventos
-                buttonComponent.onClick.AddListener(LoadFailedLevelScene); // Asignar evento al botón
-            }
-            nextButton.SetActive(true); // Hacer visible el botón
-
+            // Palabra completada
+            GameObject.Find("CorrectEffect").GetComponent<AudioSource>().Play();
+            StartCoroutine(WordCompleted());
+        }
+        else if (remainingGameAttempts <= 0)
+        {
+            // Sin intentos restantes para este minijuego
+            SceneManager.LoadScene("FailedQuiz");
         }
     }
 
-    private IEnumerator StopAnimatorAfterDelay(float delay)
+    private IEnumerator WordCompleted()
     {
-        yield return new WaitForSeconds(delay); // Esperar el tiempo especificado
-        if (hangmanAnimator != null)
-        {
-            hangmanAnimator.enabled = false; // Desactivar el Animator
-        }
+        gameActive = false;
+        yield return new WaitForSeconds(1f); // Breve pausa para el efecto de sonido
+        
+        // Pasar a la siguiente palabra
+        StartNextWord();
     }
 
-    private void LoadFailedLevelScene()
+    private void CompleteAllWords()
     {
-        // Cargar la escena de nivel completado
-        SceneManager.LoadScene("FailedQuiz");
-    }
-
-    int CalculateStars()
-    {
-        // Calcular las estrellas basadas en los intentos restantes
-        int remainingTries = hangmanStages.Length - incorrectGuesses;
-
-        if (remainingTries >= 5) // 3 estrellas si quedan 5 o más intentos
-            return 3;
-        else if (remainingTries >= 3) // 2 estrellas si quedan entre 3-4 intentos
-            return 2;
-        else if (remainingTries >= 1) // 1 estrella si queda al menos 1 intento
-            return 1;
-        else
-            return 0; // 0 estrellas si no quedan intentos
-    }
-
-    void CompleteLevel()
-    {
-        // Calcular las estrellas ganadas
+        // Calcular estrellas basadas en errores totales
         int starsEarned = CalculateStars();
+        int coinsEarned = starsEarned * 150;
 
-        // Obtener el módulo y nivel actual
+        // Guardar progreso
         string currentModule = PlayerPrefs.GetString("CurrentModule", "LevelSelection1");
         int currentLevel = PlayerPrefs.GetInt("CurrentLevel", 1);
-        string currentLevelKey = currentModule + "_Lv" + currentLevel;
+        string levelKey = $"{currentModule}_Lv{currentLevel}";
 
-        // Guardar progreso del nivel actual
-        PlayerPrefs.SetInt(currentLevelKey, starsEarned);
+        PlayerPrefs.SetInt(levelKey, starsEarned);
         PlayerPrefs.SetInt("TempStars", starsEarned);
-        PlayerPrefs.SetInt("TempPoints", pointsEarned);
-        PlayerPrefs.SetInt("TempCoins", starsEarned * 500);
+        PlayerPrefs.SetInt("TempPoints", basePoints);
+        PlayerPrefs.SetInt("TempCoins", coinsEarned);
 
-        // Incrementar el nivel actual para pasar al siguiente nivel
-        int nextLevel = currentLevel + 1;
-        PlayerPrefs.SetInt("CurrentLevel", nextLevel);
-        PlayerPrefs.SetInt("UnlockedLevel", nextLevel); // Guardar el nivel desbloqueado
-        PlayerPrefs.SetInt("TempLevel", nextLevel); // Guardar el nivel temporal
-        PlayerPrefs.SetInt("TempModule", 1); // Guardar el módulo temporal
+        // Actualizar base de datos
+        DBQuizReqHolder.Instance.StartCoroutine(
+            DBQuizReqHolder.Instance.UpdateCoins(
+                DBQuizReqHolder.Instance.GetUserID(),
+                coinsEarned
+            )
+        );
 
-        SceneManager.LoadScene("StageClear"); // Cargar la escena de nivel completado
+        // Incrementar misión
+        int hangmanMissionId = 4;
+        DBQuizReqHolder.Instance.StartCoroutine(
+            DBQuizReqHolder.Instance.IncrementQuestProgress(hangmanMissionId)
+        );
+
+        SceneManager.LoadScene("StageClear");
+    }
+
+    private int CalculateStars()
+    {
+        float errorPercentage = (float)(totalAttemptsAllowed - remainingTotalAttempts) / totalAttemptsAllowed;
+        
+        if (errorPercentage <= 0.1f) return 3;  // 10% o menos errores
+        if (errorPercentage <= 0.3f) return 2;  // 30% o menos errores
+        if (errorPercentage <= 0.5f) return 1;  // 50% o menos errores
+        
+        return 0; // Más del 50% de errores
+    }
+
+    public void ReturnToModuleSelection()
+    {
+        SceneManager.LoadScene("LevelSelection1");
     }
 }
