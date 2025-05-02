@@ -216,6 +216,16 @@ public class MemoryGameManager : MonoBehaviour, ICardGameManager
 
         void CompleteLevel()
     {
+        int triviaMissionId = 2; // ID de misión "Completar trivia"
+        DBQuizReqHolder.Instance.StartCoroutine(
+        DBQuizReqHolder.Instance.IncrementQuestProgress(triviaMissionId)
+        );
+        //Debug.Log("Incrementing trivia mission progress");
+        
+        string missionID = "2";
+        int currentProgress = PlayerPrefs.GetInt($"Mission_{missionID}_Progress", 0);
+        PlayerPrefs.SetInt($"Mission_{missionID}_Progress", currentProgress + 1);
+
         int starsEarned = CalculateStars();
         
         string currentModule = PlayerPrefs.GetString("CurrentModule", "LevelSelection1");

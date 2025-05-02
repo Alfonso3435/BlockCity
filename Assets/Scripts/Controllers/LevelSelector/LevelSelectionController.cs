@@ -160,16 +160,11 @@ public class LevelSelectionController : MonoBehaviour
             }
             else
             {
-
-                SceneManager.LoadScene($"Lecture{levelNum}");  
-            }
-                 
-
                 if (levelNum == 5){
                      SceneManager.LoadScene("Hangman"); // Cargar la escena de hangman
                 }
-                SceneManager.LoadScene($"Lecture{levelNum}");  
-            }
+                else{SceneManager.LoadScene($"Lecture{levelNum}");}
+            }
         }
     }
 
