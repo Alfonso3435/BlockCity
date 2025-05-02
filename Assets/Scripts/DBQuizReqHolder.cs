@@ -139,6 +139,7 @@ public class UnlockQuizRequest
     public int id_usuario;
     public int desbloqueado;
 }
+[System.Serializable]
 public class HangmanItem
 {
     public int id;
@@ -153,7 +154,6 @@ public class HangmanResponse
     public bool success;
     public HangmanItem[] items;
 }
-
 [System.Serializable]
 public class HangmanDataWrapper
 {
@@ -643,6 +643,7 @@ public IEnumerator GetHangmanData(int idQuiz, System.Action<bool, HangmanItem[]>
         if (webRequest.result != UnityWebRequest.Result.Success)
         {
             Debug.LogError($"Network error: {webRequest.error}");
+            Debug.LogError($"Response: {webRequest.downloadHandler.text}");
             callback?.Invoke(false, null);
             yield break;
         }
@@ -652,18 +653,28 @@ public IEnumerator GetHangmanData(int idQuiz, System.Action<bool, HangmanItem[]>
 
         try
         {
-            // Parsear la respuesta
+            // Parsear la respuesta directamente al formato esperado
             HangmanResponse response = JsonUtility.FromJson<HangmanResponse>(jsonResponse);
             
-            if (response != null && response.success && response.items != null)
+            if (response == null)
             {
-                Debug.Log($"Successfully loaded {response.items.Length} hangman items");
-                callback?.Invoke(true, response.items);
+                Debug.LogError("Failed to parse response (null)");
+                callback?.Invoke(false, null);
+            }
+            else if (!response.success)
+            {
+                Debug.LogError("Server returned success: false");
+                callback?.Invoke(false, null);
+            }
+            else if (response.items == null)
+            {
+                Debug.LogError("Items array is null");
+                callback?.Invoke(false, null);
             }
             else
             {
-                Debug.LogError("Invalid response format");
-                callback?.Invoke(false, null);
+                Debug.Log($"Successfully loaded {response.items.Length} hangman items");
+                callback?.Invoke(true, response.items);
             }
         }
         catch (System.Exception e)

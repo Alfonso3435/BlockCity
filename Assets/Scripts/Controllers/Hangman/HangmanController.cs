@@ -49,7 +49,7 @@ public class HangmanController : MonoBehaviour
     {
         remainingTotalAttempts = totalAttemptsAllowed;
         yield return StartCoroutine(InitializeGame());
-        conteo=0;
+        conteo=1;
         conteoText.text =conteo.ToString();
     }
 
