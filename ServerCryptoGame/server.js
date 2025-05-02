@@ -993,6 +993,45 @@ app.post("/logout", (req, res) => {
     });
 });
 
+app.get("/hangman/:id_quiz", (req, res) => {
+    const id_quiz = req.params.id_quiz;
+
+    const query = `
+        SELECT 
+            r.id_respuesta as id,
+            r.id_ahorcado,
+            r.concepto as word,
+            r.definicion as definition
+        FROM Respuestas_Ahorcado r
+        INNER JOIN Ahorcados a ON r.id_ahorcado = a.id_ahorcado
+        WHERE a.id_quiz = ?
+        ORDER BY r.id_respuesta
+    `;
+
+    db.query(query, [id_quiz], (err, results) => {
+        if (err) {
+            console.error("Database error:", err);
+            return res.status(500).json({
+                success: false,
+                error: "Database query failed"
+            });
+        }
+
+        if (!results || results.length === 0) {
+            return res.status(404).json({
+                success: false,
+                error: "No data found"
+            });
+        }
+
+        // Enviamos un objeto con propiedad 'items' que contiene el array
+        res.json({
+            success: true,
+            items: results
+        });
+    });
+});
+
 app.listen(puerto, () => {
     console.log(`Servidor escuchando`);
 });

@@ -99,7 +99,17 @@ public class LevelSelectionController : MonoBehaviour
             }
 
             // cargar la escena Lecture
-            SceneManager.LoadScene("Lecture");
+            if (cardData != null) //memoria
+            {
+                SceneManager.LoadScene("Memory"); // Cargar la escena de memoria
+            }
+            else
+            {
+                if (levelNum == 5){
+                     SceneManager.LoadScene("Hangman"); // Cargar la escena de hangman
+                }
+                SceneManager.LoadScene($"Lecture{levelNum}");  
+            }
         }
     }
 

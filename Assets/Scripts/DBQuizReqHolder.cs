@@ -93,6 +93,28 @@ public class MemoryResponse
     public string definicion;
 }
 
+[System.Serializable]
+public class HangmanItem
+{
+    public int id;
+    public int id_ahorcado;
+    public string word;
+    public string definition;
+}
+
+[System.Serializable]
+public class HangmanResponse
+{
+    public bool success;
+    public HangmanItem[] items;
+}
+
+[System.Serializable]
+public class HangmanDataWrapper
+{
+    public bool success;
+    public HangmanResponse[] data;
+}
 
 public class DBQuizReqHolder : MonoBehaviour
 {
@@ -496,6 +518,78 @@ public IEnumerator GetMemoryData(int idMemorama)
     }
 }
 
+public IEnumerator GetHangmanData(int idQuiz, System.Action<bool, HangmanItem[]> callback)
+{
+    string url = $"{urlBD}hangman/{idQuiz}";
+    Debug.Log($"Requesting hangman data from: {url}");
+
+    using (UnityWebRequest webRequest = UnityWebRequest.Get(url))
+    {
+        yield return webRequest.SendWebRequest();
+
+        if (webRequest.result != UnityWebRequest.Result.Success)
+        {
+            Debug.LogError($"Network error: {webRequest.error}");
+            callback?.Invoke(false, null);
+            yield break;
+        }
+
+        string jsonResponse = webRequest.downloadHandler.text;
+        Debug.Log($"Raw JSON response: {jsonResponse}");
+
+        try
+        {
+            // Parsear la respuesta
+            HangmanResponse response = JsonUtility.FromJson<HangmanResponse>(jsonResponse);
+            
+            if (response != null && response.success && response.items != null)
+            {
+                Debug.Log($"Successfully loaded {response.items.Length} hangman items");
+                callback?.Invoke(true, response.items);
+            }
+            else
+            {
+                Debug.LogError("Invalid response format");
+                callback?.Invoke(false, null);
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"JSON parse error: {e.Message}");
+            Debug.LogError($"Problematic JSON: {jsonResponse}");
+            callback?.Invoke(false, null);
+        }
+    }
+}
+
+// Clase helper para deserializar arrays JSON
+public static class JsonHelper
+{
+    public static T[] FromJson<T>(string json)
+    {
+        string newJson = "{ \"array\": " + json + "}";
+        Wrapper<T> wrapper = JsonUtility.FromJson<Wrapper<T>>(newJson);
+        return wrapper.array;
+    }
+
+    [System.Serializable]
+    private class Wrapper<T>
+    {
+        public T[] array;
+    }
+}
+private HangmanResponse[] hangmanData;
+
+public void SetHangmanData(HangmanResponse[] data)
+{
+    hangmanData = data;
+    Debug.Log($"Set {data.Length} hangman items");
+}
+
+public HangmanResponse[] GetHangmanDataArray()
+{
+    return hangmanData ?? new HangmanResponse[0];
+}
 public IEnumerator UpdateCoins(int userID, int amount)
 {
     string url = $"{urlBD}coins/update";
