@@ -1,51 +1,56 @@
-using System.IO;
-using UnityEngine;
-using TMPro;
-using UnityEngine.UI;
+using System.IO; // Namespace for file handling (not used in this script but included)
+using UnityEngine; // Core Unity namespace
+using UnityEngine.UI; // Namespace for UI components like ScrollRect
+using UnityEngine.SceneManagement; // Namespace for scene management
 
+// This class handles loading specific scenes (lectures) based on the chapter number stored in PlayerPrefs
 public class LectorDeCapitulos : MonoBehaviour
 {
-    public int numeroLibro;
-    public int numeroCapitulo;
-    public TMP_Text textoLectura;
+    // Reference to the ScrollRect component to control scrolling behavior
     public ScrollRect scrollRect;
 
+    // Variable to store the current chapter number
+    private int numeroCapitulo;
+
+    // Unity's Start method, called when the script is first executed
     void Start()
     {
-        // Obtener el libro y capítulo seleccionados
-        numeroLibro = PlayerPrefs.GetInt("CurrentBook", 1); // Valor por defecto: libro 1
-        numeroCapitulo = PlayerPrefs.GetInt("CurrentChapter", 1); // Valor por defecto: capítulo 1
+        // Forzar la actualización del layout
+        Canvas.ForceUpdateCanvases();
 
-        MostrarCapitulo(numeroLibro, numeroCapitulo);
+        // Ajustar la posición del scroll al inicio
+        scrollRect.verticalNormalizedPosition = 1f;
+
+        // Llamar al método para cargar la escena
+        CargarEscenaLecture(numeroCapitulo);
     }
 
-
-    public void MostrarCapitulo(int libro, int capitulo)
+    // Method to load the appropriate lecture scene
+    private void CargarEscenaLecture(int nivel)
     {
-        string nombreArchivo = $"libro{libro}.txt";
-        string path = Path.Combine(Application.streamingAssetsPath, nombreArchivo);
-
-        if (File.Exists(path))
+        // Loop to find the highest available lecture scene starting from the given chapter number
+        while (nivel > 0)
         {
-            string contenido = File.ReadAllText(path);
-            string[] capitulos = contenido.Split(new string[] { "#Capítulo" }, System.StringSplitOptions.RemoveEmptyEntries);
+            // Construct the scene name dynamically (e.g., "Lecture1", "Lecture2", etc.)
+            string nombreEscena = $"Lecture{nivel}";
 
-            if (capitulo - 1 < capitulos.Length)
+            // Check if the scene can be loaded (exists in the build settings)
+            if (Application.CanStreamedLevelBeLoaded(nombreEscena))
             {
-                textoLectura.text = capitulos[capitulo - 1].Trim();
-                // Forzar el scroll hacia arriba
-                Canvas.ForceUpdateCanvases(); // asegura que se actualice el layout antes
-                scrollRect.verticalNormalizedPosition = 1f;
-                Canvas.ForceUpdateCanvases(); // a veces ayuda repetirlo justo después
-            }
-            else
-            {
-                textoLectura.text = "Capítulo no encontrado.";
+                // Load the scene
+                SceneManager.LoadScene(nombreEscena);
+
+                // Force the scroll view to reset to the top
+                Canvas.ForceUpdateCanvases(); // Ensures the layout is updated before scrolling
+                scrollRect.verticalNormalizedPosition = 1f; // Set scroll position to the top
+                Canvas.ForceUpdateCanvases(); // Sometimes helps to call it again immediately after
+
+                // Exit the method after successfully loading the scene
+                return;
             }
         }
-        else
-        {
-            textoLectura.text = $"Archivo no encontrado: {nombreArchivo}";
-        }
+
+        // Log a warning if no valid lecture scene is found
+        Debug.LogWarning("No se encontró ninguna escena Lecture correspondiente.");
     }
 }
