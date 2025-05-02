@@ -388,7 +388,18 @@ public class GameManager : MonoBehaviour
         PlayerPrefs.SetInt("TempCoins", starsEarned * 150);
 
         Debug.Log("=================================");
-        Debug.Log("ID:" + DBQuizReqHolder.Instance.GetUserID());
+        Debug.Log("userID: " + DBQuizReqHolder.Instance.GetUserID());
+        Debug.Log("levelNumber: " + DBQuizReqHolder.Instance.GetLevelNumber());
+        StartCoroutine(
+            DBQuizReqHolder.Instance.UpdateQuizUsuario(
+                DBQuizReqHolder.Instance.GetLevelNumber(),
+                DBQuizReqHolder.Instance.GetUserID(),
+                1,
+                starsEarned,
+                totalPointsEarned,
+                1
+            ));
+
         StartCoroutine(
             DBQuizReqHolder.Instance.UpdateCoins(
                 DBQuizReqHolder.Instance.GetUserID(),
@@ -451,6 +462,7 @@ public class GameManager : MonoBehaviour
             Debug.LogError("Error updating item quantity: " + request.error);
         }
     }
+
 
     // Class to represent the request body
     [System.Serializable]

@@ -93,6 +93,24 @@ public class MemoryResponse
     public string definicion;
 }
 
+[System.Serializable]
+public class QuizUsuarioUpdateRequest
+{
+    public int id_quiz;
+    public int id_usuario;
+    public int desbloqueado;
+    public int estrellas;
+    public int puntos;
+    public int completado;
+}
+
+[System.Serializable]
+public class ModuleStarsResponse
+{
+    public bool success;
+    public int total_stars;
+    public string error;
+}
 
 public class DBQuizReqHolder : MonoBehaviour
 {
@@ -521,6 +539,84 @@ public IEnumerator UpdateCoins(int userID, int amount)
         else
         {
             Debug.Log($"Coins updated successfully: {request.downloadHandler.text}");
+        }
+    }
+}
+
+public IEnumerator UpdateQuizUsuario(int idQuiz, int idUsuario, int desbloqueado, int estrellas, int puntos, int completado)
+{
+    string url = $"{urlBD}quiz-usuario/update";
+
+    // Create the request body
+    QuizUsuarioUpdateRequest data = new QuizUsuarioUpdateRequest
+    {
+        id_quiz = idQuiz,
+        id_usuario = idUsuario,
+        desbloqueado = desbloqueado,
+        estrellas = estrellas,
+        puntos = puntos,
+        completado = completado
+    };
+
+    string json = JsonUtility.ToJson(data);
+    byte[] body = System.Text.Encoding.UTF8.GetBytes(json);
+
+    using (UnityWebRequest request = new UnityWebRequest(url, "PUT"))
+    {
+        request.uploadHandler = new UploadHandlerRaw(body);
+        request.downloadHandler = new DownloadHandlerBuffer();
+        request.SetRequestHeader("Content-Type", "application/json");
+
+        yield return request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.Success)
+        {
+            Debug.Log("Quiz_Usuario updated successfully: " + request.downloadHandler.text);
+        }
+        else
+        {
+            Debug.LogError("Error updating Quiz_Usuario: " + request.error);
+        }
+    }
+}
+
+public IEnumerator GetModuleStars(int idModulo, int idUsuario, Action<int> onSuccess, Action<string> onError)
+{
+    string url = $"{urlBD}module/stars?id_modulo={idModulo}&id_usuario={idUsuario}";
+    Debug.Log($"Requesting total stars for module {idModulo} and user {idUsuario} from: {url}");
+
+    using (UnityWebRequest request = UnityWebRequest.Get(url))
+    {
+        yield return request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
+        {
+            Debug.LogError($"Error fetching module stars: {request.error}");
+            onError?.Invoke(request.error);
+        }
+        else
+        {
+            string jsonResponse = request.downloadHandler.text;
+            Debug.Log($"Response received: {jsonResponse}");
+
+            try
+            {
+                // Parse the JSON response to extract the total stars
+                ModuleStarsResponse response = JsonUtility.FromJson<ModuleStarsResponse>(jsonResponse);
+                if (response.success)
+                {
+                    onSuccess?.Invoke(response.total_stars);
+                }
+                else
+                {
+                    onError?.Invoke(response.error);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Error parsing response: {ex.Message}");
+                onError?.Invoke("Failed to parse server response.");
+            }
         }
     }
 }

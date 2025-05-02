@@ -40,11 +40,35 @@ public class MapSelectionController : MonoBehaviour
     {
         lockPanel.SetActive(!isUnlocked);
         unlockPanel.SetActive(isUnlocked);
-
+        /*
         if (isUnlocked)
         {
-            int totalStars = LevelSelectionController.GetTotalStars(levelSelectionSceneName);
+            //int totalStars = LevelSelectionController.GetTotalStars(levelSelectionSceneName);
+            int totalStars = 
+            StartCoroutine(
+                DBQuizReqHolder.Instance.GetModuleStars(
+                    mapIndex,
+                    DBQuizReqHolder.Instance.GetUserID() 
+            ));
             starsText.text = totalStars.ToString() + "/15";
+        }
+        */
+        if (isUnlocked)
+        {
+            // Fetch total stars using a coroutine and update the UI
+            StartCoroutine(DBQuizReqHolder.Instance.GetModuleStars(
+                mapIndex,
+                DBQuizReqHolder.Instance.GetUserID(),
+                onSuccess: (totalStars) =>
+                {
+                    starsText.text = $"{totalStars}/15";
+                },
+                onError: (error) =>
+                {
+                    Debug.LogError($"Failed to fetch module stars: {error}");
+                    starsText.text = "0/15"; // Default to 0 if there's an error
+                }
+            ));
         }
         
         amountText.text = "Unlock for " + coinsRequired.ToString();
