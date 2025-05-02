@@ -5,7 +5,6 @@
         <engine:Label text="Sign In" name="Titulo" enable-rich-text="true" class="titulo" style="top: 5%;" />
         <engine:TextField placeholder-text="Email" name="Correo" class="textfield" style="margin-bottom: 2%;" />
         <engine:TextField placeholder-text="Password" name="Contrasena" password="true" class="textfield" style="margin-bottom: 2%;" />
-        <engine:Button text="Forgot your password?" name="Olvido" class="botonInvis" style="border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0;" />
         <engine:Button text="Log in" name="Login" class="botonLogin" />
         <engine:Button text="Not a user yet? Create an account" name="Registro" class="botonInvis" style="border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; margin-top: 2%;" />
     </engine:VisualElement>

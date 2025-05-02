@@ -95,15 +95,20 @@ public class LoginController : MonoBehaviour
 
             if (respuesta.Contains("LOGIN_OK"))
             {
-                // Parse the response to extract id_usuario
                 LoginResponse loginResponse = JsonUtility.FromJson<LoginResponse>(respuesta);
-                DBQuizReqHolder.Instance.SetUserID(loginResponse.id_usuario); // Store the user ID
+                
+                // Guardar datos en PlayerPrefs
+                PlayerPrefs.SetString("usuario", correo);
+                PlayerPrefs.SetString("horaInicio", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+                PlayerPrefs.SetInt("id_usuario", loginResponse.id_usuario);
+                PlayerPrefs.SetString("nombre_user", loginResponse.nombre_user);
+                PlayerPrefs.Save();
 
                 contenedorError.style.display = DisplayStyle.Flex;
                 mensaje.text = "Success in \n log in.";
                 yield return new WaitForSeconds(1f);
                 DBQuizReqHolder.Instance.SetIsLoggedIn(true);
-                DBQuizReqHolder.Instance.SetUserID(loginResponse.id_usuario); // Store the user ID
+                DBQuizReqHolder.Instance.SetUserID(loginResponse.id_usuario);
                 SceneManager.LoadScene("Menu");
             }
             else
