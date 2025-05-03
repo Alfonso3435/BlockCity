@@ -1,5 +1,8 @@
 using UnityEngine;
 
+// Descripción: Este archivo define la estructura de los datos de las preguntas para el juego de trivia, incluyendo el texto de la pregunta, respuestas posibles, índice de la respuesta correcta, explicación y consejos. También permite la creación de categorías de preguntas como objetos ScriptableObject.
+// Autor: Alfonso Vega
+
 [System.Serializable]
 public class Question
 {

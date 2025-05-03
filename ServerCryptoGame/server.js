@@ -8,17 +8,20 @@ const puerto = 3000;
 
 app.use(cors());
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true })); // Añade esta línea
+app.use(bodyParser.urlencoded({ extended: true })); 
+
+// Descripción: Este archivo implementa un servidor backend utilizando Node.js y Express, gestionando las solicitudes relacionadas con usuarios, cuestionarios, misiones, módulos, monedas y otros datos del juego. Proporciona endpoints para operaciones CRUD y sincronización con la base de datos MySQL.
+// Autor: Mike Argumedo, Israel González y Alfonso Vega
 
 const db = mysql.createConnection({
     host: "bd-cryptochicks.cmirgwrejba3.us-east-1.rds.amazonaws.com",
-    user: "admin", // Cambia esto por tu usuario real de RDS
-    password: "Cryptonenas", // Cambia esto por tu contraseña real de RDS
+    user: "admin",
+    password: "Cryptonenas",
     port: 3306,
     database: "CryptoGame"
 });
 
-// Conecta con la base de datos
+
 db.connect((err) => {
     if (err) {
         console.error("Error de conexión MySQL:", err);
@@ -28,7 +31,7 @@ db.connect((err) => {
 });
 
 
-// Ruta que recibe JSON desde Unity
+
 app.post("/unity/recibeJSON", (req, res) => {
     const { usuario, hora, tipo } = req.body;
     
@@ -72,12 +75,11 @@ app.post("/registro", (req, res) => {
         return res.status(400).json({ error: "Faltan campos requeridos" });
     }
 
-    // Verificar si la contraseña tiene al menos 8 caracteres
+
     if (contrasena.length < 8) {
         return res.status(400).json({ error: "La contraseña debe tener al menos 8 caracteres." });
     }
 
-    // Verificar si el correo ya está registrado
     const queryCorreo = "SELECT * FROM Usuarios WHERE correo = ?";
     const queryUsuario = "SELECT * FROM Usuarios WHERE nombre_user = ?";
     db.query(queryCorreo, [correo], (err, resultsCorreo) => {
@@ -90,7 +92,6 @@ app.post("/registro", (req, res) => {
             return res.status(409).json({ status: "EXISTE_CORREO" });
         }
 
-        // Verificar si el nombre de usuario ya existe
         db.query(queryUsuario, [nombre_user], (err, resultsUsuario) => {
             if (err) {
                 console.error("Error en verificación de usuario:", err);
@@ -101,7 +102,7 @@ app.post("/registro", (req, res) => {
                 return res.status(409).json({ status: "EXISTE_USUARIO" });
             }
 
-            // Insertar nuevo usuario
+
             const insertQuery = `
                 INSERT INTO Usuarios (correo, contrasena, nombre_user, nombre_comp, nacionalidad, fecha_nacimiento)
                 VALUES (?, ?, ?, ?, ?, ?)
@@ -117,7 +118,7 @@ app.post("/registro", (req, res) => {
     });
 });
 
-// Ruta de inicio de sesión
+
 app.post("/login", (req, res) => {
     const { correo, contrasena } = req.body;
 
@@ -180,8 +181,8 @@ app.get("/quiz/:id_quiz", (req, res) => {
                     id_pregunta: row.id_pregunta,
                     pregunta: row.pregunta,
                     indice_correcto: row.indice_correcto,
-                    explicacion: row.explicacion, // Agregar explicacion
-                    tip: row.tip,                 // Agregar tip
+                    explicacion: row.explicacion,
+                    tip: row.tip,
                     respuestas: []
                 };
             }
@@ -222,11 +223,11 @@ app.get("/items/:id_usuario", (req, res) => {
 });
 
 
-// Endpoint to update the quantity of an item for a user
+
 app.put("/items/update", (req, res) => {
     const { id_usuario, id_item, cantidad } = req.body;
 
-    // Validate the input
+
     if (!id_usuario || !id_item || cantidad === undefined) {
         return res.status(400).json({ error: "Faltan campos requeridos" });
     }
@@ -275,10 +276,7 @@ app.get("/quests", (req, res) => {
     });
 });
 
-// Añade estos endpoints al servidor (app.js)
 
-// Obtener misiones con progreso del usuario
-// Endpoint para incrementar progreso de misiones
 app.post("/increment-quest-progress", (req, res) => {
     console.log("[MISIONES] Petición recibida en /increment-quest-progress");
     console.log("[MISIONES] Body recibido:", req.body);
@@ -292,7 +290,7 @@ app.post("/increment-quest-progress", (req, res) => {
         });
     }
 
-    // Primero verificar si la misión ya está reclamada
+
     const checkQuery = `
         SELECT completado, reclamado FROM Usuario_quest 
         WHERE id_usuario = ? AND id_quest = ?
@@ -307,7 +305,6 @@ app.post("/increment-quest-progress", (req, res) => {
             });
         }
 
-        // Si la misión ya está reclamada, no hacer nada
         if (checkResults.length > 0 && (checkResults[0].completado === 2 || checkResults[0].reclamado)) {
             return res.json({ 
                 success: true,
@@ -315,7 +312,6 @@ app.post("/increment-quest-progress", (req, res) => {
             });
         }
 
-        // Proceder con la actualización normal
         const updateQuery = `
             INSERT INTO Usuario_quest (id_usuario, id_quest, Progress)
             VALUES (?, ?, ?)
@@ -339,7 +335,6 @@ app.post("/increment-quest-progress", (req, res) => {
                 });
             }
 
-            // Obtener el nuevo estado
             const statusQuery = `
                 SELECT uq.Progress, uq.completado, uq.reclamado, q.TargetProgress 
                 FROM Usuario_quest uq
@@ -375,7 +370,6 @@ app.post("/increment-quest-progress", (req, res) => {
     });
 });
 
-// Endpoint para reclamar recompensa (modificado)
 app.post("/claim-quest-reward", (req, res) => {
     console.log("Solicitud para reclamar recompensa recibida:", req.body);
     
@@ -389,7 +383,6 @@ app.post("/claim-quest-reward", (req, res) => {
         });
     }
 
-    // 1. Verificar estado actual de la misión
     const checkQuery = `
         SELECT q.RewardCoins, uq.completado, uq.reclamado
         FROM Usuario_quest uq
@@ -416,7 +409,6 @@ app.post("/claim-quest-reward", (req, res) => {
 
         const mission = results[0];
         
-        // 2. Validar que se pueda reclamar
         if (mission.completado !== 1 || mission.reclamado) {
             console.error("La misión no está lista para reclamar", {
                 completado: mission.completado,
@@ -428,7 +420,6 @@ app.post("/claim-quest-reward", (req, res) => {
             });
         }
 
-        // 3. Iniciar transacción
         db.query("START TRANSACTION", (transactionErr) => {
             if (transactionErr) {
                 console.error("Error en transacción:", transactionErr);
@@ -438,7 +429,6 @@ app.post("/claim-quest-reward", (req, res) => {
                 });
             }
 
-            // 4. Actualizar monedas del usuario
             const updateCoinsQuery = `
                 UPDATE Usuarios 
                 SET coins = coins + ?
@@ -456,7 +446,6 @@ app.post("/claim-quest-reward", (req, res) => {
                     });
                 }
 
-                // 5. Marcar misión como reclamada
                 const updateQuestQuery = `
                     UPDATE Usuario_quest
                     SET completado = 2, reclamado = TRUE
@@ -474,7 +463,6 @@ app.post("/claim-quest-reward", (req, res) => {
                         });
                     }
 
-                    // 6. Confirmar transacción
                     db.query("COMMIT", (commitErr) => {
                         if (commitErr) {
                             console.error("Error al confirmar transacción:", commitErr);
@@ -497,7 +485,6 @@ app.post("/claim-quest-reward", (req, res) => {
     });
 });
 
-// Endpoint para obtener misiones del usuario (modificado)
 app.get("/user-quests/:userId", (req, res) => {
     const userId = req.params.userId;
 
@@ -525,7 +512,6 @@ app.get("/user-quests/:userId", (req, res) => {
     });
 });
 
-// Actualizar progreso de misión
 app.post("/update-quest-progress", (req, res) => {
     const { userId, questId, progress } = req.body;
 
@@ -554,7 +540,6 @@ app.post("/update-quest-progress", (req, res) => {
 app.get("/coins/:id_usuario", (req, res) => {
     const id_usuario = req.params.id_usuario;
 
-    // Validate the input
     if (!id_usuario) {
         return res.status(400).json({ error: "Faltan campos requeridos" });
     }
@@ -579,11 +564,9 @@ app.get("/coins/:id_usuario", (req, res) => {
     });
 });
 
-// Agregar una cantidad de monedas a un usuario
 app.put("/coins/update", (req, res) => {
     const { id_usuario, coins } = req.body;
 
-    // Validación de entrada
     if (!id_usuario || coins === undefined) {
         console.error("Faltan campos requeridos");
         return res.status(400).json({ 
@@ -592,7 +575,6 @@ app.put("/coins/update", (req, res) => {
         });
     }
 
-    // Iniciar transacción
     db.query("START TRANSACTION", (transactionErr) => {
         if (transactionErr) {
             console.error("Error al iniciar transacción:", transactionErr);
@@ -602,7 +584,6 @@ app.put("/coins/update", (req, res) => {
             });
         }
 
-        // 1. Obtener monedas actuales primero
         const getQuery = "SELECT coins FROM Usuarios WHERE id_usuario = ?";
         db.query(getQuery, [id_usuario], (getErr, getResults) => {
             if (getErr) {
@@ -628,7 +609,6 @@ app.put("/coins/update", (req, res) => {
             const currentCoins = getResults[0].coins;
             const newCoins = currentCoins + coins;
 
-            // Validar que no queden monedas negativas
             if (newCoins < 0) {
                 return db.query("ROLLBACK", () => {
                     console.error("Monedas insuficientes");
@@ -639,7 +619,6 @@ app.put("/coins/update", (req, res) => {
                 });
             }
 
-            // 2. Actualizar monedas
             const updateQuery = "UPDATE Usuarios SET coins = ? WHERE id_usuario = ?";
             db.query(updateQuery, [newCoins, id_usuario], (updateErr, updateResult) => {
                 if (updateErr) {
@@ -652,7 +631,6 @@ app.put("/coins/update", (req, res) => {
                     });
                 }
 
-                // Confirmar transacción
                 db.query("COMMIT", (commitErr) => {
                     if (commitErr) {
                         return db.query("ROLLBACK", () => {
@@ -677,11 +655,9 @@ app.put("/coins/update", (req, res) => {
     });
 });
 
-// Endpoint to update the amount of coins for a user
 app.put("/coins/modify", (req, res) => {
     const { id_usuario, coins } = req.body;
 
-    // Validate the input
     if (!id_usuario || coins === undefined) {
         console.error("Missing required fields");
         return res.status(400).json({
@@ -690,7 +666,6 @@ app.put("/coins/modify", (req, res) => {
         });
     }
 
-    // Start a transaction
     db.query("START TRANSACTION", (transactionErr) => {
         if (transactionErr) {
             console.error("Error starting transaction:", transactionErr);
@@ -700,7 +675,6 @@ app.put("/coins/modify", (req, res) => {
             });
         }
 
-        // Step 1: Get the current amount of coins
         const getQuery = "SELECT coins FROM Usuarios WHERE id_usuario = ?";
         db.query(getQuery, [id_usuario], (getErr, getResults) => {
             if (getErr) {
@@ -726,7 +700,6 @@ app.put("/coins/modify", (req, res) => {
             const currentCoins = getResults[0].coins;
             const newCoins = currentCoins + coins;
 
-            // Validate that the new coin amount is not negative
             if (newCoins < 0) {
                 return db.query("ROLLBACK", () => {
                     console.error("Insufficient coins");
@@ -737,7 +710,6 @@ app.put("/coins/modify", (req, res) => {
                 });
             }
 
-            // Step 2: Update the coins
             const updateQuery = "UPDATE Usuarios SET coins = ? WHERE id_usuario = ?";
             db.query(updateQuery, [newCoins, id_usuario], (updateErr, updateResult) => {
                 if (updateErr) {
@@ -750,7 +722,6 @@ app.put("/coins/modify", (req, res) => {
                     });
                 }
 
-                // Commit the transaction
                 db.query("COMMIT", (commitErr) => {
                     if (commitErr) {
                         return db.query("ROLLBACK", () => {
@@ -775,7 +746,6 @@ app.put("/coins/modify", (req, res) => {
     });
 });
 
-// Obtener estado de un módulo para un usuario
 app.get("/module/status", (req, res) => {
     const userId = req.query.userId;
     const moduleId = req.query.moduleId;
@@ -804,7 +774,6 @@ app.get("/module/status", (req, res) => {
     });
 });
 
-// Desbloquear módulo
 app.post("/module/unlock", (req, res) => {
     const { id_usuario, id_modulo, precio } = req.body;
 
@@ -812,13 +781,11 @@ app.post("/module/unlock", (req, res) => {
         return res.status(400).json({ error: "Faltan campos requeridos" });
     }
 
-    // Iniciar transacción
     db.query("START TRANSACTION", (transactionErr) => {
         if (transactionErr) {
             return res.status(500).json({ error: "Error al iniciar transacción" });
         }
 
-        // 1. Verificar monedas del usuario
         const checkCoinsQuery = "SELECT coins FROM Usuarios WHERE id_usuario = ?";
         db.query(checkCoinsQuery, [id_usuario], (coinsErr, coinsResults) => {
             if (coinsErr) {
@@ -840,7 +807,6 @@ app.post("/module/unlock", (req, res) => {
                 });
             }
 
-            // 2. Actualizar monedas
             const updateCoinsQuery = "UPDATE Usuarios SET coins = coins - ? WHERE id_usuario = ?";
             db.query(updateCoinsQuery, [precio, id_usuario], (updateErr, updateResult) => {
                 if (updateErr) {
@@ -849,7 +815,6 @@ app.post("/module/unlock", (req, res) => {
                     });
                 }
 
-                // 3. Desbloquear módulo
                 const unlockQuery = `
                     UPDATE Usuario_Modulos 
                     SET desbloqueado = TRUE 
@@ -862,7 +827,6 @@ app.post("/module/unlock", (req, res) => {
                         });
                     }
 
-                    // Confirmar transacción
                     db.query("COMMIT", (commitErr) => {
                         if (commitErr) {
                             return db.query("ROLLBACK", () => {
@@ -870,11 +834,11 @@ app.post("/module/unlock", (req, res) => {
                             });
                         }
 
-                        // Obtener nuevas monedas
+
                         db.query(checkCoinsQuery, [id_usuario], (err, finalCoins) => {
                             if (err) {
                                 console.error("Error al obtener monedas finales", err);
-                                // Aún así devolvemos éxito porque la transacción se completó
+                                
                                 return res.json({ 
                                     success: true, 
                                     nuevas_monedas: currentCoins - precio 
@@ -893,8 +857,7 @@ app.post("/module/unlock", (req, res) => {
     });
 });
 
-// Endpoint para obtener el nombre de usuario
-// Endpoint para obtener nombre de usuario con callbacks
+
 app.get("/user/name", (req, res) => {
     const userId = req.query.id;
 
@@ -913,7 +876,7 @@ app.get("/user/name", (req, res) => {
             return res.status(500).json({ 
                 success: false,
                 error: "Error en la base de datos",
-                details: err.message // Agregamos detalles del error
+                details: err.message
             });
         }
 
@@ -924,7 +887,6 @@ app.get("/user/name", (req, res) => {
             });
         }
 
-        // Respuesta mejor estructurada
         res.json({ 
             success: true,
             data: {
@@ -963,7 +925,6 @@ app.get("/memory/:id_memorama", (req, res) => {
 app.put("/quiz-usuario/update", (req, res) => {
     const { id_quiz, id_usuario, desbloqueado, estrellas, puntos, completado } = req.body;
 
-    // Validate the input
     if (!id_quiz || !id_usuario || desbloqueado === undefined || estrellas === undefined || puntos === undefined || completado === undefined) {
         return res.status(400).json({
             success: false,
@@ -971,7 +932,6 @@ app.put("/quiz-usuario/update", (req, res) => {
         });
     }
 
-    // Query to update the specific tuple
     const query = `
         UPDATE Quiz_Usuario
         SET 
@@ -1013,7 +973,6 @@ app.put("/quiz-usuario/update", (req, res) => {
 app.put("/quiz-usuario/unlock", (req, res) => {
     const { id_quiz, id_usuario, desbloqueado } = req.body;
 
-    // Validate the input
     if (!id_quiz || !id_usuario || desbloqueado === undefined) {
         return res.status(400).json({
             success: false,
@@ -1021,7 +980,7 @@ app.put("/quiz-usuario/unlock", (req, res) => {
         });
     }
 
-    // Query to update only the desbloqueado field
+
     const query = `
         UPDATE Quiz_Usuario
         SET desbloqueado = ?
@@ -1057,7 +1016,6 @@ app.put("/quiz-usuario/unlock", (req, res) => {
 app.get("/module/quiz-stars", (req, res) => {
     const { id_modulo, id_usuario } = req.query;
 
-    // Validate the input
     if (!id_modulo || !id_usuario) {
         return res.status(400).json({
             success: false,
@@ -1065,7 +1023,6 @@ app.get("/module/quiz-stars", (req, res) => {
         });
     }
 
-    // Query to fetch the stars for each quiz in the module
     const query = `
         SELECT 
             q.id_quiz, 
@@ -1103,7 +1060,6 @@ app.get("/module/quiz-stars", (req, res) => {
 app.get("/module/stars", (req, res) => {
     const { id_modulo, id_usuario } = req.query;
 
-    // Validate the input
     if (!id_modulo || !id_usuario) {
         return res.status(400).json({
             success: false,
@@ -1111,7 +1067,6 @@ app.get("/module/stars", (req, res) => {
         });
     }
 
-    // Query to calculate the total stars
     const query = `
         SELECT SUM(qu.estrellas) AS total_stars
         FROM Quiz_Usuario qu
@@ -1128,7 +1083,6 @@ app.get("/module/stars", (req, res) => {
             });
         }
 
-        // If no quizzes are found, return 0 stars
         const totalStars = results[0]?.total_stars || 0;
 
         res.json({
@@ -1143,7 +1097,6 @@ app.get("/module/stars", (req, res) => {
 app.get("/module/levels", (req, res) => {
     const { id_modulo, id_usuario } = req.query;
 
-    // Validate the input
     if (!id_modulo || !id_usuario) {
         return res.status(400).json({
             success: false,
@@ -1151,7 +1104,6 @@ app.get("/module/levels", (req, res) => {
         });
     }
 
-    // Query to fetch the unlock state for all quizzes in the module
     const query = `
         SELECT 
             q.id_quiz, 
@@ -1186,7 +1138,6 @@ app.get("/module/levels", (req, res) => {
     });
 });
 
-// Agregar este endpoint después de los demás endpoints existentes
 app.post("/logout", (req, res) => {
     const { correo, hora, tipo, id_usuario } = req.body;
 
@@ -1250,7 +1201,6 @@ app.get("/hangman/:id_quiz", (req, res) => {
             });
         }
 
-        // Enviamos un objeto con propiedad 'items' que contiene el array
         res.json({
             success: true,
             items: results

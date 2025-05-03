@@ -2,6 +2,9 @@ using UnityEngine;
 using TMPro;
 using System.Collections;
 
+// Descripción: Este archivo anima un contador numérico en la interfaz de usuario, mostrando una transición suave entre valores y aplicando efectos visuales como pulsaciones para resaltar cambios.
+// Autor: Alfonso Vega
+
 [RequireComponent(typeof(TMP_Text))]
 public class CounterAnimator : MonoBehaviour
 {

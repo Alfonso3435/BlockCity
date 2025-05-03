@@ -2,7 +2,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections;
-
+// Descripción: Este archivo controla la lógica de las tarjetas en el juego de memoria, incluyendo el volteo de tarjetas, la animación de volteo y la interacción con el administrador del juego.
+// Autor: Alfonso Vega e Israel González
 public interface ICardGameManager
 {
     void CardFlipped(Card flippedCard);
@@ -14,12 +15,12 @@ public class Card : MonoBehaviour
     public ICardGameManager gameManager;
     private bool isFlipped;
     public TextMeshProUGUI contentText;
-    public GameObject cardFront; // Parte frontal de la carta
-    public GameObject cardBack;  // Parte trasera de la carta
+    public GameObject cardFront; 
+    public GameObject cardBack;  
     
-    // Variables para animación
+
     private bool isAnimating = false;
-    private float flipSpeed = 8f; // Velocidad de la animación
+    private float flipSpeed = 8f; 
     private float flipProgress = 0f;
     private bool flippingToFront = false;
 
@@ -34,21 +35,21 @@ public class Card : MonoBehaviour
     {
         if (isAnimating)
         {
-            // Actualizar progreso de animación
+            
             flipProgress = Mathf.Clamp01(flipProgress + Time.deltaTime * flipSpeed);
             
-            // Calcular rotación y escala
+            
             float rotation = flippingToFront ? 
                 Mathf.Lerp(0, 180, flipProgress) : 
                 Mathf.Lerp(180, 360, flipProgress);
                 
             float scale = 1f + Mathf.Sin(flipProgress * Mathf.PI) * 0.1f;
             
-            // Aplicar transformación
+            
             transform.localEulerAngles = new Vector3(0, rotation, 0);
             transform.localScale = new Vector3(scale, scale, scale);
             
-            // Corrección del texto (cambio brusco a la mitad)
+            
             if (contentText != null)
             {
                 contentText.transform.localEulerAngles = new Vector3(
@@ -57,20 +58,20 @@ public class Card : MonoBehaviour
                     0);
             }
             
-            // Cambiar visibilidad a mitad de la animación
+            
             if (flipProgress >= 0.5f)
             {
                 cardFront.SetActive(flippingToFront);
                 cardBack.SetActive(!flippingToFront);
             }
             
-            // Finalizar animación
+            
             if (flipProgress >= 1f)
             {
                 isAnimating = false;
                 flipProgress = 0f;
                 
-                // Notificar al manager cuando se completa el volteo hacia adelante
+                
                 if (flippingToFront)
                 {
                     gameManager.CardFlipped(this);

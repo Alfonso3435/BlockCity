@@ -1,12 +1,15 @@
 using UnityEngine;
 
+// Descripción: Este archivo actúa como un contenedor de datos global para el juego, almacenando y gestionando los datos actuales de cuestionarios, tarjetas, ahorcado, tipo de juego y nivel, asegurando su persistencia entre escenas.
+// Autor: Alfonso Vega y Estrella Lolbeth
+
 public class QuizDataHolder : MonoBehaviour
 {
     public static QuizDataHolder Instance;
     
     private QuestionData currentQuizData;
     private CardData currentCardData;
-    private HangmanData currentHangmanData; //juego de ahorcado
+    private HangmanData currentHangmanData;
     private int currentLevelNumber;
     private string currentGameType; // "quiz" o "memory"
 

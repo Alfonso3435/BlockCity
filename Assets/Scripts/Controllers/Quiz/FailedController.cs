@@ -3,6 +3,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
+// Descripción: Este archivo controla la pantalla de nivel fallido, permitiendo al jugador regresar al selector de niveles tras no completar un nivel exitosamente.
+// Autor: Alfonso Vega
 
 public class FailedController : MonoBehaviour
 {

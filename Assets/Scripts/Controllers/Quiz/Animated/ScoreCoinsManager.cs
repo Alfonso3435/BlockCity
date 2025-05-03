@@ -1,6 +1,9 @@
 using UnityEngine;
 using System.Collections;
 
+// Descripción: Este archivo gestiona la animación de los contadores de puntuación y monedas, coordinando la secuencia de animaciones y permitiendo la configuración de valores objetivo para cada contador.
+// Autor: [Tu Nombre]
+
 public class ScoreCoinsManager : MonoBehaviour
 {
     [System.Serializable]

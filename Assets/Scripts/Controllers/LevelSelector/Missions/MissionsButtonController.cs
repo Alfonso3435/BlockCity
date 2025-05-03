@@ -2,6 +2,8 @@ using UnityEngine;
 using TMPro;
 using System.Collections;
 
+// Descripción: Este archivo controla el botón de misiones, incluyendo la apertura del panel de misiones, la verificación periódica de misiones disponibles y la actualización de la insignia de notificaciones.
+// Autor: Alfonso Vega
 public class MissionsButtonController : MonoBehaviour 
 {
     [Header("UI References")]
@@ -48,7 +50,6 @@ public class MissionsButtonController : MonoBehaviour
         {
             yield return new WaitForSeconds(checkMissionsInterval);
             
-            // Recargar misiones del servidor
             yield return MissionManager.Instance.InitializeMissions();
             UpdateNotificationBadge();
         }

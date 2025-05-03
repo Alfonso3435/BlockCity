@@ -9,6 +9,9 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 
+// Descripción: Este archivo gestiona las solicitudes y respuestas al servidor relacionadas con los datos del juego, incluyendo cuestionarios, misiones, monedas, niveles y módulos. También almacena y proporciona acceso a datos globales del jugador y del juego.
+// Autor: Israel González y Alfonso Vega
+
 [System.Serializable]
 public class Pregunta
 {
@@ -113,7 +116,7 @@ public class ModuleStarsResponse
     public string error;
 }
 
-// Class to represent the response from the server
+
 [System.Serializable]
 public class ModuleLevelsResponse
 {
@@ -122,7 +125,7 @@ public class ModuleLevelsResponse
     public string error;
 }
 
-// Class to represent individual level data
+
 [System.Serializable]
 public class LevelData
 {
@@ -131,7 +134,6 @@ public class LevelData
     public bool desbloqueado;
 }
 
-// Class to represent the request body
 [System.Serializable]
 public class UnlockQuizRequest
 {
@@ -173,14 +175,14 @@ public class DBQuizReqHolder : MonoBehaviour
     private Quest[] quests;
     private UserQuest[] userQuests;
     private bool isLoggedIn = false;
-    private int potionCount = 0; // Store the potion count
-    private int shieldCount = 0; // Store the shield count
-    private MemoryResponse[] memoryData; // Array to store memory data
+    private int potionCount = 0;
+    private int shieldCount = 0;
+    private MemoryResponse[] memoryData;
     //public string urlBD = "http://bd-cryptochicks.cmirgwrejba3.us-east-1.rds.amazonaws.com:3000/";
     public string urlBD = "";
-    private int userID; // Cambia esto por el ID de usuario real
-    private int coins = 0; // Store the coins value
-    private List<QuizStarsData> moduleQuizStars; // Class-level variable to store quiz stars data
+    private int userID;
+    private int coins = 0;
+    private List<QuizStarsData> moduleQuizStars;
 
     private void Awake()
     {
@@ -195,7 +197,7 @@ public class DBQuizReqHolder : MonoBehaviour
         }
         else
         {
-            Destroy(gameObject); // Esto asegura que no haya duplicados
+            Destroy(gameObject);
             return;
         }
 
@@ -214,7 +216,7 @@ public class DBQuizReqHolder : MonoBehaviour
             if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
             {
                 Debug.LogError($"Error fetching quiz stars: {request.error}");
-                moduleQuizStars = null; // Clear the data on error
+                moduleQuizStars = null; 
             }
             else
             {
@@ -223,34 +225,34 @@ public class DBQuizReqHolder : MonoBehaviour
 
                 try
                 {
-                    // Parse the JSON response to extract quiz stars data
+                    
                     QuizStarsResponse response = JsonUtility.FromJson<QuizStarsResponse>(jsonResponse);
                     if (response.success)
                     {
-                        moduleQuizStars = response.quizzes; // Store the data
+                        moduleQuizStars = response.quizzes; 
                     }
                     else
                     {
                         Debug.LogError($"Error in response: {response.error}");
-                        moduleQuizStars = null; // Clear the data on error
+                        moduleQuizStars = null; 
                     }
                 }
                 catch (Exception ex)
                 {
                     Debug.LogError($"Error parsing response: {ex.Message}");
-                    moduleQuizStars = null; // Clear the data on error
+                    moduleQuizStars = null;
                 }
             }
         }
     }
 
-    // Getter method to access the stored quiz stars data
+
     public List<QuizStarsData> GetModuleQuizStarsData()
     {
         return moduleQuizStars;
     }
 
-    // Class to represent the response from the server
+
     [System.Serializable]
     private class QuizStarsResponse
     {
@@ -259,7 +261,7 @@ public class DBQuizReqHolder : MonoBehaviour
         public string error;
     }
 
-    // Class to represent individual quiz stars data
+
     [System.Serializable]
     public class QuizStarsData
     {
@@ -276,22 +278,22 @@ public class DBQuizReqHolder : MonoBehaviour
             {
                 if (ip.AddressFamily == AddressFamily.InterNetwork)
                 {
-                    return ip.ToString(); // Return the first IPv4 address found
+                    return ip.ToString();
                 }
             }
             Debug.LogError("No IPv4 address found.");
-            return "127.0.0.1"; // Default to localhost if no IP is found
+            return "127.0.0.1";
         }
         catch (Exception ex)
         {
             Debug.LogError($"Error obtaining local IP address: {ex.Message}");
-            return "127.0.0.1"; // Default to localhost in case of an error
+            return "127.0.0.1";
         }
     }
 
     private void OnDestroy()
     {
-        // Desuscribirse del evento de cambio de escena
+
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
@@ -304,11 +306,11 @@ public class DBQuizReqHolder : MonoBehaviour
         Debug.Log($"GameType: {GameType}");¨
         */
 
-        // This is to avoid having loading screens
+
         StartCoroutine(GetQuizData(LevelNumber));
         if (scene.name == "ModuleSelection")
         {
-            StartCoroutine(GetItemsData(userID)); // Cambia esto por el ID de usuario real
+            StartCoroutine(GetItemsData(userID));
         }
         //Debug.Log($"UserID: {userID}");
         
@@ -333,20 +335,20 @@ public class DBQuizReqHolder : MonoBehaviour
                 string jsonResponse = request.downloadHandler.text;
                 //Debug.Log("Respuesta recibida: " + jsonResponse);
 
-                // Deserializar el JSON utilizando el wrapper
+
                 PreguntasWrapper preguntasWrapper = JsonUtility.FromJson<PreguntasWrapper>($"{{\"preguntas\":{jsonResponse}}}");
                 preguntas = preguntasWrapper.preguntas;
 
                 /*
-                // Acceder a los valores individuales
+
                 foreach (Pregunta pregunta in preguntas)
                 {
                     
                     Debug.Log($"Pregunta ID: {pregunta.id_pregunta}");
                     Debug.Log($"Texto de la pregunta: {pregunta.pregunta}");
                     Debug.Log($"Índice correcto: {pregunta.indice_correcto}");
-                    Debug.Log($"Explicación: {pregunta.explicacion}"); // Mostrar la explicación
-                    Debug.Log($"Tip: {pregunta.tip}");               // Mostrar el tip
+                    Debug.Log($"Explicación: {pregunta.explicacion}"); 
+                    Debug.Log($"Tip: {pregunta.tip}");               
                     
 
                     foreach (Respuesta respuesta in pregunta.respuestas)
@@ -380,10 +382,10 @@ public class DBQuizReqHolder : MonoBehaviour
                 string jsonResponse = request.downloadHandler.text;
                 //Debug.Log("Respuesta recibida: " + jsonResponse);
 
-                // Deserialize the JSON into a list of items
+
                 Item[] items = JsonUtility.FromJson<ItemsWrapper>($"{{\"items\":{jsonResponse}}}").items;
 
-                // Log all items to the console
+
                 /*
                 foreach (Item item in items)
                 {
@@ -391,7 +393,7 @@ public class DBQuizReqHolder : MonoBehaviour
                 }
                 */
 
-                // Update potion and shield counts
+
                 UpdateItemCounts(items);
             }
         }
@@ -400,11 +402,11 @@ public class DBQuizReqHolder : MonoBehaviour
     {
         foreach (Item item in items)
         {
-            if (item.id_item == 1) // Potion ItemId
+            if (item.id_item == 1)
             {
                 shieldCount = item.cantidad;
             }
-            else if (item.id_item == 2) // Shield ItemId
+            else if (item.id_item == 2)
             {
                 potionCount = item.cantidad;
             }
@@ -413,8 +415,8 @@ public class DBQuizReqHolder : MonoBehaviour
 
     public IEnumerator GetQuestsData()
 {
-    // Construimos la URL
-    string url = $"{urlBD}quests";  // Asegúrate que urlBD termina en "/"
+
+    string url = $"{urlBD}quests"; 
     Debug.Log("Realizando solicitud a: " + url);
 
     using (UnityWebRequest request = UnityWebRequest.Get(url))
@@ -430,7 +432,6 @@ public class DBQuizReqHolder : MonoBehaviour
             string jsonResponse = request.downloadHandler.text;
             Debug.Log("Respuesta recibida: " + jsonResponse);
 
-            // Deserialize the JSON into a list of quests
             Quest[] questsWrapper = JsonUtility.FromJson<QuestsWrapper>($"{{\"quests\":{jsonResponse}}}").quests;
             quests = questsWrapper;
         }
@@ -487,13 +488,13 @@ public IEnumerator UpdateQuestProgress(int userId, int questId, int progress)
     }
 }
 
-// Método para incrementar progreso
+
 public IEnumerator IncrementQuestProgress(int questId, int increment = 1)
 {
     int userId = GetUserID();
     string url = $"{urlBD}increment-quest-progress";
     
-    // Crea el cuerpo de la petición como JSON
+
     string jsonBody = $"{{\"userId\":{userId},\"questId\":{questId},\"increment\":{increment}}}";
     byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonBody);
     
@@ -528,7 +529,6 @@ private class QuestProgressResponse
     public int targetProgress;
 }
 
-// Método para actualizar múltiples misiones
 public IEnumerator UpdateMultipleQuests(Dictionary<int, int> questUpdates)
 {
     foreach (var update in questUpdates)
@@ -537,7 +537,6 @@ public IEnumerator UpdateMultipleQuests(Dictionary<int, int> questUpdates)
     }
 }
 
-// Método para verificar y completar misiones
 public IEnumerator CheckAndCompleteQuest(int questId, int requiredProgress = 1)
 {
     var quest = GetUserQuests()?.FirstOrDefault(q => q.id_quest == questId);
@@ -593,10 +592,10 @@ public IEnumerator GetCoinsData(int userID)
                 string jsonResponse = request.downloadHandler.text;
                 //Debug.Log("Respuesta recibida: " + jsonResponse);
 
-                // Parse the JSON response to extract the coins value
+
                 CoinsResponse coinsResponse = JsonUtility.FromJson<CoinsResponse>(jsonResponse);
                 //Debug.Log($"Coins for user {userID}: {coinsResponse.coins}");
-                coins = coinsResponse.coins; // Store the coins value
+                coins = coinsResponse.coins;
             }
         }
     }
@@ -619,10 +618,10 @@ public IEnumerator GetMemoryData(int idMemorama)
             string jsonResponse = request.downloadHandler.text;
             Debug.Log("Respuesta recibida: " + jsonResponse);
 
-            // Deserialize the JSON response into an array of MemoryResponse
+ 
             memoryData = JsonUtility.FromJson<MemoryWrapper>($"{{\"memory\":{jsonResponse}}}").memory;
 
-            // Log the memory data for debugging
+
             foreach (var memory in memoryData)
             {
                 Debug.Log($"Concepto: {memory.concepto}\nDefinición: {memory.definicion}");
@@ -653,7 +652,7 @@ public IEnumerator GetHangmanData(int idQuiz, System.Action<bool, HangmanItem[]>
 
         try
         {
-            // Parsear la respuesta directamente al formato esperado
+
             HangmanResponse response = JsonUtility.FromJson<HangmanResponse>(jsonResponse);
             
             if (response == null)
@@ -686,7 +685,7 @@ public IEnumerator GetHangmanData(int idQuiz, System.Action<bool, HangmanItem[]>
     }
 }
 
-// Clase helper para deserializar arrays JSON
+
 public static class JsonHelper
 {
     public static T[] FromJson<T>(string json)
@@ -719,7 +718,7 @@ public IEnumerator UpdateCoins(int userID, int amount)
     string url = $"{urlBD}coins/update";
     Debug.Log($"Updating coins for user {userID} by {amount}");
 
-    // Create the request body as JSON
+
     string jsonBody = $"{{\"id_usuario\":{userID},\"coins\":{amount}}}";
     byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonBody);
 
@@ -747,7 +746,7 @@ public IEnumerator UpdateQuizUsuario(int idQuiz, int idUsuario, int desbloqueado
 {
     string url = $"{urlBD}quiz-usuario/update";
 
-    // Create the request body
+
     QuizUsuarioUpdateRequest data = new QuizUsuarioUpdateRequest
     {
         id_quiz = idQuiz,
@@ -785,7 +784,7 @@ public IEnumerator UnlockQuiz(int idQuiz, int idUsuario, int desbloqueado)
     string url = $"{urlBD}quiz-usuario/unlock";
     Debug.Log($"Unlocking quiz {idQuiz} for user {idUsuario} with desbloqueado: {desbloqueado}");
 
-    // Create the request body
+
     string jsonBody = JsonUtility.ToJson(new UnlockQuizRequest
     {
         id_quiz = idQuiz,
@@ -836,7 +835,7 @@ public IEnumerator GetModuleStars(int idModulo, int idUsuario, Action<int> onSuc
 
             try
             {
-                // Parse the JSON response to extract the total stars
+
                 ModuleStarsResponse response = JsonUtility.FromJson<ModuleStarsResponse>(jsonResponse);
                 if (response.success)
                 {
@@ -877,7 +876,7 @@ public IEnumerator GetModuleLevels(int idModulo, int idUsuario, Action<List<Leve
 
             try
             {
-                // Parse the JSON response to extract level data
+
                 ModuleLevelsResponse response = JsonUtility.FromJson<ModuleLevelsResponse>(jsonResponse);
                 if (response.success)
                 {
@@ -901,23 +900,21 @@ public IEnumerator GetModuleLevels(int idModulo, int idUsuario, Action<List<Leve
         return potionCount;
     }
 
-    public void SetPotionCount(int count) // MANDAR DATOS A LA DB
+    public void SetPotionCount(int count)
     {
         potionCount = count;
     }
-
 
     public int GetShieldCount()
     {
         return shieldCount;
     }
 
-    public void SetShieldCount(int count) // MANDAR DATOS A LA DB
+    public void SetShieldCount(int count)
     {
         shieldCount = count;
     }
 
-    // Métodos para ModuleID
     public int GetModuleID()
     {
         return ModuleID;
@@ -928,7 +925,6 @@ public IEnumerator GetModuleLevels(int idModulo, int idUsuario, Action<List<Leve
         ModuleID = moduleID;
     }
 
-    // Métodos para LevelNumber
     public int GetLevelNumber()
     {
         return LevelNumber;
@@ -939,7 +935,6 @@ public IEnumerator GetModuleLevels(int idModulo, int idUsuario, Action<List<Leve
         LevelNumber = levelNumber;
     }
 
-    // Métodos para GameType
     public string GetGameType()
     {
         return GameType;
@@ -950,7 +945,6 @@ public IEnumerator GetModuleLevels(int idModulo, int idUsuario, Action<List<Leve
         GameType = gameType;
     }
 
-    // Métodos para Preguntas
     public Pregunta[] GetPreguntas()
     {
         return preguntas;
@@ -961,7 +955,6 @@ public IEnumerator GetModuleLevels(int idModulo, int idUsuario, Action<List<Leve
         preguntas = preguntasArray;
     }
 
-    // Getter and Setter for IsLoggedIn
     public bool GetIsLoggedIn()
     {
         return isLoggedIn;

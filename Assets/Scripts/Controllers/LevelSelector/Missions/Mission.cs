@@ -2,7 +2,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections;
-
+// Descripción: Este archivo controla la lógica de las misiones individuales, incluyendo la configuración de la misión, la actualización de la interfaz de usuario y el manejo de la recompensa al completarla.
+// Autor: Alfonso Vega
 public class Mission : MonoBehaviour
 {
     [Header("UI References")]
@@ -13,13 +14,13 @@ public class Mission : MonoBehaviour
     
     [SerializeField] private Slider progressSlider;
     [SerializeField] private Button claimButton;
-    [SerializeField] private TMP_Text claimButtonText; // Nueva referencia para el texto del botón
+    [SerializeField] private TMP_Text claimButtonText;
 
     private UserQuest currentQuest;
 
     private void Awake()
     {
-        // Obtener la referencia al texto del botón si no está asignada
+
         if (claimButton != null && claimButtonText == null)
         {
             claimButtonText = claimButton.GetComponentInChildren<TMP_Text>();
@@ -40,7 +41,7 @@ public class Mission : MonoBehaviour
 
     private void UpdateUI()
     {
-        // Verificar componentes antes de usarlos
+
         if (missionTitle != null)
             missionTitle.text = currentQuest.nombre ?? "Sin nombre";
 
@@ -62,7 +63,7 @@ public class Mission : MonoBehaviour
         if (progressText != null)
             progressText.text = $"{currentQuest.userProgress}/{currentQuest.TargetProgress}";
 
-        // Configurar estado del botón
+
         if (claimButton != null && claimButtonText != null)
         {
             bool canClaim = currentQuest.completado == 1 && currentQuest.userProgress >= currentQuest.TargetProgress;
@@ -70,7 +71,7 @@ public class Mission : MonoBehaviour
             
             claimButton.interactable = canClaim && !alreadyClaimed;
             
-            // Cambiar texto según estado
+ 
             if (alreadyClaimed)
             {
                 claimButtonText.text = "Claimed";
@@ -104,20 +105,20 @@ public class Mission : MonoBehaviour
         yield break;
     }
 
-    // Desactivar el botón inmediatamente
+
     if (claimButton != null)
     {
         claimButton.interactable = false;
         claimButtonText.text = "Processing...";
     }
 
-    // Llamar al manager para reclamar
+
     yield return MissionManager.Instance.ClaimQuestReward(currentQuest.id_quest);
 
-    // Forzar actualización de datos
+ 
     yield return MissionManager.Instance.InitializeMissions();
 
-    // Actualizar UI con los nuevos datos
+
     var updatedQuest = MissionManager.Instance.GetMissionById(currentQuest.id_quest);
     if (updatedQuest != null)
     {
@@ -129,7 +130,7 @@ public class Mission : MonoBehaviour
         Debug.LogError("No se pudo obtener la misión actualizada del manager");
     }
 
-    // Verificación adicional
+
     if (claimButton != null && currentQuest.completado == 2)
     {
         claimButtonText.text = "Claimed";

@@ -1,6 +1,9 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+// Descripción: Este archivo controla la animación y el estado visual de las estrellas en la interfaz de usuario, permitiendo su reinicio, activación y ajuste de escala para efectos visuales.
+// Autor: Alfonso Vega
+
 public class Star : MonoBehaviour
 {
     [SerializeField] private Image activeStar;

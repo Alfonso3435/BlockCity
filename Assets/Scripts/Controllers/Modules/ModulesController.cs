@@ -3,6 +3,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
+// Descripción: Este archivo controla la selección de módulos en el juego, permitiendo la navegación a las escenas correspondientes según el módulo seleccionado por el jugador.
+// Autor: Estrella Lolbeth
 public class ModulesController : MonoBehaviour
 {
    private UIDocument modulos;

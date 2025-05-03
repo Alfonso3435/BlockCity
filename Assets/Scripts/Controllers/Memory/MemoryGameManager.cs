@@ -6,13 +6,15 @@ using System.Collections;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+// Descripción: Este archivo gestiona la lógica principal del juego de memoria, incluyendo la inicialización del juego, el manejo de intentos, la verificación de coincidencias y la finalización del nivel con la asignación de recompensas.
+// Autor: Alfonso Vega e Israel González
 public class MemoryGameManager : MonoBehaviour, ICardGameManager
 {
     public static MemoryGameManager Instance;
     public Card cardPrefab;
     public Sprite cardBack;
     public Transform cardHolder;
-    public TMP_Text triesText; // Referencia al texto de intentos
+    public TMP_Text triesText; 
 
     private CardData cardData;
     private List<Card> cards = new List<Card>();
@@ -21,7 +23,7 @@ public class MemoryGameManager : MonoBehaviour, ICardGameManager
     public Card firstCard, secondCard;
     private int pairsMatched;
     private int totalPairs;
-    private int triesLeft = 16; // Inicializamos con 16 intentos
+    private int triesLeft = 16;
     private int pointsEarned = 0;
 
     [Header("UI")]
@@ -36,7 +38,7 @@ public class MemoryGameManager : MonoBehaviour, ICardGameManager
         {
             backButton.onClick.AddListener(ReturnToModuleSelection);
         }
-        StartCoroutine(DBQuizReqHolder.Instance.GetMemoryData(DBQuizReqHolder.Instance.GetLevelNumber())); // CAMBIAR AL ID DEL NIVEL
+        StartCoroutine(DBQuizReqHolder.Instance.GetMemoryData(DBQuizReqHolder.Instance.GetLevelNumber())); 
     }
 
 
@@ -57,10 +59,10 @@ public class MemoryGameManager : MonoBehaviour, ICardGameManager
     void InitializeGame()
     {
         pairsMatched = 0;
-        triesLeft = 16; // Resetear intentos al iniciar
+        triesLeft = 16; 
         pointsEarned = cardData.maxPoints;
         totalPairs = cardData.cardPairs.Length;
-        UpdateTriesUI(); // Actualizar UI al inicio
+        UpdateTriesUI(); 
         CreateCards();
     }
 
@@ -88,7 +90,7 @@ public class MemoryGameManager : MonoBehaviour, ICardGameManager
             cardContents.Add(pair.definition);
         }
         */
-        // INFO: Aquí es donde puedo modificar el texto que se inserta a las cartas
+        
         /*
         for (int i = 0; i < 6; i++)
         {
@@ -111,7 +113,7 @@ public class MemoryGameManager : MonoBehaviour, ICardGameManager
             k += 2;
         }
 
-        // Primero que funcione sin shuffle
+        
         ShuffleCards();
 
         for (int i = 0; i < cardContents.Count; i++)
@@ -188,8 +190,8 @@ public class MemoryGameManager : MonoBehaviour, ICardGameManager
         }
         else
         {
-            triesLeft--; // Reducir intentos
-            UpdateTriesUI(); // Actualizar UI
+            triesLeft--; 
+            UpdateTriesUI(); 
             
             if (triesLeft <= 0)
             {
@@ -204,14 +206,14 @@ public class MemoryGameManager : MonoBehaviour, ICardGameManager
 
     IEnumerator FlipBackCards()
     {
-    // Esperar antes de empezar a voltear
+
         yield return new WaitForSeconds(0.3f);
     
-    // Voltear ambas cartas
+ 
         firstCard.HideCard();
         secondCard.HideCard();
     
-    // Esperar a que termine la animación (aproximadamente 0.6s)
+
         yield return new WaitForSeconds(0.6f);
     
         firstCard = null;
@@ -220,7 +222,7 @@ public class MemoryGameManager : MonoBehaviour, ICardGameManager
 
         void CompleteLevel()
     {
-        int triviaMissionId = 2; // ID de misión "Completar trivia"
+        int triviaMissionId = 2; 
         DBQuizReqHolder.Instance.StartCoroutine(
         DBQuizReqHolder.Instance.IncrementQuestProgress(triviaMissionId)
         );
@@ -236,7 +238,7 @@ public class MemoryGameManager : MonoBehaviour, ICardGameManager
         int currentLevel = PlayerPrefs.GetInt("CurrentLevel", 1);
         string currentLevelKey = currentModule + "_Lv" + currentLevel;
 
-        // Guardar progreso del nivel actual
+
         PlayerPrefs.SetInt(currentLevelKey, starsEarned);
         PlayerPrefs.SetInt("TempStars", starsEarned);
         PlayerPrefs.SetInt("TempPoints", pointsEarned);
@@ -244,20 +246,20 @@ public class MemoryGameManager : MonoBehaviour, ICardGameManager
 
         StartCoroutine(
             DBQuizReqHolder.Instance.UpdateQuizUsuario(
-                DBQuizReqHolder.Instance.GetLevelNumber(), // ID del nivel
-                DBQuizReqHolder.Instance.GetUserID(), // ID del usuario
+                DBQuizReqHolder.Instance.GetLevelNumber(), 
+                DBQuizReqHolder.Instance.GetUserID(), 
                 1,
-                starsEarned, // Estrellas ganadas
-                pointsEarned, // Puntos ganados
-                starsEarned * 200 // Monedas ganadas
+                starsEarned,
+                pointsEarned, 
+                starsEarned * 200 
             ));
 
         Debug.Log("=============================");
         StartCoroutine(DBQuizReqHolder.Instance.UpdateCoins(
             DBQuizReqHolder.Instance.GetUserID(),
-            starsEarned * 200)); // Guardar monedas ganadas en el servidor
+            starsEarned * 200)); 
 
-        // Incrementar el nivel actual para pasar al siguiente nivel
+ 
         int nextLevel = currentLevel + 1;
         PlayerPrefs.SetInt("CurrentLevel", nextLevel);
 
@@ -284,17 +286,17 @@ public class MemoryGameManager : MonoBehaviour, ICardGameManager
         int currentLevel = PlayerPrefs.GetInt("CurrentLevel", 1);
         string currentLevelKey = currentModule + "_Lv" + currentLevel;
 
-        // Guardar progreso del nivel actual
+
         PlayerPrefs.SetInt(currentLevelKey, starsEarned);
         PlayerPrefs.SetInt("TempStars", starsEarned);
         PlayerPrefs.SetInt("TempPoints", pointsEarned);
         PlayerPrefs.SetInt("TempCoins", starsEarned * 500);
 
-        // Desbloquear el siguiente nivel
-        int nextLevel = currentLevel + 1;
-        PlayerPrefs.SetInt("UnlockedLevel", nextLevel); // Guardar el nivel desbloqueado
 
-        // Regresar a la pantalla de selección de niveles
+        int nextLevel = currentLevel + 1;
+        PlayerPrefs.SetInt("UnlockedLevel", nextLevel); 
+
+
         SceneManager.LoadScene("LevelSelection");
     }
 */
@@ -302,14 +304,14 @@ public class MemoryGameManager : MonoBehaviour, ICardGameManager
     {
         int remainingTries = triesLeft;
         
-        if (remainingTries >= 10) // 3 estrellas si quedan 10 o más intentos
+        if (remainingTries >= 10) 
             return 3;
-        else if (remainingTries >= 5) // 2 estrellas si quedan entre 5-9 intentos
+        else if (remainingTries >= 5) 
             return 2;
-        else if (remainingTries >= 1) // 1 estrella si quedan entre 1-4 intentos
+        else if (remainingTries >= 1) 
             return 1;
         else
-            return 0; // No debería llegar aquí porque se habría cargado FailedQuiz
+            return 0; 
     }
 
     public void RestartGame()

@@ -5,6 +5,9 @@ using System.Collections;
 using System.Linq;
 using UnityEngine.Networking;
 
+// Descripción: Este archivo gestiona las misiones del juego, incluyendo la inicialización, actualización del progreso, reclamación de recompensas y la interacción con el servidor para sincronizar los datos de las misiones.
+// Autor: Alfonso Vega
+
 public class MissionManager : MonoBehaviour
 {
     public static MissionManager Instance { get; private set; }
@@ -44,7 +47,7 @@ public class MissionManager : MonoBehaviour
         coinsText.text = DBQuizReqHolder.Instance.GetCoins().ToString();
     }
 
-    // En MissionManager
+
     public IEnumerator InitializeMissions()
     {   
         int userId = DBQuizReqHolder.Instance.GetUserID();
@@ -129,11 +132,10 @@ public class MissionManager : MonoBehaviour
 
         Debug.Log($"Recompensa reclamada con éxito: {request.downloadHandler.text}");
 
-        // Actualizar datos locales inmediatamente
         var quest = loadedMissions.FirstOrDefault(q => q.id_quest == questId);
         if (quest != null)
         {
-            quest.completado = 2;// Marcamos como reclamada localmente
+            quest.completado = 2;
             if (questId ==1){
                 DBQuizReqHolder.Instance.SetCoins(DBQuizReqHolder.Instance.GetCoins() + 300);
             }
@@ -145,10 +147,8 @@ public class MissionManager : MonoBehaviour
             }
         }
 
-        // Actualizar datos desde el servidor
         yield return StartCoroutine(InitializeMissions());
         
-        // Notificar a las misiones activas para actualizar su UI
         if (activeMissions.TryGetValue(questId, out Mission mission))
         {
             var updatedQuest = loadedMissions.FirstOrDefault(q => q.id_quest == questId);

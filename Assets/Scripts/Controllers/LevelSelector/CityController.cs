@@ -3,6 +3,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
+// Descripción: Este archivo controla la navegación dentro de la ciudad del selector de niveles, incluyendo la transición al siguiente nivel seleccionado por el jugador.
+// Autor: Alfonso Vega
 public class CityController : MonoBehaviour
 {
     private UIDocument ciudad;

@@ -3,6 +3,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
+// Descripción: Este archivo gestiona la pantalla de finalización de nivel, incluyendo la animación de estrellas obtenidas, la actualización de contadores de puntuación y monedas, y la navegación a la siguiente escena o reintento del nivel actual.
+// Autor: Alfonso Vega
+
 public class StageClearManager : MonoBehaviour
 {
     [Header("Stars Configuration")]

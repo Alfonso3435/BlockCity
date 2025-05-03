@@ -3,16 +3,18 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections;
 using UnityEngine.Networking;
+// Descripción: Este archivo controla la interfaz de selección de elementos en la tienda, incluyendo la compra de escudos y pociones, la actualización de datos del usuario y la interacción con el servidor para procesar las transacciones.
+// Autor: Alfonso Vega
 
 public class InterfaceSelectionController : MonoBehaviour
 {
-    // IDs y precios de los items
+
     private const int SHIELD_ID = 1;
     private const int POTION_ID = 2;
     private const int SHIELD_PRICE = 500;
     private const int POTION_PRICE = 350;
 
-    // Referencias UI
+
     [SerializeField] private GameObject successPopup;
     [SerializeField] private GameObject errorPopup;
     [SerializeField] private GameObject storePopUp;
@@ -69,15 +71,14 @@ public class InterfaceSelectionController : MonoBehaviour
 
     private IEnumerator ProcessPurchase(int itemId, int price)
     {
-        // Primero actualizamos las monedas
+
         yield return StartCoroutine(UpdateUserCoins(userId, -price, (coinsSuccess) => {
             if (coinsSuccess)
             {
-                // Luego actualizamos el item
                 StartCoroutine(UpdateItemQuantity(userId, itemId, 1, (itemSuccess) => {
                     if (itemSuccess)
                     {
-                        // Actualizamos los datos locales y mostramos éxito
+                        
                         RefreshUserData();
                         StartCoroutine(ShowSuccess());
                     }
@@ -164,7 +165,7 @@ public class InterfaceSelectionController : MonoBehaviour
 
         if (request.result == UnityWebRequest.Result.Success)
         {
-            // Actualizamos el valor local
+
             if (itemId == SHIELD_ID)
             {
                 DBQuizReqHolder.Instance.SetShieldCount(newQuantity);

@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 
+// Descripción: Este archivo controla la pantalla de créditos, permitiendo al jugador regresar al menú principal al interactuar con el botón correspondiente.
+// Autor: Alfonso Vega
 
 public class CreditController : MonoBehaviour
 {
@@ -14,7 +16,7 @@ public class CreditController : MonoBehaviour
 
         botonRegreso = root.Q<Button>("Cerrar");
 
-        // Callbacks
+
         botonRegreso.RegisterCallback<ClickEvent>(evt => CambiarEscena("Menu"));
     }
 

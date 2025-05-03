@@ -3,7 +3,8 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections;
 using NUnit.Framework.Constraints;
-
+// Descripción: Este archivo controla la selección de niveles dentro del módulo, gestionando el estado de desbloqueo, la visualización de estrellas obtenidas y la transición a las escenas correspondientes según el nivel seleccionado.
+// Autor: Alfonso Vega
 public class LevelSelectionController : MonoBehaviour
 {
     [Header("Level Settings")]
@@ -15,13 +16,13 @@ public class LevelSelectionController : MonoBehaviour
     [Header("Game Settings")]
     public QuestionData quizData;
     public CardData cardData;
-    public HangmanData hangmanData; // Added for Hangman
+    public HangmanData hangmanData; 
     
 
     public int levelNum;
     public string quizSceneName = "Quiz";
     public string memorySceneName = "Memory";
-    public string hangmanSceneName = "Hangman"; // Added for Hangman
+    public string hangmanSceneName = "Hangman"; 
     public bool[] desbloqueos = {false, false, false, false, false, false};
     public int[] starobtained = {0, 0, 0, 0, 0, 0};
 
@@ -71,7 +72,7 @@ public class LevelSelectionController : MonoBehaviour
             }
             ));
 
-        //Debug.Log("=========================== ");
+        
         for (int i = 0; i < desbloqueos.Length; i++)
             {
                 //Debug.Log($"desbloqueos[{i}]: {desbloqueos[i]}");
@@ -86,7 +87,7 @@ public class LevelSelectionController : MonoBehaviour
     {
         string currentModule = PlayerPrefs.GetString("CurrentModule", "LevelSelection1");
         int prevLevelNum = levelNum - 1;
-        //Debug.Log("================================");
+        
         //Debug.Log("LevelNum: " + levelNum);
 
 
@@ -97,7 +98,7 @@ public class LevelSelectionController : MonoBehaviour
 
         if (levelNum == 1)
         {
-            unlocked = true; // El primer nivel siempre está desbloqueado
+            unlocked = true;
         }
 
         UpdateLevelUI();
@@ -131,42 +132,42 @@ public class LevelSelectionController : MonoBehaviour
             PlayerPrefs.SetInt("CurrentLevel", levelNum);
             PlayerPrefs.SetString("CurrentLevelName", gameObject.name);
             
-            // Guardar el capítulo correspondiente al nivel actual
+           
             int capitulo = levelNum;
             PlayerPrefs.SetInt("CurrentChapter", capitulo);
 
-            // Asignar el valor de levelNum al LevelNumber del singleton
+            
             DBQuizReqHolder.Instance.SetLevelNumber(levelNum);
 
-            // Guardar la siguiente escena que se debe cargar después de la lectura
-            if (quizData != null) //quiz
+            
+            if (quizData != null) 
             {
                 QuizDataHolder.Instance.SetQuizData(quizData);
                 QuizDataHolder.Instance.SetLevelNumber(levelNum);
                 PlayerPrefs.SetString("NextScene", quizSceneName);
             }
-            else if (cardData != null) //memoria
+            else if (cardData != null) 
             {
                 QuizDataHolder.Instance.SetCardData(cardData);
                 QuizDataHolder.Instance.SetLevelNumber(levelNum);
                 PlayerPrefs.SetString("NextScene", memorySceneName);
             }
-            else if (hangmanData != null) // Lógica para Hangman
+            else if (hangmanData != null) 
             {
                 QuizDataHolder.Instance.SetHangmanData(hangmanData);
                 QuizDataHolder.Instance.SetLevelNumber(levelNum);
                 PlayerPrefs.SetString("NextScene", hangmanSceneName);
             }
 
-            // cargar la escena Lecture
-            if (cardData != null) //memoria
+            
+            if (cardData != null) 
             {
-                SceneManager.LoadScene("Memory"); // Cargar la escena de memoria
+                SceneManager.LoadScene("Memory"); 
             }
             else
             {
                 if (levelNum == 5){
-                     SceneManager.LoadScene("Hangman"); // Cargar la escena de hangman
+                     SceneManager.LoadScene("Hangman"); 
                 }
                 else{SceneManager.LoadScene($"Lecture{levelNum}");
             }

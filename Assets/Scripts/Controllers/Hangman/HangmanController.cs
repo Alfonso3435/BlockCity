@@ -6,6 +6,8 @@ using UnityEngine.SceneManagement;
 using System.Linq;
 using System.Collections.Generic;
 
+// Descripción: Este archivo controla la lógica principal del juego del ahorcado, incluyendo la inicialización del juego, manejo de intentos, actualización de la interfaz y verificación del estado del juego.
+// Autor: Alfonso Vega y Estrella Lolbeth
 public class HangmanController : MonoBehaviour
 {
     [Header("UI Elements")]
@@ -68,7 +70,7 @@ public class HangmanController : MonoBehaviour
                 else
                 {
                     Debug.LogError("Error loading hangman data");
-                    // Mostrar mensaje de error
+                    
                 }
             }
         ));
@@ -82,7 +84,7 @@ public class HangmanController : MonoBehaviour
             return;
         }
 
-        // Reiniciar contadores para el nuevo minijuego
+      
         remainingGameAttempts = attemptsPerGame;
         currentErrors = 0;
         UpdateTriesDisplay();
@@ -90,7 +92,7 @@ public class HangmanController : MonoBehaviour
         conteo++;
         conteoText.text =conteo.ToString();
 
-        // Seleccionar palabra aleatoria de las disponibles
+     
         int randomIndex = Random.Range(0, availableWords.Count);
         var selectedItem = availableWords[randomIndex];
         availableWords.RemoveAt(randomIndex);
@@ -108,7 +110,7 @@ public class HangmanController : MonoBehaviour
 
     private void ClearGameUI()
     {
-        // Limpiar letras y teclado
+  
         foreach (Transform child in WordContainer)
         {
             Destroy(child.gameObject);
@@ -119,7 +121,7 @@ public class HangmanController : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-        // Reiniciar visualización del ahorcado
+   
         foreach (var stage in hangmanStages)
         {
             stage.SetActive(false);
@@ -179,7 +181,7 @@ public class HangmanController : MonoBehaviour
 
     private void UpdateHangmanVisual()
     {
-        // Mostrar solo las partes correspondientes a los errores actuales
+   
         for (int i = 0; i < hangmanStages.Length; i++)
         {
             hangmanStages[i].SetActive(i < currentErrors);
@@ -197,13 +199,13 @@ public class HangmanController : MonoBehaviour
     {
         if (!currentWordState.Contains('_'))
         {
-            // Palabra completada
+   
             GameObject.Find("CorrectEffect").GetComponent<AudioSource>().Play();
             StartCoroutine(WordCompleted());
         }
         else if (remainingGameAttempts <= 0)
         {
-            // Sin intentos restantes para este minijuego
+
             SceneManager.LoadScene("FailedQuiz");
         }
     }

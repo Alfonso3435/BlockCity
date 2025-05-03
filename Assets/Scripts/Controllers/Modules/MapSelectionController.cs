@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 using System.Collections;
 using UnityEngine.Networking;
 
+// Descripción: Este archivo controla la selección de mapas dentro del juego, gestionando el estado de desbloqueo, la visualización de estrellas obtenidas y la interacción con el servidor para desbloquear módulos y actualizar monedas del jugador.
+// Autor: Alfonso Vega
 public class MapSelectionController : MonoBehaviour
 {
     [Header("Module Settings")]
@@ -29,7 +31,7 @@ public class MapSelectionController : MonoBehaviour
 
     private IEnumerator CheckModuleStatus()
     {
-        // Consultar estado del módulo en la base de datos
+
         yield return StartCoroutine(GetModuleStatus(userId, mapIndex, (status) => {
             isUnlocked = status;
             UpdateUI();
@@ -55,7 +57,6 @@ public class MapSelectionController : MonoBehaviour
         */
         if (isUnlocked)
         {
-            // Fetch total stars using a coroutine and update the UI
             StartCoroutine(DBQuizReqHolder.Instance.GetModuleStars(
                 mapIndex,
                 DBQuizReqHolder.Instance.GetUserID(),
@@ -66,7 +67,7 @@ public class MapSelectionController : MonoBehaviour
                 onError: (error) =>
                 {
                     Debug.LogError($"Failed to fetch module stars: {error}");
-                    starsText.text = "0/15"; // Default to 0 if there's an error
+                    starsText.text = "0/15"; 
                 }
             ));
         }
@@ -91,12 +92,12 @@ public class MapSelectionController : MonoBehaviour
 
     private IEnumerator TryUnlockModule()
     {
-        // Verificar monedas del usuario
+
         int playerCoins = DBQuizReqHolder.Instance.GetCoins();
         
         if (playerCoins >= coinsRequired)
         {
-            // Intentar desbloquear el módulo
+
             yield return StartCoroutine(UnlockModule(userId, mapIndex, coinsRequired, (success) => {
                 if (success)
                 {
@@ -111,11 +112,11 @@ public class MapSelectionController : MonoBehaviour
         else
         {
             Debug.Log("No tienes suficientes monedas");
-            // Mostrar mensaje de error al usuario
+           
         }
     }
 
-    // Métodos para comunicación con el servidor
+
     private IEnumerator GetModuleStatus(int userId, int moduleId, System.Action<bool> callback)
     {
         string url = DBQuizReqHolder.Instance.urlBD + "module/status?userId=" + userId + "&moduleId=" + moduleId;
@@ -171,7 +172,7 @@ public class MapSelectionController : MonoBehaviour
     }
 }
 
-// Clases para serialización JSON
+
 [System.Serializable]
 public class ModuleStatusResponse
 {

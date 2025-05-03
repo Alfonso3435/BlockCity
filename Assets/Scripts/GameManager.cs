@@ -6,11 +6,14 @@ using System.Collections;
 using UnityEngine.Networking;
 using System.Data.Common;
 
+// Descripción: Este archivo gestiona la lógica principal del juego de trivia, incluyendo la inicialización del juego, manejo de preguntas, uso de potenciadores, cálculo de puntuaciones y transición entre escenas según el progreso del jugador.
+// Autor: Alfonso Vega e Israel González
+
 public class GameManager : MonoBehaviour
 {
-    // Power-ups
-    private int shieldCount = DBQuizReqHolder.Instance.GetShieldCount(); // Inicializar el escudo desde DBQuizReqHolder
-    private int potionCount = DBQuizReqHolder.Instance.GetPotionCount(); // Inicializar la poción desde DBQuizReqHolder
+
+    private int shieldCount = DBQuizReqHolder.Instance.GetShieldCount();
+    private int potionCount = DBQuizReqHolder.Instance.GetPotionCount();
 
     public GameObject PotionPopUp;
     public Button confirmPotionButton;
@@ -21,7 +24,7 @@ public class GameManager : MonoBehaviour
     public Button confirmShieldButton;
     public TMP_Text rejectShieldText;
 
-    // Variables para rastrear poderes activos
+
     private bool isShieldActive = false;
     private bool isPotionActive = false;
 
@@ -63,7 +66,7 @@ public class GameManager : MonoBehaviour
     public Color normalButtonColor = Color.white;
     public Color wrongAnswerColor = Color.red;
     public Color wrongAnswerTextColor = Color.white;
-    public Color normalTextColor = Color.black; // Color normal del texto
+    public Color normalTextColor = Color.black;
     public float flashDuration = 1f;
 
     void Start()
@@ -84,11 +87,11 @@ public class GameManager : MonoBehaviour
         confirmPotionButton.onClick.AddListener(UsePotion);
         confirmShieldButton.onClick.AddListener(UseShield);
 
-        // Wait for GetItemsData to complete
-        yield return StartCoroutine(DBQuizReqHolder.Instance.GetItemsData(DBQuizReqHolder.Instance.GetUserID()));
-        yield return StartCoroutine(DBQuizReqHolder.Instance.GetQuizData(currentLevelNumber)); // Optional delay for UI update
 
-        // Initialize the game after items data is received
+        yield return StartCoroutine(DBQuizReqHolder.Instance.GetItemsData(DBQuizReqHolder.Instance.GetUserID()));
+        yield return StartCoroutine(DBQuizReqHolder.Instance.GetQuizData(currentLevelNumber));
+
+
         InitializeGame();
     }
 
@@ -119,7 +122,7 @@ public class GameManager : MonoBehaviour
     {
         if (isPotionActive)
         {
-            // Mostrar mensaje de error si ya hay una poción activa
+
             rejectPotionText.text = "You currently have an active booster";
             rejectPotionText.gameObject.SetActive(true);
             return;
@@ -129,18 +132,18 @@ public class GameManager : MonoBehaviour
         {
             potionCount--;
             StartCoroutine(UpdateItemQuantity(DBQuizReqHolder.Instance.GetUserID(), 2, potionCount));
-            DBQuizReqHolder.Instance.SetPotionCount(potionCount); // Actualizar el conteo de pociones en DBQuizReqHolder
-            PotionText.text = potionCount.ToString(); // Actualizar el texto en la UI
-            currentQuestionMaxPoints *= 2; // Duplicar los puntos para la pregunta actual
-            isPotionActive = true; // Activar el estado de la poción
+            DBQuizReqHolder.Instance.SetPotionCount(potionCount);
+            PotionText.text = potionCount.ToString();
+            currentQuestionMaxPoints *= 2;
+            isPotionActive = true;
             PotionPopUp.gameObject.SetActive(false);
             GameObject.Find("ActivateEffect").GetComponent<AudioSource>().Play();
 
-            // Cambiar los colores de los botones inmediatamente
+
             foreach (Button button in replyButtons)
             {
-                button.GetComponent<Image>().color = Color.magenta; // Cambiar a morado
-                button.GetComponentInChildren<TMP_Text>().color = Color.white; // Cambiar texto a blanco
+                button.GetComponent<Image>().color = Color.magenta;
+                button.GetComponentInChildren<TMP_Text>().color = Color.white;
             }
         }
         else
@@ -154,7 +157,7 @@ public class GameManager : MonoBehaviour
     {
         if (isShieldActive)
         {
-            // Mostrar mensaje de error si ya hay un escudo activo
+
             rejectShieldText.text = "You currently have an active shield";
             rejectShieldText.gameObject.SetActive(true);
             return;
@@ -165,13 +168,13 @@ public class GameManager : MonoBehaviour
             shieldCount--;
             StartCoroutine(UpdateItemQuantity(DBQuizReqHolder.Instance.GetUserID(), 1, shieldCount));
             DBQuizReqHolder.Instance.SetPotionCount(potionCount);
-            ShieldText.text = shieldCount.ToString(); // Actualizar el texto en la UI
-            wrongAnswersCount = -1; // Evitar que el próximo error cuente como incorrecto
-            isShieldActive = true; // Activar el estado del escudo
+            ShieldText.text = shieldCount.ToString();
+            wrongAnswersCount = -1;
+            isShieldActive = true;
             ShieldPopUp.gameObject.SetActive(false);
             GameObject.Find("ActivateEffect").GetComponent<AudioSource>().Play();
             
-            int triviaMissionId = 3; // ID de misión "Completar trivia"
+            int triviaMissionId = 3;
             DBQuizReqHolder.Instance.StartCoroutine(
             DBQuizReqHolder.Instance.IncrementQuestProgress(triviaMissionId)
             );
@@ -198,17 +201,17 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        // Cambiar todos los botones a morado si la poción está activa
+
         if (isPotionActive)
         {
             foreach (Button button in replyButtons)
             {
-                button.GetComponent<Image>().color = Color.magenta; // Cambiar a morado
-                button.GetComponentInChildren<TMP_Text>().color = Color.white; // Cambiar texto a blanco
+                button.GetComponent<Image>().color = Color.magenta;
+                button.GetComponentInChildren<TMP_Text>().color = Color.white;
             }
         }
 
-        // Configurar la pregunta actual
+
         currentQuestionText.text = (currentQuestionIndex + 1) + "/" + GetNumberOfQuestions();
         HeartText.text = (lives - quizErrors).ToString();
 
@@ -224,7 +227,7 @@ public class GameManager : MonoBehaviour
             {
                 replyButtons[i].GetComponentInChildren<TMP_Text>().text = DBQuizReqHolder.Instance.GetPreguntas()[currentQuestionIndex].respuestas[i].respuesta;
 
-                // Restablecer colores iniciales si la poción ya no está activa
+
                 if (!isPotionActive)
                 {
                     replyButtons[i].GetComponent<Image>().color = normalButtonColor;
@@ -233,7 +236,7 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        // Desactivar el estado de la poción después de configurar la pregunta
+
         isPotionActive = false;
     }
 
@@ -250,7 +253,7 @@ public class GameManager : MonoBehaviour
         bool isCorrect = answerIndex == DBQuizReqHolder.Instance.GetPreguntas()[currentQuestionIndex].indice_correcto;
         //Debug.Log("Correct answer index: " + DBQuizReqHolder.Instance.GetPreguntas()[currentQuestionIndex].indice_correcto);
 
-        // Guardar el valor original de los puntos
+
         int originalQuestionMaxPoints = currentQuestionMaxPoints;
 
         if (isCorrect)
@@ -266,7 +269,7 @@ public class GameManager : MonoBehaviour
             HandleWrongAnswer(currentQuestion);
         }
 
-        // No desactivar isPotionActive aquí; se desactivará al pasar a la siguiente pregunta
+
     }
 
     IEnumerator FlashWrongAnswerButton(int buttonIndex)
@@ -275,31 +278,31 @@ public class GameManager : MonoBehaviour
         Image buttonImage = wrongButton.GetComponent<Image>();
         TMP_Text buttonText = wrongButton.GetComponentInChildren<TMP_Text>();
 
-        // Guardar los colores originales
+
         Color originalButtonColor = buttonImage.color;
         Color originalTextColor = buttonText.color;
 
-        // Cambiar colores según el estado del escudo
+
         if (isShieldActive)
         {
             GameObject.Find("BlockEffect").GetComponent<AudioSource>().Play();
-            buttonImage.color = Color.blue; // Cambiar a azul si el escudo está activo
+            buttonImage.color = Color.blue;
         }
         else
         {
             GameObject.Find("IncorrectEffect").GetComponent<AudioSource>().Play();
-            buttonImage.color = wrongAnswerColor; // Cambiar a rojo si no hay escudo
+            buttonImage.color = wrongAnswerColor;
         }
         buttonText.color = wrongAnswerTextColor;
 
-        // Esperar el tiempo especificado
+
         yield return new WaitForSeconds(flashDuration);
 
-        // Restaurar colores originales
+
         buttonImage.color = originalButtonColor;
         buttonText.color = originalTextColor;
 
-        // Restablecer el estado del escudo después de usarlo
+
         isShieldActive = false;
     }
 
@@ -320,8 +323,7 @@ public class GameManager : MonoBehaviour
     {
         if (wrongAnswersCount == -1)
         {
-            // Si el escudo está activo, ignorar el error
-            wrongAnswersCount = 0; // Restablecer el contador de errores
+            wrongAnswersCount = 0;
             return;
         }
 
@@ -353,11 +355,11 @@ public class GameManager : MonoBehaviour
         feedbackPanel.SetActive(false);
         triviaGameObject.SetActive(true);
 
-        // Restablecer los puntos al valor original si la poción estaba activa
+
         if (isPotionActive)
         {
-            currentQuestionMaxPoints /= 2; // Restablecer al valor original
-            isPotionActive = false; // Desactivar el estado de la poción
+            currentQuestionMaxPoints /= 2;
+            isPotionActive = false;
         }
 
         currentQuestionIndex++;
@@ -366,8 +368,8 @@ public class GameManager : MonoBehaviour
 
     void CompleteQuiz()
     {
-        // Cuando el jugador responde correctamente
-        int triviaMissionId = 1; // ID de misión "Completar trivia"
+
+        int triviaMissionId = 1;
         DBQuizReqHolder.Instance.StartCoroutine(
         DBQuizReqHolder.Instance.IncrementQuestProgress(triviaMissionId)
         );
@@ -409,7 +411,6 @@ public class GameManager : MonoBehaviour
                 DBQuizReqHolder.Instance.GetUserID(),
                 starsEarned * 150
                  ));
-        // Incrementar la cantidad de monedas ganadas en la DB
         
         SceneManager.LoadScene("StageClear");
     }
@@ -468,7 +469,6 @@ public class GameManager : MonoBehaviour
     }
 
 
-    // Class to represent the request body
     [System.Serializable]
     public class ItemUpdateRequest
     {

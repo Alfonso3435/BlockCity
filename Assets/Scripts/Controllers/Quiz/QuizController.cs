@@ -3,6 +3,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
+// Descripción: Este archivo controla la lógica básica de la escena del cuestionario, incluyendo la navegación de regreso al selector de niveles o la transición a otras escenas según las acciones del jugador.
+// Autor: Alfonso Vega
 
 public class QuizController : MonoBehaviour
 {

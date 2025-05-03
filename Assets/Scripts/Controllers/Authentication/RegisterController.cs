@@ -5,13 +5,15 @@ using UnityEngine.UIElements;
 using UnityEngine.Networking;
 using System.Collections;
 
+// Descripción: Este archivo controla el registro de nuevos usuarios, validando los datos ingresados, enviándolos al servidor y manejando los errores o respuestas del servidor.
+// Autor: Mike Argumedo
+
 public class RegisterController : MonoBehaviour
 {
     private UIDocument register;
     private Button botonRegreso;
     private Button botonSubir;
 
-    //Error
     private Button contenedorError;
     private Button cerrarError;
     private Label mensaje;
@@ -36,7 +38,6 @@ public class RegisterController : MonoBehaviour
         botonRegreso = root.Q<Button>("Regreso");
         botonRegreso.RegisterCallback<ClickEvent, String>(IniciarJuego, "Login");
 
-        //Error
         contenedorError = root.Q<Button>("ErrorPopUp");
         mensaje = root.Q<Label>("Mensaje");
         cerrarError = root.Q<Button>("CerrarPopUp");
@@ -45,7 +46,6 @@ public class RegisterController : MonoBehaviour
         contenedorError.RegisterCallback<ClickEvent>(CerrarError);
         contenedorError.style.display = DisplayStyle.None;
 
-        // Obtener campos
         campoCorreo = root.Q<TextField>("Correo");
         campoNombre = root.Q<TextField>("Nombre");
         campoUsuario = root.Q<TextField>("NombreUsuario");
@@ -68,7 +68,7 @@ public class RegisterController : MonoBehaviour
             string nacionalidad = campoNacionalidad.value;
             string genero = campoGenero.value;
             string fechaNacimiento = $"{campoAno.text}-{campoMes.text.PadLeft(2, '0')}-{campoDia.text.PadLeft(2, '0')}";
-            //Aquí
+            
 
             if (string.IsNullOrEmpty(correo) ||string.IsNullOrEmpty(nombre) || string.IsNullOrEmpty(usuario) ||
                 string.IsNullOrEmpty(password) || string.IsNullOrEmpty(password2) ||

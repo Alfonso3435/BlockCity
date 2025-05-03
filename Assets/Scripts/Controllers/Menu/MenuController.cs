@@ -3,13 +3,15 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
+// Descripción: Este archivo controla el menú principal del juego, incluyendo la navegación a otras escenas, la visualización de información y créditos, y el reinicio del progreso del juego.
+// Autor: Alfonso Vega, Israel González y Mike Argumedo
 public class MenuController : MonoBehaviour
 {
     private UIDocument menu;
     private Button botonPlay;
     private Button botonLogin;
 
-    //Error
+
     private Button contenedorError;
     private Button cerrarError;
     private Label mensaje;
@@ -27,25 +29,25 @@ public class MenuController : MonoBehaviour
 
     private void ResetAllGameProgress()
     {
-        // 1. Reiniciar progreso de niveles para TODOS los módulos
-        string[] modules = { "LevelSelection1", "LevelSelection2", "LevelSelection3" }; // Añade todos tus módulos
+        
+        string[] modules = { "LevelSelection1", "LevelSelection2", "LevelSelection3" }; 
         
         foreach (string module in modules)
         {
-            for (int i = 1; i <= 10; i++) // Para cada nivel
+            for (int i = 1; i <= 10; i++) 
             {
                 PlayerPrefs.DeleteKey(module + "_Lv" + i);
             }
             PlayerPrefs.DeleteKey("Module_" + Array.IndexOf(modules, module) + "_Unlocked");
         }
 
-        // 2. Reiniciar datos de módulos (excepto el primero que suele estar desbloqueado por defecto)
-        for (int i = 2; i <= 5; i++) // Ajusta según tus módulos
+        
+        for (int i = 2; i <= 5; i++) 
         {
             PlayerPrefs.DeleteKey("Module_" + i + "_Unlocked");
         }
 
-        // 3. Reiniciar datos temporales y globales
+
         PlayerPrefs.DeleteKey("MaxLevelUnlocked");
         PlayerPrefs.DeleteKey("TotalCoins");
         PlayerPrefs.DeleteKey("CurrentLevel");
@@ -55,9 +57,9 @@ public class MenuController : MonoBehaviour
         PlayerPrefs.DeleteKey("TempPoints");
         PlayerPrefs.DeleteKey("TempCoins");
 
-        // 4. Valores por defecto (opcional)
-        PlayerPrefs.SetInt("Module_1_Unlocked", 1); // Desbloquear primer módulo
-        PlayerPrefs.SetInt("TotalCoins", 1000); // Opcional: Dar monedas iniciales
+        
+        PlayerPrefs.SetInt("Module_1_Unlocked", 1); 
+        PlayerPrefs.SetInt("TotalCoins", 1000); 
 
         PlayerPrefs.Save();
         //Debug.Log("Todos los datos del juego han sido reiniciados");
@@ -76,7 +78,7 @@ public class MenuController : MonoBehaviour
         infoContainer = root.Q<Button>("InfoContainer");
         cerrarJuegoButton = root.Q<Button>("Cerrar");
 
-        //Error
+
         contenedorError = root.Q<Button>("ErrorPopUp");
         mensaje = root.Q<Label>("Mensaje");
         cerrarError = root.Q<Button>("CerrarPopUp");

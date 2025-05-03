@@ -2,7 +2,8 @@ using TMPro;
 using UnityEngine;
 using System.Collections;
 using UnityEngine.Networking;
-
+// Descripción: Este archivo controla la interfaz de los módulos, incluyendo la inicialización de datos del usuario, la actualización de monedas y la carga del nombre del usuario desde el servidor.
+// Autor: Alfonso Vega
 public class InterfaceModulesController : MonoBehaviour
 {
     [Header("UI References")]
@@ -13,7 +14,7 @@ public class InterfaceModulesController : MonoBehaviour
     
     void Start()
     {
-        // Verificación de referencias
+
         if (nombreUsuario == null)
         {
             Debug.LogError("Error: No se ha asignado el campo 'nombreUsuario' en el Inspector");
@@ -22,17 +23,17 @@ public class InterfaceModulesController : MonoBehaviour
 
         userId = DBQuizReqHolder.Instance.GetUserID();
         
-        // Cargar datos
+
         StartCoroutine(InitializeData());
     }
 
     private IEnumerator InitializeData()
     {
-        // Cargar monedas
+
         yield return DBQuizReqHolder.Instance.StartCoroutine(
             DBQuizReqHolder.Instance.GetCoinsData(userId));
         
-        // Cargar nombre de usuario
+
         yield return StartCoroutine(LoadUserName());
         
         UpdateItemCounts();
@@ -51,18 +52,18 @@ public class InterfaceModulesController : MonoBehaviour
 
     private IEnumerator LoadUserName()
     {
-        // Construir URL correctamente
+
         string url = $"{DBQuizReqHolder.Instance.urlBD}user/name?id={userId}";
         //Debug.Log($"Solicitando nombre de usuario a: {url}");
 
         using (UnityWebRequest request = UnityWebRequest.Get(url))
         {
-            // Configurar timeout
+
             request.timeout = 10;
             
             yield return request.SendWebRequest();
 
-            // Verificar resultados
+
             if (request.result == UnityWebRequest.Result.Success)
             {
                 //Debug.Log($"Respuesta del servidor: {request.downloadHandler.text}");
@@ -103,7 +104,7 @@ public class InterfaceModulesController : MonoBehaviour
     }
 }
 
-// Clases para manejar la respuesta JSON
+
 [System.Serializable]
 public class UserNameResponse
 {

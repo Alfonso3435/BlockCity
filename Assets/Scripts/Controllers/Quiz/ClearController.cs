@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
+// Descripción: Este archivo controla la pantalla de finalización de un nivel o módulo, gestionando las opciones de reinicio del nivel actual o la transición al selector de niveles.
+// Autor: Alfonso Vega
+
 public class ClearController : MonoBehaviour
 {
     private UIDocument completado;

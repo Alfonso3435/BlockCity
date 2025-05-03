@@ -3,6 +3,9 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+// Descripción: Este archivo controla el botón de regreso en la escena del juego de memoria, permitiendo al jugador volver al selector de niveles al interactuar con el botón correspondiente.
+// Autor: Estrella Lolbeth
+
 public class MemoryButton : MonoBehaviour
 {
     [SerializeField]
@@ -10,11 +13,11 @@ public class MemoryButton : MonoBehaviour
 
     void Start()
     {
-        // Click
+
         regreso.onClick.AddListener(() => LoadScene("LevelSelection1"));
     }
 
-    // Carga de la escena 
+
     private void LoadScene(string sceneName)
     {
         SceneManager.LoadScene(sceneName);

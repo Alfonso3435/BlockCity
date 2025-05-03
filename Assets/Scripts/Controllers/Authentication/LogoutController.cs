@@ -5,9 +5,12 @@ using UnityEngine.SceneManagement;
 using System;
 using System.Collections;
 
+// Descripción: Este archivo controla el proceso de cierre de sesión del usuario, enviando los datos de la sesión al servidor, limpiando el estado local y redirigiendo a la escena de inicio de sesión.
+// Autor: Mike Argumedo
+
 public class LogoutController : MonoBehaviour
 {
-    [SerializeField] private Button logoutButton; // Asignar desde el Inspector
+    [SerializeField] private Button logoutButton;
 
     [Serializable]
     public class DatosSesion
@@ -50,8 +53,6 @@ public class LogoutController : MonoBehaviour
         };
 
         string datosJSON = JsonUtility.ToJson(datos);
-        
-        // Usamos la URL base de DBQuizReqHolder
         string url = DBQuizReqHolder.Instance.urlBD + (DBQuizReqHolder.Instance.urlBD.EndsWith("/") ? "logout" : "/logout");
         
         UnityWebRequest request = new UnityWebRequest(url, "POST");
@@ -67,24 +68,20 @@ public class LogoutController : MonoBehaviour
             Debug.LogError("Error en logout: " + request.error);
         }
 
-        // Limpiar PlayerPrefs
         PlayerPrefs.DeleteKey("usuario");
         PlayerPrefs.DeleteKey("horaInicio");
         PlayerPrefs.DeleteKey("id_usuario");
         PlayerPrefs.DeleteKey("nombre_user");
         PlayerPrefs.Save();
 
-        // Limpiar estado en memoria
         DBQuizReqHolder.Instance?.SetIsLoggedIn(false);
         DBQuizReqHolder.Instance?.SetUserID(0);
         
-        // Redirigir a la escena de login
         SceneManager.LoadScene("Login");
     }
 
     void OnDestroy()
     {
-        // Limpiar el listener para evitar memory leaks
         if (logoutButton != null)
         {
             logoutButton.onClick.RemoveListener(OnLogoutButtonClicked);

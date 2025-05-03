@@ -5,6 +5,9 @@ using UnityEngine.UIElements;
 using UnityEngine.Networking;
 using System.Collections;
 
+// Descripción: Este archivo controla el inicio de sesión del usuario, incluyendo la validación de credenciales, manejo de errores y redirección a escenas específicas.
+// Autor: Mike Argumedo
+
 public class LoginController : MonoBehaviour
 {
     private UIDocument login;
@@ -15,7 +18,6 @@ public class LoginController : MonoBehaviour
 
     private TextField campoCorreo;
     private TextField campoPassword;
-    //Error
     private Button contenedorError;
     private Button cerrarError;
     private Label mensaje;
@@ -33,7 +35,6 @@ public class LoginController : MonoBehaviour
         campoPassword = root.Q<TextField>("Contrasena");
         mensaje = root.Q<Label>("Mensaje");
 
-        //Error
         contenedorError = root.Q<Button>("ErrorPopUp");
         mensaje = root.Q<Label>("Mensaje");
         cerrarError = root.Q<Button>("CerrarPopUp");
@@ -79,7 +80,6 @@ public class LoginController : MonoBehaviour
         string json = JsonUtility.ToJson(datos);
         byte[] body = System.Text.Encoding.UTF8.GetBytes(json);
 
-
         string url = $"{DBQuizReqHolder.Instance.urlBD}login";
         UnityWebRequest request = new UnityWebRequest(url, "POST");
         request.uploadHandler = new UploadHandlerRaw(body);
@@ -96,8 +96,7 @@ public class LoginController : MonoBehaviour
             if (respuesta.Contains("LOGIN_OK"))
             {
                 LoginResponse loginResponse = JsonUtility.FromJson<LoginResponse>(respuesta);
-                
-                // Guardar datos en PlayerPrefs
+
                 PlayerPrefs.SetString("usuario", correo);
                 PlayerPrefs.SetString("horaInicio", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
                 PlayerPrefs.SetInt("id_usuario", loginResponse.id_usuario);
@@ -109,7 +108,6 @@ public class LoginController : MonoBehaviour
                 yield return new WaitForSeconds(1f);
                 DBQuizReqHolder.Instance.SetIsLoggedIn(true);
 
-                Debug.Log("WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW");
                 Debug.Log("Usuario logueado: " + loginResponse.id_usuario);
                 DBQuizReqHolder.Instance.SetUserID(loginResponse.id_usuario);
                 SceneManager.LoadScene("Menu");
@@ -139,7 +137,6 @@ public class LoginController : MonoBehaviour
             contenedorError.style.display = DisplayStyle.None;
             return;
         }
-        
     }
 
     private void IniciarJuego(ClickEvent evt, String escena)
@@ -154,7 +151,6 @@ public class LoginController : MonoBehaviour
         public string contrasena;
     }
 
-    // Class to parse the login response
     [Serializable]
     public class LoginResponse
     {
